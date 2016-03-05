@@ -331,13 +331,6 @@ public class Unit {
 				this.stamina += (this.toughness * dt)/(100*.2);
 	}
 	
-	public enum Action{
-		MOVE, ATTACK, DEFEND, WORK, REST
-	}
-	
-	public void AltadvanceTime(double dt){
-	}
-	
 	
 	/**
 	 * 
@@ -414,7 +407,7 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isMoving(){
-		return (getCurrentSpeed() != 0);
+		return (this.getCurrentSpeed() != 0);
 	}
 	/**
 	 * 
@@ -437,27 +430,26 @@ public class Unit {
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
-		while (current != target)
-				if (current[0] == target[0])
+		while (this.position != targetcube)
+				if (this.position[0] == targetcube[0])
 					dx = 0;
-				else if (current[0]<target[0])
+				else if (this.position[0]<targetcube[0])
 					dx = 1;
-				else if (current[0]>target[0])
+				else if (this.position[0]>targetcube[0])
 					dx = -1;
-				if (current[1] == target[1])
+				if (this.position[1] == targetcube[1])
 					dy = 0;
-				else if (current[1]<target[1])
+				else if (this.position[1]<targetcube[1])
 					dy = 1;
-				else if (current[1]>target[1])
+				else if (this.position[1]>targetcube[1])
 					dy = -1;
-				if (current[2] == target[2])
+				if (this.position[2] == targetcube[2])
 					dz = 0;
-				else if (current[2]<target[2])
+				else if (this.position[2]<targetcube[2])
 					dz = 1;
-				else if (current[2]>target[2])
+				else if (this.position[2]>targetcube[2])
 					dz = -1;
 				moveToAdjacant(dx, dy, dz);
-				current = this.getPosition();
 	}
 	/**
 	 * 
