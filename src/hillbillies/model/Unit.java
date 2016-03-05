@@ -114,13 +114,7 @@ public class Unit {
 	 */
 	
 	
-	public static int getMaxValue(){
-		return 200;
-	}
 	
-	public static int getMinValue(){
-		return 1;
-	}
 	
 	/**
 	 * 
@@ -143,18 +137,17 @@ public class Unit {
 	 */
 	public void setWeight(int newValue){
 		int minWeight = (this.strength*this.agility)/2;
-		if ((newValue >= minWeight) && (newValue <= getMaxValue()))
+		if ((newValue >= minWeight) && (newValue <= this.maxValue))
 			this.weight = newValue;
 		else if (newValue <= minWeight)
 			this.weight = minWeight;
-		else if (newValue >= getMaxValue())
-			this.weight = getMaxValue();
+		else if (newValue >= this.maxValue)
+			this.weight = this.maxValue;
 	}
 	/**
 	 * Returns the weight of this Unit 
 	 * @return
 	 */
-	
 	@Basic
 	public int getStrength(){
 		return this.strength;
@@ -168,12 +161,12 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setStrength(int newValue){
-		if ((newValue >= getMinValue()) && (newValue <= getMaxValue()))
+		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
 			this.strength = newValue;
-		else if (newValue <= getMinValue())
-			this.strength = getMinValue();
-		else if (newValue >= getMaxValue())
-			this.strength = getMaxValue();
+		else if (newValue <= this.minValue)
+			this.strength = this.minValue;
+		else if (newValue >= this.maxValue)
+			this.strength = this.maxValue;
 		setWeight(this.weight);
 		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
@@ -190,12 +183,12 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setAgility(int newValue){
-		if ((newValue >= getMinValue()) && (newValue <= getMaxValue()))
+		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
 			this.agility = newValue;
-		else if (newValue <= getMinValue())
-			this.agility = getMinValue();
-		else if (newValue >= getMaxValue())
-			this.agility = getMaxValue();
+		else if (newValue <= this.minValue)
+			this.agility = this.minValue;
+		else if (newValue >= this.maxValue)
+			this.agility = this.maxValue;
 		setWeight(this.weight);
 		//zelfde reden als bij setStrength()
 	}
@@ -212,13 +205,14 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setThoughness(int newValue){
-		if ((newValue >= getMinValue()) && (newValue <= getMaxValue()))
+		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
 			this.toughness = newValue;
-		else if (newValue <= getMinValue())
-			this.toughness = getMinValue();
-		else if (newValue >= getMaxValue())
-			this.toughness = getMaxValue();
+		else if (newValue <= this.minValue)
+			this.toughness = this.minValue;
+		else if (newValue >= this.maxValue)
+			this.toughness = this.maxValue;
 	}
+	
 	/**
 	 * 
 	 * @return
@@ -424,8 +418,8 @@ public class Unit {
 	private int agility;
 	private int strength;
 	private int toughness;
-	private int minValue;
-	private int maxValue;
+	private int minValue = 0;
+	private int maxValue = 200;
 	private int hitpoints;
 	private int stamina;
 	private double[] position;
