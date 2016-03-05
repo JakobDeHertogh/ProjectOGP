@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.Random;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import ogp.framework.util.ModelException;
 
@@ -306,8 +308,8 @@ public class Unit {
 		//Movement
 		if (isMoving())
 			newposition[0] = this.getXPosition() + dt * this.xspeed;
-			newposition[0] = this.getYPosition() + dt * this.yspeed;
-			newposition[0] = this.getZPosition() + dt * this.zspeed;
+			newposition[1] = this.getYPosition() + dt * this.yspeed;
+			newposition[2] = this.getZPosition() + dt * this.zspeed;
 			setPosition(newposition);
 		
 		//Work
@@ -315,11 +317,11 @@ public class Unit {
 			this.worktime = this.worktime - dt;
 		
 		//Attack
-		if (isAttacking())
+		if (isattacking)
 			this.attacktime = this.attacktime - dt;
 		
 		//Defense
-		if (isdefending))
+		if (isdefending)
 			this.defendtime -= dt;
 		//Rest
 		if (isresting)
@@ -328,6 +330,15 @@ public class Unit {
 			if (this.hitpoints < this.getMaxStaminaPoints())
 				this.stamina += (this.toughness * dt)/(100*.2);
 	}
+	
+	public enum Action{
+		MOVE, ATTACK, DEFEND, WORK, REST
+	}
+	
+	public void AltadvanceTime(double dt){
+	}
+	
+	
 	/**
 	 * 
 	 * @param dx
@@ -375,7 +386,7 @@ public class Unit {
 		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
 		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
 		setCurrentspeed(this.position, newposition);
-		if (isSprinting())
+		if (issprinting)
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
 	}
@@ -422,7 +433,7 @@ public class Unit {
 	 * 
 	 * @param cube
 	 */
-	public void moveTo(double[] current, double[]target) throws ModelException{
+	public void moveTo(double[]targetcube) throws ModelException{
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
@@ -467,22 +478,41 @@ public class Unit {
 	 * 
 	 */
 	public void attack(Unit other){
-		
+		this.attacktime = 1;
+		other.defendtime = 1;
+		this.isattacking = true;
+		other.isdefending = true;
 	}
 	/**
 	 * 
 	 * @param other
 	 */
 	public void defend(Unit other){
-		
+		double Pdodge = 0.20*(this.agility)/(other.agility);
+		double random = Math.random();
+		double Pblock = 0.25*(this.strength + this.agility)/(other.strength + other.agility);
+		//DODGE
+		if (random<= Pdodge)
+			runAwayFrom(other.getPosition());
+		//DAMAGE
+		else if (random >= Pblock)
+			this.hitpoints = other.strength /10;
+		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isAttacking(){
-		return true;
+	
+	public void runAwayFrom(double[] position){
+		double[] newpos = new double[3];
+		int x;
+		int y = new Random().nextInt(2);
+		while ((!isValidPosition(newpos)) && (this.position !=position));
+			x = new Random().nextInt(2);
+			y = new Random().nextInt(2);
+			newpos[0] = this.getXPosition() + x;
+			newpos[1] = this.getYPosition() + y;
+			newpos[2] = this.getZPosition();
+		setPosition(newpos);
 	}
+	
 	/**
 	 * 
 	 */
@@ -544,5 +574,6 @@ public class Unit {
 	private boolean issprinting;
 	private boolean isresting;
 	private boolean isdefending;
+	private boolean isattacking;
 	
 }
