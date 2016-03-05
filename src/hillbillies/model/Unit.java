@@ -270,7 +270,7 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxStaminaPoints(){
-		return 200/10000 * this.getWeight() * this.getToughness();
+		return ((int) 0.02* this.getWeight() * this.getToughness());
 	}
 	/**
 	 * 
