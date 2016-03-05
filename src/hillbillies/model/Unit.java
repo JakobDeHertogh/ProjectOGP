@@ -1,7 +1,10 @@
 package hillbillies.model;
 
+import java.util.Arrays;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import ogp.framework.util.ModelException;
+
 
 
 
@@ -23,7 +26,7 @@ public class Unit {
 	 * @param enableDefaultBehavior
 	 * @throws ModelException 
 	 */
-	//TODO: tijdstap "Deltat" en standaardsnelheid "vb" definieren in constructor
+	
 	public Unit(String name, int[] initialPosition, int weight, int agility, int strength,
 			int toughness, boolean enableDefaultBehavior) throws ModelException{
 		//set name and basic values
@@ -39,9 +42,10 @@ public class Unit {
 			pos[i] = initials[i];
 		}
 		this.setPosition(pos);
-		//set default behavior to false
-		this.setDefaultBehaviorEnabled(false);
-		
+		//set default behavior to given
+		this.setDefaultBehaviorEnabled(enableDefaultBehavior);
+		//set orientation to PI/2
+		this.setOrientation(Math.PI / 2.0);
 	}
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
@@ -60,11 +64,11 @@ public class Unit {
 	 * 
 	 * @throws ModelException
 	 */
-	public void setName(String NewName) throws ModelException{
-		if (!((name.matches("[a-zA-Z\\s\'\"]+")) && (name.length()<=2) 
-				&& Character.isUpperCase(name.charAt(0))))
-			throw new ModelException(NewName);
-		this.name = NewName;
+	public void setName(String newName) throws ModelException{
+		if ((newName.matches("[a-zA-Z\\s\'\"]+")) && (newName.length()>=2) 
+				&& Character.isUpperCase(newName.charAt(0)))
+			this.name = newName;
+		else throw new ModelException(newName);
 	}
 	
 	//public boolean isValidName(String Name){
@@ -98,9 +102,9 @@ public class Unit {
 	}
 	public boolean isValidPosition(double[] pos){
 		
-		return ((position[0]>=minXPos) && (position[0]<maxXPos) && 
-				(position[1]>=minYPos) && (position[1]<maxYPos) && 
-				(position[2]>=minZPos) && (position[2]<maxZPos));
+		return ((pos[0]>=minXPos) && (pos[0]<maxXPos) && 
+				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
+				(pos[2]>=minZPos) && (pos[2]<maxZPos));
 	}
 
 	public double getXPosition(){
@@ -159,7 +163,9 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setWeight(int newValue){
-		int minWeight = (this.strength*this.agility)/2;
+		int minWeight = (this.strength + this.agility)/2;
+		System.out.println("minweight" + minWeight);
+		System.out.println(this.strength + "+" + this.agility);
 		if ((newValue >= minWeight) && (newValue <= maxValue))
 			this.weight = newValue;
 		else if (newValue <= minWeight)
@@ -190,7 +196,9 @@ public class Unit {
 			this.strength = minValue;
 		else if (newValue >= maxValue)
 			this.strength = maxValue;
+		System.out.println("voor setWeight" + this.getWeight());
 		setWeight(this.weight);
+		System.out.println("na setweight" +  this.getWeight());
 		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
 	/**
@@ -241,7 +249,10 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxHitPoints(){
-		return 200/10000 * this.getWeight() * this.getToughness();
+		System.out.println("A=" + this.getWeight());
+		System.out.println("B=" + this.getToughness());
+		System.out.println("C=" + this.getWeight()*this.getToughness()*0.02);
+		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
 	/**
 	 * 
@@ -457,7 +468,7 @@ public class Unit {
 		return true;
 	}
 	
-	private String name;
+	String name;
 	private int weight;
 	private int agility;
 	private int strength;
