@@ -1,7 +1,5 @@
 package hillbillies.model;
 
-import java.util.Arrays;
-
 import be.kuleuven.cs.som.annotate.Basic;
 import ogp.framework.util.ModelException;
 
@@ -312,23 +310,6 @@ public class Unit {
 	 * @param dz
 	 * @throws ModelException 
 	 */
-	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
-		// Eerst definieren we de positie waar we naartoe zullen bewegen.
-		double[] newposition = new double[3];
-		newposition[0]= this.getXPosition() + dx;
-		newposition[1]= this.getYPosition()+dy;
-		newposition[2]= this.getZPosition()+dz;
-		double xdistance = Math.pow((newposition[0]-this.getXPosition()), 2);
-		double ydistance = Math.pow((newposition[1]-this.getYPosition()), 2);
-		double zdistance = Math.pow((newposition[2]-this.getZPosition()), 2);
-		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
-		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
-		setCurrentspeed(this.position, newposition);
-		if (isSprinting())
-			this.currentspeed = 2* this.currentspeed;
-		advanceTime(0.2);
-		setPosition(newposition);
-	}
 	
 	public void setCurrentspeed(double[] start, double[] end){
 		double dz = start[2]-end[2];
@@ -347,31 +328,39 @@ public class Unit {
 	 * @param target
 	 * @throws ModelException 
 	 */
-	public void moveTo(double[] current, double[]target) throws ModelException{
-		int dx = 0;
-		int dy = 0;
-		int dz = 0;
-		while (current != target)
-				if (current[0] == target[0])
-					dx = 0;
-				else if (current[0]<target[0])
-					dx = 1;
-				else if (current[0]>target[0])
-					dx = -1;
-				if (current[1] == target[1])
-					dy = 0;
-				else if (current[1]<target[1])
-					dy = 1;
-				else if (current[1]>target[1])
-					dy = -1;
-				if (current[2] == target[2])
-					dz = 0;
-				else if (current[2]<target[2])
-					dz = 1;
-				else if (current[2]>target[2])
-					dz = -1;
-				moveToAdjacant(dx, dy, dz);
-				current = this.getPosition();
+	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
+		// Eerst definieren we de positie waar we naartoe zullen bewegen.
+		double[] newposition = new double[3];
+		newposition[0]= this.getXPosition() + dx;
+		newposition[1]= this.getYPosition() + dy;
+		newposition[2]= this.getZPosition() + dz;
+		
+		// We kijken of die een mogelijke positie is, indien niet ModelException
+		if (!isValidPosition(newposition))
+			throw new ModelException();
+		
+		// Goede positie -> berekenen verplaatsingssnelheid en -vector berekenen;
+		double xdistance = Math.pow((newposition[0]-this.getXPosition()), 2);
+		double ydistance = Math.pow((newposition[1]-this.getYPosition()), 2);
+		double zdistance = Math.pow((newposition[2]-this.getZPosition()), 2);
+		
+		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
+		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
+		setCurrentspeed(this.position, newposition);
+		if (isSprinting())
+			this.currentspeed = 2* this.currentspeed;
+		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
+	}
+	
+	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
+		double[] speedvector = new double[3];
+		speedvector[0] = this.currentspeed * xdistance / totaldistance;
+		speedvector[1] = this.currentspeed * ydistance / totaldistance;
+		speedvector[2] = this.currentspeed * zdistance / totaldistance;
+		this.speedVector = speedvector;
+		this.xspeed = speedvector[0];
+		this.yspeed = speedvector[1];
+		this.zspeed = speedvector[2];
 	}
 	/**
 	 * 
@@ -410,8 +399,31 @@ public class Unit {
 	 * 
 	 * @param cube
 	 */
-	public void moveTo(int[] cube){
-		
+	public void moveTo(double[] current, double[]target) throws ModelException{
+		int dx = 0;
+		int dy = 0;
+		int dz = 0;
+		while (current != target)
+				if (current[0] == target[0])
+					dx = 0;
+				else if (current[0]<target[0])
+					dx = 1;
+				else if (current[0]>target[0])
+					dx = -1;
+				if (current[1] == target[1])
+					dy = 0;
+				else if (current[1]<target[1])
+					dy = 1;
+				else if (current[1]>target[1])
+					dy = -1;
+				if (current[2] == target[2])
+					dz = 0;
+				else if (current[2]<target[2])
+					dz = 1;
+				else if (current[2]>target[2])
+					dz = -1;
+				moveToAdjacant(dx, dy, dz);
+				current = this.getPosition();
 	}
 	/**
 	 * 
@@ -497,4 +509,10 @@ public class Unit {
 	private static int maxZPos = 50;
 	private static int minStartVal = 25;
 	private static int maxStartVal = 100;
+	private double[] speedVector;
+	private double xspeed;
+	private double yspeed;
+	private double zspeed;
+	
+	
 }
