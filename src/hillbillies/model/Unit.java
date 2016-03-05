@@ -25,6 +25,32 @@ public class Unit {
 		this.setName(name);
 		
 	}
+	
+	@Basic
+	public String getName(){
+		return this.name;
+	}
+	/**
+	 * Sets the name of this unit to the given Name
+	 * 
+	 * @param newName
+	 * 
+	 * @throws ModelException
+	 */
+	public void setName(String NewName) throws ModelException{
+		if (!((name.matches("[a-zA-Z\\s\'\"]+")) && (name.length()<=2) 
+				&& Character.isUpperCase(name.charAt(0))))
+			throw new ModelException(NewName);
+		this.name = NewName;
+	}
+	
+	//public boolean isValidName(String Name){
+	//	return true;
+	//	if (Name.length() <2)
+	//		return false;
+	//	else if (Name.matches("[A-Za-z \"']+"))
+	// Dit stond er al in, wat is volgens jou het beste?		
+	//}
 	/**
 	 * Returns the current position of this Unit
 	 * @return
@@ -47,9 +73,11 @@ public class Unit {
 		this.yposition = newposition[1];
 		this.zposition = newposition[2];
 	}
-	public boolean isValidPosition(double[] position){
-		return ((position[0]>=0) && (position[0]<=30) && 
-				(position[1]>=0) && (position[1]<=30) && (position[2]>=0) && (position[2]<=30));
+	public boolean isValidPosition(double[] pos){
+		
+		return ((position[0]>=minXPos) && (position[0]<maxXPos) && 
+				(position[1]>=minYPos) && (position[1]<maxYPos) && 
+				(position[2]>=minZPos) && (position[2]<maxZPos));
 	}
 
 	public double getXPosition(){
@@ -84,30 +112,7 @@ public class Unit {
 	 * Returns the name of this Unit
 	 * @return
 	 */
-	@Basic
-	public String getName(){
-		return this.name;
-	}
-	/**
-	 * Sets the name of this unit to the given Name
-	 * 
-	 * @param newName
-	 * 
-	 * @throws ModelException
-	 */
-	public void setName(String NewName) throws ModelException{
-		if (!isValidName(NewName))
-			throw new ModelException(NewName);
-		this.name = NewName;
-	}
 	
-	public boolean isValidName(String Name){
-		return !((name.matches("[a-zA-Z\\s\'\"]+")) && (name.length()<=2) && Character.isUpperCase(name.charAt(0)));
-	//	if (Name.length() <2)
-	//		return false;
-	//	else if (Name.matches("[A-Za-z \"']+"))
-	// Dit stond er al in, wat is volgens jou het beste?		
-	}
 	
 	public static int getMaxValue(){
 		return 200;
@@ -432,5 +437,11 @@ public class Unit {
 	private double cubey;
 	private double cubez;
 	private double currentspeed;
+	private int minXPos = 0;
+	private int maxXPos = 50;
+	private int minYPos = 0;
+	private int maxYPos = 50;
+	private int minZPos = 0;
+	private int maxZPos = 50;
 	
 }
