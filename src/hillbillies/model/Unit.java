@@ -300,8 +300,33 @@ public class Unit {
 	 * 
 	 * @param dt
 	 */
-	public void advanceTime(double dt){
+	public void advanceTime(double dt) throws ModelException{
+		double[] newposition = new double[3];
 		
+		//Movement
+		if (isMoving())
+			newposition[0] = this.getXPosition() + dt * this.xspeed;
+			newposition[0] = this.getYPosition() + dt * this.yspeed;
+			newposition[0] = this.getZPosition() + dt * this.zspeed;
+			setPosition(newposition);
+		
+		//Work
+		if (isWorking())
+			this.worktime = this.worktime - dt;
+		
+		//Attack
+		if (isAttacking())
+			this.attacktime = this.attacktime - dt;
+		
+		//Defense
+		if (isdefending))
+			this.defendtime -= dt;
+		//Rest
+		if (isresting)
+			if (this.hitpoints < this.getMaxHitPoints())
+				this.hitpoints += (this.toughness * dt)/(200*0.2);
+			if (this.hitpoints < this.getMaxStaminaPoints())
+				this.stamina += (this.toughness * dt)/(100*.2);
 	}
 	/**
 	 * 
@@ -313,12 +338,15 @@ public class Unit {
 	
 	public void setCurrentspeed(double[] start, double[] end){
 		double dz = start[2]-end[2];
-		if (dz ==-1)
-			this.currentspeed = 0.5*vb;
-		else if (dz==1)
-			this.currentspeed = 1.2*vb;
+		if (start==end)
+			this.currentspeed = 0;
 		else
-			this.currentspeed = vb;		
+			if (dz ==-1)
+				this.currentspeed = 0.5*vb;
+			else if (dz==1)
+				this.currentspeed = 1.2*vb;
+			else
+				this.currentspeed = vb;	
 	}
 	
 	//Path finding method (zoals in bundel): opeenvolging van hierboven
@@ -351,6 +379,7 @@ public class Unit {
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
 	}
+
 	
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
 		double[] speedvector = new double[3];
@@ -380,21 +409,15 @@ public class Unit {
 	 * 
 	 */
 	public void startSprinting(){
-		
+		this.issprinting = true;
 	}
 	/**
 	 * 
 	 */
 	public void stopSprinting(){
-		
+		this.issprinting = false;
 	}
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isSprinting(){
-		return true; //zodat het momenteel geen error meer geeft :D
-	}
+
 	/**
 	 * 
 	 * @param cube
@@ -430,19 +453,27 @@ public class Unit {
 	 */
 	
 	public void work(){
-		
+		this.worktime = 500/this.strength;
 	}
 	/**
 	 * 
 	 * @return
 	 */
+
 	public boolean isWorking(){
-		return true;
+		return (this.worktime >=0);
 	}
 	/**
 	 * 
 	 */
-	public void fight(Unit other){
+	public void attack(Unit other){
+		
+	}
+	/**
+	 * 
+	 * @param other
+	 */
+	public void defend(Unit other){
 		
 	}
 	/**
@@ -456,15 +487,9 @@ public class Unit {
 	 * 
 	 */
 	public void rest(){
-		
+		this.isresting = true;
 	}
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isResting(){
-		return true;
-	}
+
 	/**
 	 * 
 	 * @param value
@@ -513,6 +538,11 @@ public class Unit {
 	private double xspeed;
 	private double yspeed;
 	private double zspeed;
-	
+	private double worktime;
+	private double attacktime;
+	private double defendtime;
+	private boolean issprinting;
+	private boolean isresting;
+	private boolean isdefending;
 	
 }
