@@ -273,23 +273,40 @@ public class Unit {
 	 * @param dt
 	 * 
 	 */
-	public enum action{
-			MOVE, ATTACK, DEFEND, WORK
-		}
+// andere mogelijkheid (?) : enum (?)
+//	public enum action{
+//			MOVE, ATTACK, DEFEND, WORK
+//		}
 	public void advanceTime(double dt) throws ModelException{
 		double[] newposition = new double[3];
-		newposition[0] = this.getXPosition() + dt * this.xspeed;
-		newposition[0] = this.getYPosition() + dt * this.yspeed;
-		newposition[0] = this.getZPosition() + dt * this.zspeed;
-		setPosition(newposition);
 		
-		//Fighting
+		//Movement
+		if (isMoving())
+			newposition[0] = this.getXPosition() + dt * this.xspeed;
+			newposition[0] = this.getYPosition() + dt * this.yspeed;
+			newposition[0] = this.getZPosition() + dt * this.zspeed;
+			setPosition(newposition);
 		
+		//Work
+		if (isWorking())
+			this.worktime = this.worktime - dt;
 		
-		//Working
+		//Attack
+		if (isAttacking())
+			this.attacktime = this.attacktime - dt;
 		
-		
+		//Defense
+		if (isDefending())
+			this.defendtime -= dt;
+		//Rest
+		if (isResting())
+			if (this.hitpoints < this.getMaxHitPoints())
+				this.hitpoints += (this.toughness * dt)/(200*0.2);
+			if (this.hitpoints < this.getMaxStaminaPoints())
+				this.stamina += (this.toughness * dt)/(100*.2);
 	}
+	
+	
 	/**
 	 * 
 	 * @param dx
@@ -323,12 +340,15 @@ public class Unit {
 
 	public void setCurrentspeed(double[] start, double[] end){
 		double dz = start[2]-end[2];
-		if (dz ==-1)
-			this.currentspeed = 0.5*vb;
-		else if (dz==1)
-			this.currentspeed = 1.2*vb;
+		if (start==end)
+			this.currentspeed = 0;
 		else
-			this.currentspeed = vb;
+			if (dz ==-1)
+				this.currentspeed = 0.5*vb;
+			else if (dz==1)
+				this.currentspeed = 1.2*vb;
+			else
+				this.currentspeed = vb;
 	}
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
 		double[] speedvector = new double[3];
@@ -405,33 +425,27 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isSprinting(){
-		return true; //zodat het momenteel geen error meer geeft :D
-	}
-	/**
-	 * 
-	 * @param cube
-	 */
-	public void moveTo(int[] cube){
-		
+		return true;
 	}
 	/**
 	 * 
 	 */
 	
 	public void work(){
-		
+		this.worktime = 500/this.strength;
 	}
 	/**
 	 * 
 	 * @return
 	 */
 	public boolean isWorking(){
-		return true;
+		return (this.worktime >=0);
 	}
 	/**
 	 * 
 	 */
 	public void fight(Unit other){
+		this.attacktime = 1;
 		
 	}
 	/**
@@ -487,7 +501,6 @@ public class Unit {
 	private double cubey;
 	private double cubez;
 	private double distance;
-	private boolean isWalking;
 	private double vb = 1.5* (this.agility+ this.strength) / (2*this.weight);
 	private double currentspeed;
 	private double[] speedVector;
@@ -500,5 +513,8 @@ public class Unit {
 	private int maxYPos = 50;
 	private int minZPos = 0;
 	private int maxZPos = 50;
+	private double worktime;
+	private double attacktime;
+	private double defendtime;
 	
 }
