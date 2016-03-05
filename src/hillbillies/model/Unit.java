@@ -35,11 +35,11 @@ public class Unit {
 		this.setAgility(validStartVal(agility));
 		this.setStrength(validStartVal(strength));
 		this.setToughness(validStartVal(toughness));
-		//convert int[] to double[]
+		//convert int[] to double[] and add 0.5
 		int[] initials = initialPosition;
 		double[] pos = new double[initials.length];
 		for (int i = 0;i<initials.length; i++){
-			pos[i] = initials[i];
+			pos[i] = initials[i] + 0.5;
 		}
 		this.setPosition(pos);
 		//set default behavior to given
@@ -71,19 +71,13 @@ public class Unit {
 		else throw new ModelException(newName);
 	}
 	
-	//public boolean isValidName(String Name){
-	//	return true;
-	//	if (Name.length() <2)
-	//		return false;
-	//	else if (Name.matches("[A-Za-z \"']+"))
-	// Dit stond er al in, wat is volgens jou het beste?		
-	//}
 	/**
 	 * Returns the current position of this Unit
 	 * @return
 	 */
 	@Basic
 	public double[] getPosition(){
+		System.out.println(this.position);
 		return this.position;
 	}
 	/**
@@ -164,8 +158,6 @@ public class Unit {
 	 */
 	public void setWeight(int newValue){
 		int minWeight = (this.strength + this.agility)/2;
-		System.out.println("minweight" + minWeight);
-		System.out.println(this.strength + "+" + this.agility);
 		if ((newValue >= minWeight) && (newValue <= maxValue))
 			this.weight = newValue;
 		else if (newValue <= minWeight)
@@ -196,9 +188,7 @@ public class Unit {
 			this.strength = minValue;
 		else if (newValue >= maxValue)
 			this.strength = maxValue;
-		System.out.println("voor setWeight" + this.getWeight());
 		setWeight(this.weight);
-		System.out.println("na setweight" +  this.getWeight());
 		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
 	/**
@@ -249,9 +239,6 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxHitPoints(){
-		System.out.println("A=" + this.getWeight());
-		System.out.println("B=" + this.getToughness());
-		System.out.println("C=" + this.getWeight()*this.getToughness()*0.02);
 		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
 	/**
@@ -303,7 +290,21 @@ public class Unit {
 	 * @param dt
 	 */
 	public void advanceTime(double dt) throws ModelException{
-		double[] newposition = new double[3];
+		
+		//Movement
+		if (this.adjacant != null)
+			if (this.distance < this.getCurrentSpeed()*dt)
+				this.setPosition(adjacant);
+			else {
+				double[] newposition = new double[3];
+				newposition[0] = this.getXPosition() + dt * this.xspeed;
+				newposition[1] = this.getYPosition() + dt * this.yspeed;
+				newposition[2] = this.getZPosition() + dt * this.zspeed;
+				this.distance -= this.getCurrentSpeed()*dt;
+				setPosition(newposition);
+			}
+		else if (this.goal != null)
+			this.moveTo(goal);
 		//Work
 		if (isWorking())
 			this.worktime = this.worktime - dt;
@@ -311,22 +312,19 @@ public class Unit {
 		//Attack
 		if (isattacking)
 			this.attacktime = this.attacktime - dt;
+			
 		
 		//Defense
 		if (isdefending)
 			this.defendtime -= dt;
+			
 		//Rest
 		if (isresting)
 			if (this.hitpoints < this.getMaxHitPoints())
 				this.hitpoints += (this.toughness * dt)/(200*0.2);
-			else if (this.hitpoints < this.getMaxStaminaPoints())
+			if (this.stamina < this.getMaxStaminaPoints())
 				this.stamina += (this.toughness * dt)/(100*.2);
-		//Movement
-		if ((!isattacking) &&(!isdefending) &&(isMoving()))
-			newposition[0] = this.getXPosition() + dt * this.xspeed;
-			newposition[1] = this.getYPosition() + dt * this.yspeed;
-			newposition[2] = this.getZPosition() + dt * this.zspeed;
-			setPosition(newposition);
+		
 		
 		
 	}
@@ -363,9 +361,10 @@ public class Unit {
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
 		// Eerst definieren we de positie waar we naartoe zullen bewegen.
 		double[] newposition = new double[3];
-		newposition[0]= this.getXPosition() + dx;
-		newposition[1]= this.getYPosition() + dy;
-		newposition[2]= this.getZPosition() + dz;
+		newposition[0]= Math.floor(this.getXPosition() + dx) + 0.5;
+		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
+		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
+		this.adjacant = newposition;
 		
 		// We kijken of die een mogelijke positie is, indien niet ModelException
 		if (!isValidPosition(newposition))
@@ -427,36 +426,37 @@ public class Unit {
 	 * @param cube
 	 */
 	public void moveTo(double[]targetcube) throws ModelException{
+		this.goal = targetcube;
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
-		while (this.position != targetcube)
-				if (this.position[0] == targetcube[0])
-					dx = 0;
-				else if (this.position[0]<targetcube[0])
-					dx = 1;
-				else if (this.position[0]>targetcube[0])
-					dx = -1;
-				if (this.position[1] == targetcube[1])
-					dy = 0;
-				else if (this.position[1]<targetcube[1])
-					dy = 1;
-				else if (this.position[1]>targetcube[1])
-					dy = -1;
-				if (this.position[2] == targetcube[2])
-					dz = 0;
-				else if (this.position[2]<targetcube[2])
-					dz = 1;
-				else if (this.position[2]>targetcube[2])
-					dz = -1;
-				moveToAdjacant(dx, dy, dz);
+		if (this.position[0] == targetcube[0])
+			dx = 0;
+		else if (this.position[0]<targetcube[0])
+			dx = 1;
+		else if (this.position[0]>targetcube[0])
+			dx = -1;
+		if (this.position[1] == targetcube[1])
+			dy = 0;
+		else if (this.position[1]<targetcube[1])
+			dy = 1;
+		else if (this.position[1]>targetcube[1])
+			dy = -1;
+		if (this.position[2] == targetcube[2])
+			dz = 0;
+		else if (this.position[2]<targetcube[2])
+			dz = 1;
+		else if (this.position[2]>targetcube[2])
+			dz = -1;
+		moveToAdjacant(dx, dy, dz);
 	}
 	/**
 	 * 
 	 */
 	
 	public void work(){
-		this.worktime = 500/this.strength;
+		this.worktime = 500.0/this.strength;
+		this.goal = null;
 	}
 	/**
 	 * 
@@ -464,12 +464,13 @@ public class Unit {
 	 */
 
 	public boolean isWorking(){
-		return (this.worktime >=0);
+		return (this.worktime > 0);
 	}
 	/**
 	 * 
 	 */
 	public void attack(Unit other){
+		this.goal = null;
 		this.attacktime = 1;
 		other.defendtime = 1;
 		this.isattacking = true;
@@ -478,8 +479,10 @@ public class Unit {
 	/**
 	 * 
 	 * @param other
+	 * @throws ModelException 
 	 */
-	public void defend(Unit other){
+	public void defend(Unit other) throws ModelException{
+		this.goal = null;
 		double Pdodge = 0.20*(this.agility)/(other.agility);
 		double random = Math.random();
 		double Pblock = 0.25*(this.strength + this.agility)/(other.strength + other.agility);
@@ -492,7 +495,7 @@ public class Unit {
 		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
 	
-	public void runAwayFrom(double[] position){
+	public void runAwayFrom(double[] position) throws ModelException{
 		double[] newpos = new double[3];
 		int x;
 		int y = new Random().nextInt(2);
@@ -509,6 +512,7 @@ public class Unit {
 	 * 
 	 */
 	public void rest(){
+		this.goal = null;
 		this.isresting = true;
 	}
 
@@ -567,5 +571,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
+	private double[] goal;
+	private double[] adjacant;
 	
 }
