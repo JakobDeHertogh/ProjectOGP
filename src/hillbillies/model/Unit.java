@@ -25,8 +25,27 @@ public class Unit {
 	 */
 	public Unit(String name, int[] initialPosition, int weight, int agility, int strength,
 			int toughness, boolean enableDefaultBehavior) throws ModelException{
+		//set name and basic values
 		this.setName(name);
+		this.setWeight(validStartVal(weight));
+		this.setAgility(validStartVal(agility));
+		this.setStrength(validStartVal(strength));
+		this.setToughness(validStartVal(toughness));
+		//convert int[] to double[]
+		int[] initials = initialPosition;
+		double[] pos = new double[initials.length];
+		for (int i = 0;i<initials.length; i++){
+			pos[i] = initials[i];
+		}
+		this.setPosition(pos);
+		//set default behavior to false
+		this.setDefaultBehaviorEnabled(false);
 		
+	}
+	public int validStartVal(int val){
+		if ((val <= maxStartVal) && (val >= minStartVal))
+			return val;
+		else return minStartVal;
 	}
 	
 	@Basic
@@ -140,12 +159,12 @@ public class Unit {
 	 */
 	public void setWeight(int newValue){
 		int minWeight = (this.strength*this.agility)/2;
-		if ((newValue >= minWeight) && (newValue <= this.maxValue))
+		if ((newValue >= minWeight) && (newValue <= maxValue))
 			this.weight = newValue;
 		else if (newValue <= minWeight)
 			this.weight = minWeight;
-		else if (newValue >= this.maxValue)
-			this.weight = this.maxValue;
+		else if (newValue >= maxValue)
+			this.weight = maxValue;
 	}
 	/**
 	 * Returns the weight of this Unit 
@@ -164,12 +183,12 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setStrength(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.strength = newValue;
-		else if (newValue <= this.minValue)
-			this.strength = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.strength = this.maxValue;
+		else if (newValue <= minValue)
+			this.strength = minValue;
+		else if (newValue >= maxValue)
+			this.strength = maxValue;
 		setWeight(this.weight);
 		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
@@ -186,12 +205,12 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setAgility(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.agility = newValue;
-		else if (newValue <= this.minValue)
-			this.agility = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.agility = this.maxValue;
+		else if (newValue <= minValue)
+			this.agility = minValue;
+		else if (newValue >= maxValue)
+			this.agility = maxValue;
 		setWeight(this.weight);
 		//zelfde reden als bij setStrength()
 	}
@@ -207,13 +226,13 @@ public class Unit {
 	 * 
 	 * @param newValue
 	 */
-	public void setThoughness(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+	public void setToughness(int newValue){
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.toughness = newValue;
-		else if (newValue <= this.minValue)
-			this.toughness = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.toughness = this.maxValue;
+		else if (newValue <= minValue)
+			this.toughness = minValue;
+		else if (newValue >= maxValue)
+			this.toughness = maxValue;
 	}
 	
 	/**
@@ -421,8 +440,8 @@ public class Unit {
 	private int agility;
 	private int strength;
 	private int toughness;
-	private int minValue = 0;
-	private int maxValue = 200;
+	private static int minValue = 0;
+	private static int maxValue = 200;
 	private int hitpoints;
 	private int stamina;
 	private double[] position;
@@ -434,11 +453,12 @@ public class Unit {
 	private double cubey;
 	private double cubez;
 	private double currentspeed;
-	private int minXPos = 0;
-	private int maxXPos = 50;
-	private int minYPos = 0;
-	private int maxYPos = 50;
-	private int minZPos = 0;
-	private int maxZPos = 50;
-	
+	private static int minXPos = 0;
+	private static int maxXPos = 50;
+	private static int minYPos = 0;
+	private static int maxYPos = 50;
+	private static int minZPos = 0;
+	private static int maxZPos = 50;
+	private static int minStartVal = 25;
+	private static int maxStartVal = 100;
 }
