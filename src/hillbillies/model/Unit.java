@@ -23,6 +23,7 @@ public class Unit {
 	 * @param enableDefaultBehavior
 	 * @throws ModelException 
 	 */
+	//TODO: tijdstap "Deltat" en standaardsnelheid "vb" definieren in constructor
 	public Unit(String name, int[] initialPosition, int weight, int agility, int strength,
 			int toughness, boolean enableDefaultBehavior) throws ModelException{
 		//set name and basic values
@@ -301,12 +302,33 @@ public class Unit {
 	 * @throws ModelException 
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
+		// Eerst definieren we de positie waar we naartoe zullen bewegen.
 		double[] newposition = new double[3];
 		newposition[0]= this.getXPosition() + dx;
 		newposition[1]= this.getYPosition()+dy;
 		newposition[2]= this.getZPosition()+dz;
-		setPosition(newposition); // wat is hier mis?
+		double xdistance = Math.pow((newposition[0]-this.getXPosition()), 2);
+		double ydistance = Math.pow((newposition[1]-this.getYPosition()), 2);
+		double zdistance = Math.pow((newposition[2]-this.getZPosition()), 2);
+		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
+		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
+		setCurrentspeed(this.position, newposition);
+		if (isSprinting())
+			this.currentspeed = 2* this.currentspeed;
+		advanceTime(0.2);
+		setPosition(newposition);
 	}
+	
+	public void setCurrentspeed(double[] start, double[] end){
+		double dz = start[2]-end[2];
+		if (dz ==-1)
+			this.currentspeed = 0.5*vb;
+		else if (dz==1)
+			this.currentspeed = 1.2*vb;
+		else
+			this.currentspeed = vb;		
+	}
+	
 	//Path finding method (zoals in bundel): opeenvolging van hierboven
 	/**
 	 * 
@@ -452,6 +474,9 @@ public class Unit {
 	private double cubex;
 	private double cubey;
 	private double cubez;
+	private double distance;
+	private boolean isWalking;
+	private double vb = 1.5* (this.agility+ this.strength) / (2*this.weight);
 	private double currentspeed;
 	private static int minXPos = 0;
 	private static int maxXPos = 50;
