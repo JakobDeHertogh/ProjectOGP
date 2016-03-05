@@ -304,14 +304,6 @@ public class Unit {
 	 */
 	public void advanceTime(double dt) throws ModelException{
 		double[] newposition = new double[3];
-		
-		//Movement
-		if (isMoving())
-			newposition[0] = this.getXPosition() + dt * this.xspeed;
-			newposition[1] = this.getYPosition() + dt * this.yspeed;
-			newposition[2] = this.getZPosition() + dt * this.zspeed;
-			setPosition(newposition);
-		
 		//Work
 		if (isWorking())
 			this.worktime = this.worktime - dt;
@@ -327,8 +319,16 @@ public class Unit {
 		if (isresting)
 			if (this.hitpoints < this.getMaxHitPoints())
 				this.hitpoints += (this.toughness * dt)/(200*0.2);
-			if (this.hitpoints < this.getMaxStaminaPoints())
+			else if (this.hitpoints < this.getMaxStaminaPoints())
 				this.stamina += (this.toughness * dt)/(100*.2);
+		//Movement
+		if ((!isattacking) &&(!isdefending) &&(isMoving()))
+			newposition[0] = this.getXPosition() + dt * this.xspeed;
+			newposition[1] = this.getYPosition() + dt * this.yspeed;
+			newposition[2] = this.getZPosition() + dt * this.zspeed;
+			setPosition(newposition);
+		
+		
 	}
 	
 	
