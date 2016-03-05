@@ -5,6 +5,7 @@ import ogp.framework.util.ModelException;
 
 
 
+
 // Pls tell me this works.
 /**
  * 
@@ -23,11 +24,31 @@ public class Unit {
 	 * @param enableDefaultBehavior
 	 * @throws ModelException 
 	 */
-	//TODO: tijdstap "Deltat" en standaardsnelheid "vb" definieren in constructor
+	
 	public Unit(String name, int[] initialPosition, int weight, int agility, int strength,
 			int toughness, boolean enableDefaultBehavior) throws ModelException{
+		//set name and basic values
 		this.setName(name);
-		
+		this.setWeight(validStartVal(weight));
+		this.setAgility(validStartVal(agility));
+		this.setStrength(validStartVal(strength));
+		this.setToughness(validStartVal(toughness));
+		//convert int[] to double[]
+		int[] initials = initialPosition;
+		double[] pos = new double[initials.length];
+		for (int i = 0;i<initials.length; i++){
+			pos[i] = initials[i];
+		}
+		this.setPosition(pos);
+		//set default behavior to given
+		this.setDefaultBehaviorEnabled(enableDefaultBehavior);
+		//set orientation to PI/2
+		this.setOrientation(Math.PI / 2.0);
+	}
+	public int validStartVal(int val){
+		if ((val <= maxStartVal) && (val >= minStartVal))
+			return val;
+		else return minStartVal;
 	}
 	
 	@Basic
@@ -41,11 +62,11 @@ public class Unit {
 	 * 
 	 * @throws ModelException
 	 */
-	public void setName(String NewName) throws ModelException{
-		if (!((name.matches("[a-zA-Z\\s\'\"]+")) && (name.length()<=2) 
-				&& Character.isUpperCase(name.charAt(0))))
-			throw new ModelException(NewName);
-		this.name = NewName;
+	public void setName(String newName) throws ModelException{
+		if ((newName.matches("[a-zA-Z\\s\'\"]+")) && (newName.length()>=2) 
+				&& Character.isUpperCase(newName.charAt(0)))
+			this.name = newName;
+		else throw new ModelException(newName);
 	}
 	
 	//public boolean isValidName(String Name){
@@ -79,9 +100,9 @@ public class Unit {
 	}
 	public boolean isValidPosition(double[] pos){
 		
-		return ((position[0]>=minXPos) && (position[0]<maxXPos) && 
-				(position[1]>=minYPos) && (position[1]<maxYPos) && 
-				(position[2]>=minZPos) && (position[2]<maxZPos));
+		return ((pos[0]>=minXPos) && (pos[0]<maxXPos) && 
+				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
+				(pos[2]>=minZPos) && (pos[2]<maxZPos));
 	}
 
 	public double getXPosition(){
@@ -140,13 +161,15 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setWeight(int newValue){
-		int minWeight = (this.strength*this.agility)/2;
-		if ((newValue >= minWeight) && (newValue <= this.maxValue))
+		int minWeight = (this.strength + this.agility)/2;
+		System.out.println("minweight" + minWeight);
+		System.out.println(this.strength + "+" + this.agility);
+		if ((newValue >= minWeight) && (newValue <= maxValue))
 			this.weight = newValue;
 		else if (newValue <= minWeight)
 			this.weight = minWeight;
-		else if (newValue >= this.maxValue)
-			this.weight = this.maxValue;
+		else if (newValue >= maxValue)
+			this.weight = maxValue;
 	}
 	/**
 	 * Returns the weight of this Unit 
@@ -165,13 +188,15 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setStrength(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.strength = newValue;
-		else if (newValue <= this.minValue)
-			this.strength = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.strength = this.maxValue;
+		else if (newValue <= minValue)
+			this.strength = minValue;
+		else if (newValue >= maxValue)
+			this.strength = maxValue;
+		System.out.println("voor setWeight" + this.getWeight());
 		setWeight(this.weight);
+		System.out.println("na setweight" +  this.getWeight());
 		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
 	/**
@@ -187,12 +212,12 @@ public class Unit {
 	 * @param newValue
 	 */
 	public void setAgility(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.agility = newValue;
-		else if (newValue <= this.minValue)
-			this.agility = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.agility = this.maxValue;
+		else if (newValue <= minValue)
+			this.agility = minValue;
+		else if (newValue >= maxValue)
+			this.agility = maxValue;
 		setWeight(this.weight);
 		//zelfde reden als bij setStrength()
 	}
@@ -208,13 +233,13 @@ public class Unit {
 	 * 
 	 * @param newValue
 	 */
-	public void setThoughness(int newValue){
-		if ((newValue >= this.minValue) && (newValue <= this.maxValue))
+	public void setToughness(int newValue){
+		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.toughness = newValue;
-		else if (newValue <= this.minValue)
-			this.toughness = this.minValue;
-		else if (newValue >= this.maxValue)
-			this.toughness = this.maxValue;
+		else if (newValue <= minValue)
+			this.toughness = minValue;
+		else if (newValue >= maxValue)
+			this.toughness = maxValue;
 	}
 	
 	/**
@@ -222,7 +247,10 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxHitPoints(){
-		return 200/10000 * this.getWeight() * this.getToughness();
+		System.out.println("A=" + this.getWeight());
+		System.out.println("B=" + this.getToughness());
+		System.out.println("C=" + this.getWeight()*this.getToughness()*0.02);
+		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
 	/**
 	 * 
@@ -240,7 +268,7 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxStaminaPoints(){
-		return 200/10000 * this.getWeight() * this.getToughness();
+		return ((int) 0.02* this.getWeight() * this.getToughness());
 	}
 	/**
 	 * 
@@ -271,23 +299,8 @@ public class Unit {
 	/**
 	 * 
 	 * @param dt
-	 * 
 	 */
-	public enum action{
-			MOVE, ATTACK, DEFEND, WORK
-		}
-	public void advanceTime(double dt) throws ModelException{
-		double[] newposition = new double[3];
-		newposition[0] = this.getXPosition() + dt * this.xspeed;
-		newposition[0] = this.getYPosition() + dt * this.yspeed;
-		newposition[0] = this.getZPosition() + dt * this.zspeed;
-		setPosition(newposition);
-		
-		//Fighting
-		
-		
-		//Working
-		
+	public void advanceTime(double dt){
 		
 	}
 	/**
@@ -295,6 +308,24 @@ public class Unit {
 	 * @param dx
 	 * @param dy
 	 * @param dz
+	 * @throws ModelException 
+	 */
+	
+	public void setCurrentspeed(double[] start, double[] end){
+		double dz = start[2]-end[2];
+		if (dz ==-1)
+			this.currentspeed = 0.5*vb;
+		else if (dz==1)
+			this.currentspeed = 1.2*vb;
+		else
+			this.currentspeed = vb;		
+	}
+	
+	//Path finding method (zoals in bundel): opeenvolging van hierboven
+	/**
+	 * 
+	 * @param current
+	 * @param target
 	 * @throws ModelException 
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
@@ -320,16 +351,7 @@ public class Unit {
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
 	}
-
-	public void setCurrentspeed(double[] start, double[] end){
-		double dz = start[2]-end[2];
-		if (dz ==-1)
-			this.currentspeed = 0.5*vb;
-		else if (dz==1)
-			this.currentspeed = 1.2*vb;
-		else
-			this.currentspeed = vb;
-	}
+	
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
 		double[] speedvector = new double[3];
 		speedvector[0] = this.currentspeed * xdistance / totaldistance;
@@ -339,40 +361,6 @@ public class Unit {
 		this.xspeed = speedvector[0];
 		this.yspeed = speedvector[1];
 		this.zspeed = speedvector[2];
-	}
-		
-	//Path finding method (zoals in bundel): opeenvolging van hierboven
-	/**
-	 * 
-	 * @param current
-	 * @param target
-	 * @throws ModelException 
-	 */
-	public void moveTo(double[] current, double[]target) throws ModelException{
-		int dx = 0;
-		int dy = 0;
-		int dz = 0;
-		while (current != target)
-				if (current[0] == target[0])
-					dx = 0;
-				else if (current[0]<target[0])
-					dx = 1;
-				else if (current[0]>target[0])
-					dx = -1;
-				if (current[1] == target[1])
-					dy = 0;
-				else if (current[1]<target[1])
-					dy = 1;
-				else if (current[1]>target[1])
-					dy = -1;
-				if (current[2] == target[2])
-					dz = 0;
-				else if (current[2]<target[2])
-					dz = 1;
-				else if (current[2]>target[2])
-					dz = -1;
-				moveToAdjacant(dx, dy, dz);
-				current = this.getPosition();
 	}
 	/**
 	 * 
@@ -411,8 +399,31 @@ public class Unit {
 	 * 
 	 * @param cube
 	 */
-	public void moveTo(int[] cube){
-		
+	public void moveTo(double[] current, double[]target) throws ModelException{
+		int dx = 0;
+		int dy = 0;
+		int dz = 0;
+		while (current != target)
+				if (current[0] == target[0])
+					dx = 0;
+				else if (current[0]<target[0])
+					dx = 1;
+				else if (current[0]>target[0])
+					dx = -1;
+				if (current[1] == target[1])
+					dy = 0;
+				else if (current[1]<target[1])
+					dy = 1;
+				else if (current[1]>target[1])
+					dy = -1;
+				if (current[2] == target[2])
+					dz = 0;
+				else if (current[2]<target[2])
+					dz = 1;
+				else if (current[2]>target[2])
+					dz = -1;
+				moveToAdjacant(dx, dy, dz);
+				current = this.getPosition();
 	}
 	/**
 	 * 
@@ -469,13 +480,13 @@ public class Unit {
 		return true;
 	}
 	
-	private String name;
+	String name;
 	private int weight;
 	private int agility;
 	private int strength;
 	private int toughness;
-	private int minValue = 0;
-	private int maxValue = 200;
+	private static int minValue = 0;
+	private static int maxValue = 200;
 	private int hitpoints;
 	private int stamina;
 	private double[] position;
@@ -490,15 +501,18 @@ public class Unit {
 	private boolean isWalking;
 	private double vb = 1.5* (this.agility+ this.strength) / (2*this.weight);
 	private double currentspeed;
+	private static int minXPos = 0;
+	private static int maxXPos = 50;
+	private static int minYPos = 0;
+	private static int maxYPos = 50;
+	private static int minZPos = 0;
+	private static int maxZPos = 50;
+	private static int minStartVal = 25;
+	private static int maxStartVal = 100;
 	private double[] speedVector;
 	private double xspeed;
 	private double yspeed;
 	private double zspeed;
-	private int minXPos = 0;
-	private int maxXPos = 50;
-	private int minYPos = 0;
-	private int maxYPos = 50;
-	private int minZPos = 0;
-	private int maxZPos = 50;
+	
 	
 }
