@@ -17,7 +17,8 @@ public class UnitTest {
 		assertTrue(Kobbe.getStrength()== 50);
 		assertTrue(Kobbe.getOrientation() == Math.PI / 2.0);
 		System.out.println(Arrays.toString(Kobbe.getPosition()));
-		Kobbe.moveToAdjacant(1, 1, 1);
+		double[] target = new double[]{1,2,3};
+		Kobbe.moveTo(target);
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
@@ -32,6 +33,23 @@ public class UnitTest {
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		
+
 		System.out.println(Arrays.toString(Kobbe.getPosition()));
 
 		

@@ -124,9 +124,11 @@ public class Unit {
 		this.cubecoordinate[1]= Math.floor(this.yposition);
 		this.cubecoordinate[2]= Math.floor(this.zposition);
 	}
+	
 	public double[] getCubeCoordinate (){
 		return this.cubecoordinate;
 	}
+	
 	private double[] cubecoordinate;
 	
 	/**
@@ -309,8 +311,10 @@ public class Unit {
 				setPosition(newposition);
 				System.out.println("newposition" + Arrays.toString(newposition));
 			}
-		else if (this.goal != null)
+		else if (this.goal != null){
+			System.out.println("moveTo");
 			this.moveTo(goal);
+		}
 		//Work
 		if (isWorking())
 			this.worktime = this.worktime - dt;
@@ -439,7 +443,10 @@ public class Unit {
 	 * @param cube
 	 */
 	public void moveTo(double[]targetcube) throws ModelException{
-		this.goal = targetcube;
+		this.goal = new double[3];
+		this.goal[0] = Math.floor(targetcube[0]) + 0.5;
+		this.goal[1] = Math.floor(targetcube[1]) + 0.5;
+		this.goal[2] = Math.floor(targetcube[2]) + 0.5;
 		System.out.println("goal" + Arrays.toString(this.goal));
 		System.out.println("pos " + Arrays.toString(this.position));
 		int dx = 0;
