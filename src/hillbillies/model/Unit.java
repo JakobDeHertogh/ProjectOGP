@@ -120,16 +120,16 @@ public class Unit {
 		this.cubex = Math.floor(this.xposition);
 		this.cubey = Math.floor(this.yposition);
 		this.cubez = Math.floor(this.zposition);
-		this.cubecoordinate[0]= Math.floor(this.xposition);
-		this.cubecoordinate[1]= Math.floor(this.yposition);
-		this.cubecoordinate[2]= Math.floor(this.zposition);
+		this.cubecoordinate[0]= (int) Math.floor(this.xposition);
+		this.cubecoordinate[1]= (int) Math.floor(this.yposition);
+		this.cubecoordinate[2]= (int) Math.floor(this.zposition);
 	}
 	
-	public double[] getCubeCoordinate (){
+	public int[] getCubeCoordinate (){
 		return this.cubecoordinate;
 	}
 	
-	private double[] cubecoordinate;
+	private int[] cubecoordinate;
 	
 	/**
 	 * Returns the name of this Unit
@@ -398,7 +398,7 @@ public class Unit {
 		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
 		System.out.println("newpos" + Arrays.toString(newposition));
 		setCurrentspeed(this.position, newposition);
-		if (issprinting)
+		if (isSprinting())
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
 		System.out.println("speedvector " + Arrays.toString(this.speedVector));
@@ -429,6 +429,10 @@ public class Unit {
 	public boolean isMoving(){
 		return (this.getCurrentSpeed() != 0);
 	}
+	
+	public boolean isSprinting(){
+		return this.issprinting;
+	}
 	/**
 	 * 
 	 */
@@ -446,7 +450,7 @@ public class Unit {
 	 * 
 	 * @param cube
 	 */
-	public void moveTo(double[]targetcube) throws ModelException{
+	public void moveTo(int[] targetcube) throws ModelException{
 		this.goal = new double[3];
 		this.goal[0] = Math.floor(targetcube[0]) + 0.5;
 		this.goal[1] = Math.floor(targetcube[1]) + 0.5;
@@ -493,6 +497,9 @@ public class Unit {
 	public boolean isWorking(){
 		return (this.worktime > 0);
 	}
+	public void fight(Unit other){
+		attack(other);
+	}
 	/**
 	 * 
 	 */
@@ -502,6 +509,10 @@ public class Unit {
 		other.defendtime = 1;
 		this.isattacking = true;
 		other.isdefending = true;
+		;
+	}
+	public boolean isAttacking(){
+		return this.attacktime > 0;
 	}
 	/**
 	 * 
@@ -542,7 +553,9 @@ public class Unit {
 		this.goal = null;
 		this.isresting = true;
 	}
-
+	public boolean isResting(){
+		return this.isresting;
+	}
 	/**
 	 * 
 	 * @param value
