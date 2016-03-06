@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
@@ -77,7 +78,6 @@ public class Unit {
 	 */
 	@Basic
 	public double[] getPosition(){
-		System.out.println(this.position);
 		return this.position;
 	}
 	/**
@@ -292,16 +292,22 @@ public class Unit {
 	public void advanceTime(double dt) throws ModelException{
 		
 		//Movement
+		System.out.println("adj  " + Arrays.toString(this.adjacant));
 		if (this.adjacant != null)
-			if (this.distance < this.getCurrentSpeed()*dt)
+			if (this.distance < this.getCurrentSpeed()*dt){
+				System.out.println("ping!");
 				this.setPosition(adjacant);
+				this.adjacant = null;
+			}
 			else {
 				double[] newposition = new double[3];
 				newposition[0] = this.getXPosition() + dt * this.xspeed;
 				newposition[1] = this.getYPosition() + dt * this.yspeed;
 				newposition[2] = this.getZPosition() + dt * this.zspeed;
 				this.distance -= this.getCurrentSpeed()*dt;
+				System.out.println("currspeed2" +this.getCurrentSpeed());
 				setPosition(newposition);
+				System.out.println("newposition" + Arrays.toString(newposition));
 			}
 		else if (this.goal != null)
 			this.moveTo(goal);
@@ -339,7 +345,10 @@ public class Unit {
 	 */
 	
 	public void setCurrentspeed(double[] start, double[] end){
-		double dz = start[2]-end[2];
+		double dz = end[2]-start[2];
+		System.out.println("dz" + dz);
+		double vb = 1.5* (this.agility+ this.strength) / (2.0*this.weight);
+		System.out.println("vb" + vb);
 		if (start==end)
 			this.currentspeed = 0;
 		else
@@ -348,7 +357,8 @@ public class Unit {
 			else if (dz==1)
 				this.currentspeed = 1.2*vb;
 			else
-				this.currentspeed = vb;	
+				this.currentspeed = this.vb;	
+		System.out.println("currspeed" + this.currentspeed);
 	}
 	
 	//Path finding method (zoals in bundel): opeenvolging van hierboven
@@ -365,6 +375,7 @@ public class Unit {
 		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
 		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
 		this.adjacant = newposition;
+		System.out.println("adjacant" + Arrays.toString(this.adjacant));
 		
 		// We kijken of die een mogelijke positie is, indien niet ModelException
 		if (!isValidPosition(newposition))
@@ -377,10 +388,12 @@ public class Unit {
 		
 		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
 		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
+		System.out.println("newpos" + Arrays.toString(newposition));
 		setCurrentspeed(this.position, newposition);
 		if (issprinting)
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
+		System.out.println("speedvector " + Arrays.toString(this.speedVector));
 	}
 
 	
@@ -427,6 +440,8 @@ public class Unit {
 	 */
 	public void moveTo(double[]targetcube) throws ModelException{
 		this.goal = targetcube;
+		System.out.println("goal" + Arrays.toString(this.goal));
+		System.out.println("pos " + Arrays.toString(this.position));
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
@@ -448,6 +463,7 @@ public class Unit {
 			dz = 1;
 		else if (this.position[2]>targetcube[2])
 			dz = -1;
+		System.out.println("dx  " + dx + "dy  " + dy + "dz " + dz);
 		moveToAdjacant(dx, dy, dz);
 	}
 	/**
@@ -550,7 +566,7 @@ public class Unit {
 	private double cubez;
 	private double distance;
 	private boolean isWalking;
-	private double vb = 1.5* (this.agility+ this.strength) / (2*this.weight);
+	private double vb = 1.5* (this.agility+ this.strength) / (2.0*this.weight);
 	private double currentspeed;
 	private static int minXPos = 0;
 	private static int maxXPos = 50;
@@ -571,7 +587,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	private double[] goal;
+	double[] goal;
 	private double[] adjacant;
 	
 }
