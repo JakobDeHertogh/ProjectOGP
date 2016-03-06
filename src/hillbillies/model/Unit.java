@@ -317,7 +317,10 @@ public class Unit {
 			}
 		else if ((this.goal != null) && (this.goal != this.position)){
 			System.out.println("moveTo");
-			this.moveTo(goal);
+			int[] target = new int[3];
+			for (int i = 0; i<target.length; i++)
+				target[i] = (int) goal[i];
+			this.moveTo(target);
 		}
 		//Work
 		if (isWorking())
@@ -452,9 +455,9 @@ public class Unit {
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.goal = new double[3];
-		this.goal[0] = Math.floor(targetcube[0]) + 0.5;
-		this.goal[1] = Math.floor(targetcube[1]) + 0.5;
-		this.goal[2] = Math.floor(targetcube[2]) + 0.5;
+		this.goal[0] = targetcube[0] + 0.5;
+		this.goal[1] = targetcube[1] + 0.5;
+		this.goal[2] = targetcube[2] + 0.5;
 		System.out.println("goal" + Arrays.toString(this.goal));
 		System.out.println("pos " + Arrays.toString(this.position));
 		int dx = 0;
@@ -611,7 +614,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	double[] goal;
+	double [] goal;
 	private double[] adjacant;
 	
 }

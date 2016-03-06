@@ -9,43 +9,43 @@ public class Facade implements IFacade{
 	public Unit createUnit(String name, int[] initialPosition, int weight, int agility, int strength, int toughness,
 			boolean enableDefaultBehavior) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return new Unit(name, initialPosition, weight, agility, strength, toughness, enableDefaultBehavior);
 	}
 
 	@Override
 	public double[] getPosition(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit.getPosition();
 	}
 
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit.getCubeCoordinate();
 	}
 
 	@Override
 	public String getName(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit.getName();
 	}
 
 	@Override
 	public void setName(Unit unit, String newName) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		unit.setName(newName);
 	}
 
 	@Override
 	public int getWeight(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return unit.getWeight();
 	}
 
 	@Override
 	public void setWeight(Unit unit, int newValue) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		unit.setWeight(newValue);
 	}
 
 	@Override
