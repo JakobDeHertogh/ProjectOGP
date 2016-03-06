@@ -32,10 +32,10 @@ public class Unit {
 			int toughness, boolean enableDefaultBehavior) throws ModelException{
 		//set name and basic values
 		this.setName(name);
-		this.setWeight(validStartVal(weight));
 		this.setAgility(validStartVal(agility));
 		this.setStrength(validStartVal(strength));
 		this.setToughness(validStartVal(toughness));
+		this.setWeight(validStartVal(weight));
 		//convert int[] to double[] and add 0.5
 		int[] initials = initialPosition;
 		double[] pos = new double[initials.length];
@@ -47,6 +47,8 @@ public class Unit {
 		this.setDefaultBehaviorEnabled(enableDefaultBehavior);
 		//set orientation to PI/2
 		this.setOrientation(Math.PI / 2.0);
+		this.stamina= this.getMaxStaminaPoints();
+		this.hitpoints = this.getMaxHitPoints();
 	}
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
@@ -66,8 +68,7 @@ public class Unit {
 	 * @throws ModelException
 	 */
 	public void setName(String newName) throws ModelException{
-		if ((newName.matches("[a-zA-Z\\s\'\"]+")) && (newName.length()>=2) 
-				&& Character.isUpperCase(newName.charAt(0)))
+		if ((newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2))
 			this.name = newName;
 		else throw new ModelException(newName);
 	}
@@ -243,6 +244,11 @@ public class Unit {
 	public int getMaxHitPoints(){
 		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
+	
+	public void setHitpoints(int newValue){
+		if (isValidHP(newValue))
+			this.hitpoints = newValue;
+	}
 	/**
 	 * 
 	 * @return
@@ -259,7 +265,15 @@ public class Unit {
 	 * @return
 	 */
 	public int getMaxStaminaPoints(){
-		return ((int) 0.02* this.getWeight() * this.getToughness());
+		return (int)( 0.02* this.getWeight() * this.getToughness());
+	}
+	public void setStamina(int value){
+		if (isValidStamina(value))
+			this.stamina = value;
+	}
+	
+	public boolean isValidStamina(int value){
+		return ((this.stamina>=0) && (this.stamina <= this.getMaxStaminaPoints()));
 	}
 	/**
 	 * 
@@ -303,7 +317,7 @@ public class Unit {
 				this.adjacant = null;
 				if (Arrays.equals(this.position, this.goal))
 					this.goal = null;
-				
+				this.currentspeed = 0;
 			}
 			else {
 				double[] newposition = new double[3];
@@ -358,7 +372,7 @@ public class Unit {
 	public void setCurrentspeed(double[] start, double[] end){
 		double dz = end[2]-start[2];
 		System.out.println("dz" + dz);
-		double vb = 1.5* (this.agility+ this.strength) / (2.0*this.weight);
+		double vb = getvb();
 		System.out.println("vb" + vb);
 		if (start==end)
 			this.currentspeed = 0;
@@ -368,7 +382,7 @@ public class Unit {
 			else if (dz==1)
 				this.currentspeed = 1.2*vb;
 			else
-				this.currentspeed = this.vb;	
+				this.currentspeed = vb;	
 		System.out.println("currspeed" + this.currentspeed);
 	}
 	
@@ -393,12 +407,14 @@ public class Unit {
 			throw new ModelException();
 		
 		// Goede positie -> berekenen verplaatsingssnelheid en -vector berekenen;
-		double xdistance = Math.pow((newposition[0]-this.getXPosition()), 2);
-		double ydistance = Math.pow((newposition[1]-this.getYPosition()), 2);
-		double zdistance = Math.pow((newposition[2]-this.getZPosition()), 2);
+		double xdistance =(newposition[0]-this.getXPosition());
+		double ydistance =(newposition[1]-this.getYPosition());
+		double zdistance = (newposition[2]-this.getZPosition());
 		
 		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
-		this.distance = Math.sqrt(xdistance + ydistance + zdistance);
+		this.distance = Math.sqrt(Math.pow((newposition[0]-this.getXPosition()), 2) 
+				+ Math.pow((newposition[1]-this.getYPosition()), 2) 
+				+ Math.pow((newposition[2]-this.getZPosition()), 2));
 		System.out.println("newpos" + Arrays.toString(newposition));
 		setCurrentspeed(this.position, newposition);
 		if (isSprinting())
@@ -417,6 +433,11 @@ public class Unit {
 		this.xspeed = speedvector[0];
 		this.yspeed = speedvector[1];
 		this.zspeed = speedvector[2];
+		setOrientation(Math.atan2(this.yspeed, this.xspeed));
+	}
+	
+	private double getvb(){
+		return 1.5* (this.agility+ this.strength) / (2.0*this.weight);
 	}
 	/**
 	 * 
@@ -430,7 +451,7 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isMoving(){
-		return (this.getCurrentSpeed() != 0);
+		return (this.currentspeed != 0);
 	}
 	
 	public boolean isSprinting(){
@@ -503,6 +524,7 @@ public class Unit {
 	public void fight(Unit other){
 		attack(other);
 	}
+	
 	/**
 	 * 
 	 */
@@ -596,7 +618,6 @@ public class Unit {
 	private double cubez;
 	private double distance;
 	private boolean isWalking;
-	private double vb = 1.5* (this.agility+ this.strength) / (2.0*this.weight);
 	private double currentspeed;
 	private static int minXPos = 0;
 	private static int maxXPos = 50;
