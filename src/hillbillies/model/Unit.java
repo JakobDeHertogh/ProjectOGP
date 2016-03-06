@@ -512,7 +512,10 @@ public class Unit {
 		other.defendtime = 1;
 		this.isattacking = true;
 		other.isdefending = true;
-		;
+		this.setOrientation(Math.atan2(other.getYPosition()-this.getYPosition(), 
+				other.getXPosition()-this.getXPosition()));
+		other.setOrientation(Math.atan2(this.getYPosition()-other.getYPosition(), 
+				this.getXPosition()-other.getXPosition()));
 	}
 	public boolean isAttacking(){
 		return this.attacktime > 0;
@@ -532,7 +535,7 @@ public class Unit {
 			runAwayFrom(other.getPosition());
 		//DAMAGE
 		else if (random >= Pblock)
-			this.hitpoints = other.strength /10;
+			this.hitpoints -= other.strength /10;
 		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
 	
