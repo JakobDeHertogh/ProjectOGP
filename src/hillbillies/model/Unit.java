@@ -49,6 +49,7 @@ public class Unit {
 		this.setOrientation(Math.PI / 2.0);
 		this.stamina= this.getMaxStaminaPoints();
 		this.hitpoints = this.getMaxHitPoints();
+		this.lifetime = 0;
 	}
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
@@ -245,8 +246,8 @@ public class Unit {
 		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
 	
-	public void setHitpoints(int newValue){
-		if (isValidHP(newValue))
+	public void setHitpoints(double newValue){
+		if (isValidHP((int)newValue))
 			this.hitpoints = newValue;
 	}
 	/**
@@ -254,7 +255,7 @@ public class Unit {
 	 * @return
 	 */
 	public int getCurrentHitPoints(){
-		return this.hitpoints;
+		return (int) this.hitpoints;
 	}
 	// Dit heb ik er al in gezet in geval van damage (hp mag niet onder 0 :p)
 	public boolean isValidHP( int hp){
@@ -267,8 +268,8 @@ public class Unit {
 	public int getMaxStaminaPoints(){
 		return (int)( 0.02* this.getWeight() * this.getToughness());
 	}
-	public void setStamina(int value){
-		if (isValidStamina(value))
+	public void setStamina(double value){
+		if (isValidStamina((int)value))
 			this.stamina = value;
 	}
 	
@@ -280,18 +281,9 @@ public class Unit {
 	 * @return
 	 */
 	public int getCurrentStaminaPoint(){
-		return this.stamina;
+		return (int) this.stamina;
 	}
 	public void setOrientation(double orientation){
-//		if (orientation >=2* Math.PI)
-//			orientation = orientation - 2* Math.PI;
-//			setOrientation(orientation);
-//		else if (orientation<0)
-//			orientation = 2* Math.PI + orientation;
-//			setOrientation(orientation);
-//		else
-//			this.orientation = orientation;
-//	 Volgens mij is het volgende een pak korter/efficienter:
 		this.orientation = ((2*Math.PI)+(orientation%(2*Math.PI)))%(2*Math.PI);
 	}
 	/**
@@ -306,11 +298,23 @@ public class Unit {
 	 * @param dt
 	 */
 	public void advanceTime(double dt) throws ModelException{
-		
+		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
+		this.lifetime += dt;
+		if ((this.lifetime)%3 == 0)
+			isresting = true; //Om de drie minuten zal de unit automatisch gaan rusten.
+		//MOGELIJKE ACTIES
+		//Resting
+		if ((isresting) || isResting()){
+				if ((this.hitpoints < this.getMaxHitPoints()) && (this.hitpoints>0)){
+					setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));}
+				else if ((this.stamina < this.getMaxStaminaPoints()) && (this.stamina >=0)){
+					setStamina(this.stamina + (this.toughness * dt)/(100*0.2));}
+				this.resttime -= dt;}
 		//Movement
 		System.out.println("adj  " + Arrays.toString(this.adjacant));
 		System.out.println("goal: " + Arrays.toString(this.goal));
 		if (this.adjacant != null)
+			
 			if (this.distance < this.getCurrentSpeed()*dt){
 				System.out.println("ping!");
 				this.setPosition(adjacant);
@@ -342,7 +346,7 @@ public class Unit {
 			this.moveTo(target);
 		}
 		//Work
-		else if (isWorking())
+		else if ((isworking))
 			this.worktime = this.worktime - dt;
 		
 		//Attack
@@ -353,16 +357,6 @@ public class Unit {
 		//Defense
 		else if (isdefending)
 			this.defendtime -= dt;
-			
-		//Rest
-		else if (isresting)
-			if (this.stamina < this.getMaxStaminaPoints())
-				this.stamina += (this.toughness * dt)/(100*.2);
-			if (this.hitpoints < this.getMaxHitPoints())
-				this.hitpoints += (this.toughness * dt)/(200*0.2);
-		
-		
-		
 	}
 	
 	
@@ -391,7 +385,6 @@ public class Unit {
 		System.out.println("currspeed" + this.currentspeed);
 	}
 	
-	//Path finding method (zoals in bundel): opeenvolging van hierboven
 	/**
 	 * 
 	 * @param current
@@ -523,8 +516,8 @@ public class Unit {
 	 * @return
 	 */
 
-	public boolean isWorking(){
-		return (this.worktime > 0);
+	public boolean isWorking(){		
+		return (this.worktime != 0);
 	}
 	public void fight(Unit other) throws ModelException{
 		if (isAttackable(other))
@@ -594,9 +587,19 @@ public class Unit {
 	public void rest(){
 		this.goal = null;
 		this.isresting = true;
+		if (this.getCurrentHitPoints() < this.getMaxHitPoints())
+			this.resttime = this.getRegenHptime();
+		else if (this.getCurrentStaminaPoint()<this.getMaxStaminaPoints())
+			this.resttime = this.getRegenStaminatime();
 	}
 	public boolean isResting(){
-		return this.isresting;
+		return ((this.resttime > 0) || (this.isresting));
+	}
+	public double getRegenHptime(){
+		return this.toughness/200;
+	}
+	public double getRegenStaminatime(){
+		return this.toughness/100;
 	}
 	/**
 	 * 
@@ -613,15 +616,15 @@ public class Unit {
 		return true;
 	}
 	
-	String name;
+	public String name;
 	private int weight;
 	private int agility;
 	private int strength;
 	private int toughness;
 	private static int minValue = 0;
 	private static int maxValue = 200;
-	private int hitpoints;
-	private int stamina;
+	private double hitpoints;
+	private double stamina;
 	private double[] position;
 	private double xposition;
 	private double yposition;
@@ -655,5 +658,7 @@ public class Unit {
 	double [] goal;
 	private double[] adjacant;
 	private Unit attacker;
-	
+	private double lifetime;
+	private double resttime;
+	public boolean isworking;
 }
