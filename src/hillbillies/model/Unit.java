@@ -463,23 +463,23 @@ public class Unit {
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
-		if (this.position[0] == targetcube[0])
+		if (this.position[0] == goal[0])
 			dx = 0;
-		else if (this.position[0]<targetcube[0])
+		else if (this.position[0]<goal[0])
 			dx = 1;
-		else if (this.position[0]>targetcube[0])
+		else if (this.position[0]>goal[0])
 			dx = -1;
-		if (this.position[1] == targetcube[1])
+		if (this.position[1] == goal[1])
 			dy = 0;
-		else if (this.position[1]<targetcube[1])
+		else if (this.position[1]<goal[1])
 			dy = 1;
-		else if (this.position[1]>targetcube[1])
+		else if (this.position[1]>goal[1])
 			dy = -1;
-		if (this.position[2] == targetcube[2])
+		if (this.position[2] == goal[2])
 			dz = 0;
-		else if (this.position[2]<targetcube[2])
+		else if (this.position[2]<goal[2])
 			dz = 1;
-		else if (this.position[2]>targetcube[2])
+		else if (this.position[2]>goal[2])
 			dz = -1;
 		System.out.println("dx  " + dx + "dy  " + dy + "dz " + dz);
 		moveToAdjacant(dx, dy, dz);
