@@ -9,9 +9,10 @@ import ogp.framework.util.ModelException;
 
 
 
-// Pls tell me this works.
 /**
- * 
+ * A class of game Units. Each Unit has a name, position and characteristics like weight, 
+ * strength, agility and toughness. Units can move, work, rest and fight eachother. Default
+ * behavior makes them select a random activity. 
  * @author Gebruiker
  *
  */
@@ -25,7 +26,19 @@ public class Unit {
 	 * @param strenght
 	 * @param toughness
 	 * @param enableDefaultBehavior
+	 * 
+	 * @post 	Unit's new name is the given name, if that meets the requirements. 
+	 * 			| new name == Unit.setName(name)
+	 * @post	Unit's weight, agility, strength and toughness are limited to values
+	 * 			between 25 and 100. 
+	 * 			| new weight/agility/strength/toughness == set... (validStartVal(...))
+	 * @post 	Unit's defaultBehavior is enabled if asked so. 
+	 * 			... 
+	 *
+	 * 
+	 * 
 	 * @throws ModelException 
+	 * 		If the name does not meet the requirements. 
 	 */
 	
 	public Unit(String name, int[] initialPosition, int weight, int agility, int strength,
@@ -51,6 +64,12 @@ public class Unit {
 		this.hitpoints = this.getMaxHitPoints();
 		this.lifetime = 0;
 	}
+	/**
+	 * Returns a value between minStartVal and maxStartVal. In this
+	 * case minStartVal equals 25 and maxStartVal equals 100. 
+	 * @param val
+	 * @return 		
+	 */
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
 			return val;
@@ -58,6 +77,10 @@ public class Unit {
 	}
 	
 	@Basic
+	/**
+	 * Returns the name of this Unit. 
+	 * @return
+	 */
 	public String getName(){
 		return this.name;
 	}
@@ -67,6 +90,8 @@ public class Unit {
 	 * @param newName
 	 * 
 	 * @throws ModelException
+	 * 			Valid names must start with a capital letter, have a length of at
+	 * 			least two characters and can only contain letters, spaces or quotes. 
 	 */
 	public void setName(String newName) throws ModelException{
 		if ((newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2))
@@ -86,8 +111,6 @@ public class Unit {
 	 * Sets the position of this Unit to the given position
 	 * @throws ModelException
 	 */
-	// Is wat ik tot nu toe heb gedaan van positie
-	// zowel de array position als aparte coordinaten opgeslagen
 	public void setPosition(double[] newposition) throws ModelException{
 		if (!isValidPosition(newposition))
 			throw new ModelException();
@@ -96,27 +119,44 @@ public class Unit {
 		this.yposition = newposition[1];
 		this.zposition = newposition[2];
 	}
+	/**
+	 * Checks if the position is a valid position in the game world. Each 
+	 * coordinate has a minimum value and a maximum value. 
+	 * @param pos
+	 * @return
+	 */
 	public boolean isValidPosition(double[] pos){
 		
 		return ((pos[0]>=minXPos) && (pos[0]<maxXPos) && 
 				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
 				(pos[2]>=minZPos) && (pos[2]<maxZPos));
 	}
-
+	/**
+	 * ...
+	 * @return
+	 */
 	public double getXPosition(){
 		return this.xposition;
 	}
+	/**
+	 * ... 
+	 * @return
+	 */
 	public double getYPosition(){
 		return this.yposition;
 	}
+	/**
+	 * ... 
+	 * @return
+	 */
 	public double getZPosition(){
 		return this.zposition;
 	}
 
 	
 	/**
+	 * Sets the coordinate of the cube the Unit occupies. 
 	 * 
-	 * @return
 	 */
 	public void setCubecoordinate(){
 		this.cubex = Math.floor(this.xposition);
@@ -126,23 +166,17 @@ public class Unit {
 		this.cubecoordinate[1]= (int) Math.floor(this.yposition);
 		this.cubecoordinate[2]= (int) Math.floor(this.zposition);
 	}
-	
+	/**
+	 * Gets the coordinate of the cube the Unit occupies. 
+	 * @return
+	 */
 	public int[] getCubeCoordinate (){
 		return this.cubecoordinate;
 	}
 	
-	private int[] cubecoordinate;
 	
 	/**
-	 * Returns the name of this Unit
-	 * @return
-	 */
-	
-	
-	
-	
-	/**
-	 * 
+	 * Returns the weight of this Unit. 
 	 * @return
 	 */
 	@Basic
@@ -169,11 +203,12 @@ public class Unit {
 		else if (newValue >= maxValue)
 			this.weight = maxValue;
 	}
+
+	@Basic
 	/**
-	 * Returns the weight of this Unit 
+	 * Returns the strength of this Unit. 
 	 * @return
 	 */
-	@Basic
 	public int getStrength(){
 		return this.strength;
 	}
@@ -193,10 +228,9 @@ public class Unit {
 		else if (newValue >= maxValue)
 			this.strength = maxValue;
 		setWeight(this.weight);
-		// Heb ik er aan toegevoegd, omdat het gewicht verandert afhankelijk van strenght
 	}
 	/**
-	 * 
+	 * ...
 	 * @return
 	 */
 	@Basic
@@ -204,7 +238,7 @@ public class Unit {
 		return this.agility;
 	}
 	/**
-	 * 
+	 * ...
 	 * @param newValue
 	 */
 	public void setAgility(int newValue){
@@ -215,7 +249,6 @@ public class Unit {
 		else if (newValue >= maxValue)
 			this.agility = maxValue;
 		setWeight(this.weight);
-		//zelfde reden als bij setStrength()
 	}
 	/**
 	 * 
@@ -251,38 +284,58 @@ public class Unit {
 			this.hitpoints = newValue;
 	}
 	/**
-	 * 
+	 * Returns the current ammount of hitpoints this Unit has. 
 	 * @return
 	 */
 	public int getCurrentHitPoints(){
 		return (int) this.hitpoints;
 	}
-	// Dit heb ik er al in gezet in geval van damage (hp mag niet onder 0 :p)
+	/**
+	 * Checks if the given hp is not negative and below the maxHP limit. 
+	 * @param hp
+	 * @return
+	 */
 	public boolean isValidHP( int hp){
 		return (hp<= this.getMaxHitPoints()) && (hp>=0);
 	}
 	/**
-	 * 
+	 * Returns the maximum amount of stamina points this Unit can have.
 	 * @return
 	 */
 	public int getMaxStaminaPoints(){
 		return (int)( 0.02* this.getWeight() * this.getToughness());
 	}
+	/**
+	 * ...
+	 * @param value
+	 */
 	public void setStamina(double value){
 		if (isValidStamina((int)value))
 			this.stamina = value;
 	}
-	
+	/**
+	 * Checks if the given stamina value is not negative and below the max stamina limit.
+	 * @param value
+	 * @return
+	 */
 	public boolean isValidStamina(int value){
 		return ((this.stamina>=0) && (this.stamina <= this.getMaxStaminaPoints()));
 	}
 	/**
-	 * 
+	 * Returns the current amount of stamina points this Unit has. 
 	 * @return
 	 */
 	public int getCurrentStaminaPoint(){
 		return (int) this.stamina;
 	}
+	/**
+	 * Sets the orientation of this Unit to the given amount
+	 * @param orientation
+	 * 
+	 * @post	The orientation of this Unit will be between 0 radians 
+	 * 			and 2*PI radians. If the value exceeds this value it will
+	 * 			be refactored. 
+	 */
 	public void setOrientation(double orientation){
 		this.orientation = ((2*Math.PI)+(orientation%(2*Math.PI)))%(2*Math.PI);
 	}
@@ -294,29 +347,29 @@ public class Unit {
 	}
 	
 	/**
-	 * 
+	 * Adapts the Unit's current position, hit points and stamina depending
+	 * on the activity the Unit is currently executing. 
 	 * @param dt
 	 */
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
 		this.lifetime += dt;
 		if ((this.lifetime)%3 == 0)
-			isresting = true; //Om de drie minuten zal de unit automatisch gaan rusten.
+			this.isresting = true; //Om de drie minuten zal de unit automatisch gaan rusten.
 		//MOGELIJKE ACTIES
 		//Resting
-		if ((isresting) || isResting()){
+		if (this.isResting()){
 				if ((this.hitpoints < this.getMaxHitPoints()) && (this.hitpoints>0)){
 					setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));}
 				else if ((this.stamina < this.getMaxStaminaPoints()) && (this.stamina >=0)){
 					setStamina(this.stamina + (this.toughness * dt)/(100*0.2));}
+				if ((this.hitpoints == this.getMaxHitPoints()) && (this.stamina == this.getMaxStaminaPoints()))
+					this.isresting = false;
 				this.resttime -= dt;}
 		//Movement
-		System.out.println("adj  " + Arrays.toString(this.adjacant));
-		System.out.println("goal: " + Arrays.toString(this.goal));
 		if (this.adjacant != null)
 			
 			if (this.distance < this.getCurrentSpeed()*dt){
-				System.out.println("ping!");
 				this.setPosition(adjacant);
 				this.adjacant = null;
 				if (Arrays.equals(this.position, this.goal))
@@ -329,9 +382,7 @@ public class Unit {
 				newposition[1] = this.getYPosition() + dt * this.yspeed;
 				newposition[2] = this.getZPosition() + dt * this.zspeed;
 				this.distance -= this.getCurrentSpeed()*dt;
-				System.out.println("currspeed2" +this.getCurrentSpeed());
 				setPosition(newposition);
-				System.out.println("newposition" + Arrays.toString(newposition));
 				if (isSprinting())
 					if (this.stamina<=0)
 						stopSprinting();
@@ -339,7 +390,6 @@ public class Unit {
 							this.stamina -= dt/0.1;
 			}
 		else if ((this.goal != null) && (this.goal != this.position)){
-			System.out.println("moveTo");
 			int[] target = new int[3];
 			for (int i = 0; i<target.length; i++)
 				target[i] = (int) goal[i];
@@ -361,18 +411,23 @@ public class Unit {
 	
 	
 	/**
+	 * Sets the current speed depending on the target the Unit is heading. 
 	 * 
 	 * @param dx
 	 * @param dy
 	 * @param dz
+	 * 
+	 * @post	if the Unit moves upwards it moves at half base speed. 
+	 * 
+	 * @post	if the Unit moves downwards it moves at increased speed. 
+	 * 
+	 * @post 	if the Unit moves on a flat level, it moves at base speed. 
 	 * @throws ModelException 
 	 */
 	
 	public void setCurrentspeed(double[] start, double[] end){
 		double dz = end[2]-start[2];
-		System.out.println("dz" + dz);
 		double vb = getvb();
-		System.out.println("vb" + vb);
 		if (start==end)
 			this.currentspeed = 0;
 		else
@@ -382,13 +437,19 @@ public class Unit {
 				this.currentspeed = 1.2*vb;
 			else
 				this.currentspeed = vb;	
-		System.out.println("currspeed" + this.currentspeed);
 	}
 	
 	/**
-	 * 
+	 * Moves the Unit to an adjacant cube center. 
 	 * @param current
 	 * @param target
+	 * @post 	The Unit's target position is equal to the current position + the 
+	 * 			given values for dx, dy and dz. 
+	 * 			|| new.postition == [xposition + dx, yposition + dy, zposition + dz]
+	 * @post 	The Unit's speed is set towards the target position. 
+	 * 	
+	 * @post 	The distance the Unit has to walk is set. 
+	 * 
 	 * @throws ModelException 
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
@@ -398,7 +459,6 @@ public class Unit {
 		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
 		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
 		this.adjacant = newposition;
-		System.out.println("adjacant" + Arrays.toString(this.adjacant));
 		
 		// We kijken of die een mogelijke positie is, indien niet ModelException
 		if (!isValidPosition(newposition))
@@ -413,15 +473,23 @@ public class Unit {
 		this.distance = Math.sqrt(Math.pow((newposition[0]-this.getXPosition()), 2) 
 				+ Math.pow((newposition[1]-this.getYPosition()), 2) 
 				+ Math.pow((newposition[2]-this.getZPosition()), 2));
-		System.out.println("newpos" + Arrays.toString(newposition));
 		setCurrentspeed(this.position, newposition);
 		if (isSprinting())
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
-		System.out.println("speedvector " + Arrays.toString(this.speedVector));
 	}
 
-	
+	/**
+	 * Sets the speed vector depending on the current speed and the target
+	 * direction. 
+	 * @param xdistance
+	 * @param ydistance
+	 * @param zdistance
+	 * @param totaldistance
+	 * 
+	 * @post 	The Unit's orientation is set so it faces the target position.
+	 * @post 	The Unit's speed is directed towards the target position. 
+	 */
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
 		double[] speedvector = new double[3];
 		speedvector[0] = this.currentspeed * xdistance / totaldistance;
@@ -433,52 +501,62 @@ public class Unit {
 		this.zspeed = speedvector[2];
 		setOrientation(Math.atan2(this.yspeed, this.xspeed));
 	}
-	
+	/**
+	 * Calculates the base speed value for the Unit's current weight, 
+	 * strength and agility. 
+	 * @return
+	 */
 	private double getvb(){
 		return 1.5* (this.agility+ this.strength) / (2.0*this.weight);
 	}
 	/**
-	 * 
+	 * Returns the current speed of the unit. 
 	 * @return
 	 */
 	public double getCurrentSpeed(){
 		return this.currentspeed;
 	}
 	/**
-	 * 
+	 * Checks whether the Unit is currently moving. 
 	 * @return
 	 */
 	public boolean isMoving(){
 		return (this.currentspeed != 0);
 	}
-	
+	/**
+	 * ...
+	 * @return
+	 */
 	public boolean isSprinting(){
 		return this.issprinting;
 	}
 	/**
-	 * 
+	 * ... 
 	 */
 	public void startSprinting(){
 		this.issprinting = true;
 	}
 	/**
-	 * 
+	 * ...
 	 */
 	public void stopSprinting(){
 		this.issprinting = false;
 	}
 
 	/**
-	 * 
+	 * Sets a target where the Unit will move to. Initiates the movement
+	 * with a first moveToAdjacant. 
 	 * @param cube
+	 * 
+	 * @post	The Unit's goal is set to the targetcube's location. 
+	 * @post 	The Unit starts moving towards the adjacant cube in the
+	 * 			target's direction. 
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.goal = new double[3];
 		this.goal[0] = targetcube[0] + 0.5;
 		this.goal[1] = targetcube[1] + 0.5;
 		this.goal[2] = targetcube[2] + 0.5;
-		System.out.println("goal" + Arrays.toString(this.goal));
-		System.out.println("pos " + Arrays.toString(this.position));
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
@@ -500,30 +578,40 @@ public class Unit {
 			dz = 1;
 		else if (this.position[2]>goal[2])
 			dz = -1;
-		System.out.println("dx  " + dx + "dy  " + dy + "dz " + dz);
 		moveToAdjacant(dx, dy, dz);
 	}
-	/**
-	 * 
-	 */
 	
-	public void work(){
+	
+	/**
+	 * The Unit starts working for a fixed time depending on its strength. 
+	 * The current moveTo is interrupted. 
+	 */
+		public void work(){
 		this.worktime = 500.0/this.strength;
 		this.goal = null;
 	}
 	/**
-	 * 
+	 * ...
 	 * @return
 	 */
-
 	public boolean isWorking(){		
 		return (this.worktime != 0);
 	}
+	/**
+	 * The Unit attacks another Unit if it is in range.
+	 * @param other
+	 * @throws ModelException
+	 */
 	public void fight(Unit other) throws ModelException{
 		if (isAttackable(other))
 			attack(other);
 	}
-	
+	/**
+	 * Checks whether target Unit is in range to attack. Units must be on the 
+	 * same plane and within one cube of eachother. 
+	 * @param other
+	 * @return
+	 */
 	private boolean isAttackable(Unit other){
 		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1))
 			if (this.position[2] == other.position[2])
@@ -531,7 +619,7 @@ public class Unit {
 		return false;
 	}
 	/**
-	 * 
+	 * Attacks the nearby unit. 
 	 */
 	public void attack(Unit other) throws ModelException{
 		this.goal = null;
@@ -546,13 +634,19 @@ public class Unit {
 				this.getXPosition()-other.getXPosition()));
 		other.defend(this);
 	}
+	/**
+	 * ...
+	 * @return
+	 */
 	public boolean isAttacking(){
 		return this.attacktime > 0;
 	}
 	/**
-	 * 
+	 * Unit defends itself against an attacking Unit. The Unit will either
+	 * dodge, block or take the damage. 
 	 * @param other
 	 * @throws ModelException 
+	 * 
 	 */
 	public void defend(Unit other)throws ModelException{
 		this.goal = null;
@@ -567,7 +661,12 @@ public class Unit {
 			this.hitpoints -= other.strength /10;
 		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
-	
+	/**
+	 * Unit runs away from another unit.
+	 * @param position
+	 * @param other
+	 * @throws ModelException
+	 */
 	public void runAwayFrom(double[] position, Unit other) throws ModelException{
 		double[] newpos = new double[3];
 		int x;
@@ -582,7 +681,7 @@ public class Unit {
 	}
 	
 	/**
-	 * 
+	 * Unit will rest until maxHP and maxStamina are achieved. 
 	 */
 	public void rest(){
 		this.goal = null;
@@ -592,24 +691,36 @@ public class Unit {
 		else if (this.getCurrentStaminaPoint()<this.getMaxStaminaPoints())
 			this.resttime = this.getRegenStaminatime();
 	}
+	/**
+	 * ...
+	 * @return
+	 */
 	public boolean isResting(){
 		return ((this.resttime > 0) || (this.isresting));
 	}
+	/**
+	 * Calculates the time needed to regain to full HP. 
+	 * @return
+	 */
 	public double getRegenHptime(){
 		return this.toughness/200;
 	}
+	/**
+	 * ...
+	 * @return
+	 */
 	public double getRegenStaminatime(){
 		return this.toughness/100;
 	}
 	/**
-	 * 
+	 * Enables or disables the dafault behavior. 
 	 * @param value
 	 */
 	public void setDefaultBehaviorEnabled(boolean value){
 		
 	}
 	/**
-	 * 
+	 * ...
 	 * @return
 	 */
 	public boolean isDefaultBehaviorEnabled(){
@@ -661,4 +772,7 @@ public class Unit {
 	private double lifetime;
 	private double resttime;
 	public boolean isworking;
+	private int[] cubecoordinate;
+	
+	
 }
