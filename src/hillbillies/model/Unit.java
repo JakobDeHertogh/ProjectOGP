@@ -295,11 +295,15 @@ public class Unit {
 		
 		//Movement
 		System.out.println("adj  " + Arrays.toString(this.adjacant));
+		System.out.println("goal: " + Arrays.toString(this.goal));
 		if (this.adjacant != null)
 			if (this.distance < this.getCurrentSpeed()*dt){
 				System.out.println("ping!");
 				this.setPosition(adjacant);
 				this.adjacant = null;
+				if (Arrays.equals(this.position, this.goal))
+					this.goal = null;
+				
 			}
 			else {
 				double[] newposition = new double[3];
@@ -311,7 +315,7 @@ public class Unit {
 				setPosition(newposition);
 				System.out.println("newposition" + Arrays.toString(newposition));
 			}
-		else if (this.goal != null){
+		else if ((this.goal != null) && (this.goal != this.position)){
 			System.out.println("moveTo");
 			this.moveTo(goal);
 		}

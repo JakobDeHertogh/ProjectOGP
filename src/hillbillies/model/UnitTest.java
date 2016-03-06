@@ -48,7 +48,35 @@ public class UnitTest {
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
 		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.moveTo(new double [] {0,0,0});
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
+		Kobbe.advanceTime(0.1);
 		
+
 
 		System.out.println(Arrays.toString(Kobbe.getPosition()));
 
