@@ -328,6 +328,11 @@ public class Unit {
 				System.out.println("currspeed2" +this.getCurrentSpeed());
 				setPosition(newposition);
 				System.out.println("newposition" + Arrays.toString(newposition));
+				if (isSprinting())
+					if (this.stamina<=0)
+						stopSprinting();
+					else if (this.stamina > 0)
+							this.stamina -= dt/0.1;
 			}
 		else if ((this.goal != null) && (this.goal != this.position)){
 			System.out.println("moveTo");
@@ -337,24 +342,24 @@ public class Unit {
 			this.moveTo(target);
 		}
 		//Work
-		if (isWorking())
+		else if (isWorking())
 			this.worktime = this.worktime - dt;
 		
 		//Attack
-		if (isattacking)
+		else if (isattacking)
 			this.attacktime = this.attacktime - dt;
 			
 		
 		//Defense
-		if (isdefending)
+		else if (isdefending)
 			this.defendtime -= dt;
 			
 		//Rest
-		if (isresting)
-			if (this.hitpoints < this.getMaxHitPoints())
-				this.hitpoints += (this.toughness * dt)/(200*0.2);
+		else if (isresting)
 			if (this.stamina < this.getMaxStaminaPoints())
 				this.stamina += (this.toughness * dt)/(100*.2);
+			if (this.hitpoints < this.getMaxHitPoints())
+				this.hitpoints += (this.toughness * dt)/(200*0.2);
 		
 		
 		
@@ -521,15 +526,23 @@ public class Unit {
 	public boolean isWorking(){
 		return (this.worktime > 0);
 	}
-	public void fight(Unit other){
-		attack(other);
+	public void fight(Unit other) throws ModelException{
+		if (isAttackable(other))
+			attack(other);
 	}
 	
+	private boolean isAttackable(Unit other){
+		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1))
+			if (this.position[2] == other.position[2])
+				return true;
+		return false;
+	}
 	/**
 	 * 
 	 */
-	public void attack(Unit other){
+	public void attack(Unit other) throws ModelException{
 		this.goal = null;
+		other.goal = null;
 		this.attacktime = 1;
 		other.defendtime = 1;
 		this.isattacking = true;
@@ -538,6 +551,7 @@ public class Unit {
 				other.getXPosition()-this.getXPosition()));
 		other.setOrientation(Math.atan2(this.getYPosition()-other.getYPosition(), 
 				this.getXPosition()-other.getXPosition()));
+		other.defend(this);
 	}
 	public boolean isAttacking(){
 		return this.attacktime > 0;
@@ -547,25 +561,25 @@ public class Unit {
 	 * @param other
 	 * @throws ModelException 
 	 */
-	public void defend(Unit other) throws ModelException{
+	public void defend(Unit other)throws ModelException{
 		this.goal = null;
 		double Pdodge = 0.20*(this.agility)/(other.agility);
 		double random = Math.random();
 		double Pblock = 0.25*(this.strength + this.agility)/(other.strength + other.agility);
 		//DODGE
 		if (random<= Pdodge)
-			runAwayFrom(other.getPosition());
+			runAwayFrom(other.getPosition(), other);
 		//DAMAGE
 		else if (random >= Pblock)
 			this.hitpoints -= other.strength /10;
 		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
 	
-	public void runAwayFrom(double[] position) throws ModelException{
+	public void runAwayFrom(double[] position, Unit other) throws ModelException{
 		double[] newpos = new double[3];
 		int x;
 		int y = new Random().nextInt(2);
-		while ((!isValidPosition(newpos)) && (this.position !=position));
+		while ((!isValidPosition(newpos)) && (this.position !=position) && (newpos!= other.position));
 			x = new Random().nextInt(2);
 			y = new Random().nextInt(2);
 			newpos[0] = this.getXPosition() + x;
@@ -640,5 +654,6 @@ public class Unit {
 	private boolean isattacking;
 	double [] goal;
 	private double[] adjacant;
+	private Unit attacker;
 	
 }
