@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
 import ogp.framework.util.ModelException;
 
 
@@ -13,7 +14,8 @@ import ogp.framework.util.ModelException;
  * A class of game Units. Each Unit has a name, position and characteristics like weight, 
  * strength, agility and toughness. Units can move, work, rest and fight eachother. Default
  * behavior makes them select a random activity. 
- * @author Gebruiker
+ * @author Kristof Van Cappellen
+ * @author Jakob De Herthogh
  *
  */
 public class Unit {
@@ -67,9 +69,16 @@ public class Unit {
 	/**
 	 * Returns a value between minStartVal and maxStartVal. In this
 	 * case minStartVal equals 25 and maxStartVal equals 100. 
-	 * @param val
-	 * @return 		
+	 * @param val The value which is meant to be used for a certain attribute of the Unit.
+	 * @post	If the input value is between minStarval and maxStartVal, the given value is returned.
+	 * 			| if (minStartval<val<maxStarval)
+	 * 			| then (return val) 
+	 * @post	If the input value exceeds the given range between minStartval and maxStarval, minStartval is returned.
+	 * 			| if (val < minStartval) or (val > maxStartval)
+	 * 			| then (return minStartval)
+	 * @return 	Returns a valid starting value.	
 	 */
+	@Immutable
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
 			return val;
@@ -79,7 +88,6 @@ public class Unit {
 	@Basic
 	/**
 	 * Returns the name of this Unit. 
-	 * @return
 	 */
 	public String getName(){
 		return this.name;
@@ -88,11 +96,15 @@ public class Unit {
 	 * Sets the name of this unit to the given Name
 	 * 
 	 * @param newName
-	 * 
+	 * 			The name we wish to give the Unit
+	 * @post	The name of the Unit is changed to the given newName
+	 * 			| new.name = newName
 	 * @throws ModelException
-	 * 			Valid names must start with a capital letter, have a length of at
-	 * 			least two characters and can only contain letters, spaces or quotes. 
+	 * 			The given name doesn't start with a capital letter, doesn't have a length of 2 or more, or contains
+	 * 			other characters besides letters, spaces or quotes.
+	 * 			| !( (newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2) )
 	 */
+	@Basic
 	public void setName(String newName) throws ModelException{
 		if ((newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2))
 			this.name = newName;
@@ -101,29 +113,40 @@ public class Unit {
 	
 	/**
 	 * Returns the current position of this Unit
-	 * @return
 	 */
 	@Basic
 	public double[] getPosition(){
 		return this.position;
 	}
+	
 	/**
 	 * Sets the position of this Unit to the given position
+	 * @param	newposition
+	 * 			The position the Unit is to be put on
+	 * @post
+	 * 			The Unit is placed on the given position.
+	 * 			| new.position == newposition
 	 * @throws ModelException
+	 * 			The given position is not a valid position
+	 * 			| ! isValidPosition
 	 */
+	@Basic
 	public void setPosition(double[] newposition) throws ModelException{
 		if (!isValidPosition(newposition))
 			throw new ModelException();
 		this.position = newposition;
-		this.xposition = newposition[0];
-		this.yposition = newposition[1];
-		this.zposition = newposition[2];
 	}
+	
+	/**
 	/**
 	 * Checks if the position is a valid position in the game world. Each 
 	 * coordinate has a minimum value and a maximum value. 
-	 * @param pos
-	 * @return
+	 * @param	position
+	 * 			The position we wish to check.
+	 * @return	true if and only if every coordinate of position ranges from 0 to 50.
+	 * 			| result == ((position[0]>=minXPos) && (position[0]<maxXPos) && 
+				| (position[1]>=minYPos) && (position[1]<maxYPos) && 
+				| (position[2]>=minZPos) && (position[2]<maxZPos))
 	 */
 	public boolean isValidPosition(double[] pos){
 		
@@ -131,58 +154,50 @@ public class Unit {
 				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
 				(pos[2]>=minZPos) && (pos[2]<maxZPos));
 	}
-	/**
-	 * ...
-	 * @return
-	 */
-	public double getXPosition(){
-		return this.xposition;
-	}
-	/**
-	 * ... 
-	 * @return
-	 */
-	public double getYPosition(){
-		return this.yposition;
-	}
-	/**
-	 * ... 
-	 * @return
-	 */
-	public double getZPosition(){
-		return this.zposition;
-	}
-
 	
 	/**
-	 * Sets the coordinate of the cube the Unit occupies. 
-	 * 
+	 * Returns the X-component of the current position.
 	 */
-	public void setCubecoordinate(){
-		this.cubex = Math.floor(this.xposition);
-		this.cubey = Math.floor(this.yposition);
-		this.cubez = Math.floor(this.zposition);
-		this.cubecoordinate[0]= (int) Math.floor(this.xposition);
-		this.cubecoordinate[1]= (int) Math.floor(this.yposition);
-		this.cubecoordinate[2]= (int) Math.floor(this.zposition);
+	public double getXPosition(){
+		return this.position[0];
 	}
+	
+	/**
+	 * Returns the Y-component of the current position.
+	 */
+	public double getYPosition(){
+		return this.position[1];
+	}
+	
+	/**
+	 * Returns the Z-component of the current position.
+	 */
+	public double getZPosition(){
+		return this.position[2];
+	}
+
+
 	/**
 	 * Gets the coordinate of the cube the Unit occupies. 
 	 * @return
 	 */
 	public int[] getCubeCoordinate (){
-		return this.cubecoordinate;
+		int[] cubecoordinate = new int[3];
+		cubecoordinate[0] = (int)Math.floor(this.getXPosition());
+		cubecoordinate[1] = (int)Math.floor(this.getYPosition());
+		cubecoordinate[2] = (int)Math.floor(this.getZPosition());
+		return cubecoordinate;
 	}
 	
 	
 	/**
 	 * Returns the weight of this Unit. 
-	 * @return
 	 */
 	@Basic
 	public int getWeight(){
 		return this.weight;
 	}
+	
 	/**
 	 * Sets the weight of this Unit to the given weight
 	 * 
@@ -190,10 +205,17 @@ public class Unit {
 	 * 			set to the maximum weight. If the given weight is less than the 
 	 * 			minimum weight, the weight is set to the minimum weight. If the 
 	 * 			weight is in between minimum and maximum value, the weight is set 
-	 * 			to the given weight. 
-	 *
-	 * @param newValue
+	 * 			to the given weight.
+	 * 			| if (minValue<= newValue  <= maxValue)
+	 * 			| then (this.weight == newValue)
+	 * 			| else if (newValue < minValue)
+	 * 			| then (this.weight == minValue)
+	 *			| else if (newValue > maxValue)
+	 *			| then (this.weight == maxValue)
+	 * @param	newValue
+	 * 			The chosen value to set as weight
 	 */
+	@Basic
 	public void setWeight(int newValue){
 		int minWeight = (this.strength + this.agility)/2;
 		if ((newValue >= minWeight) && (newValue <= maxValue))
@@ -204,22 +226,32 @@ public class Unit {
 			this.weight = maxValue;
 	}
 
-	@Basic
 	/**
 	 * Returns the strength of this Unit. 
-	 * @return
 	 */
+	@Basic
 	public int getStrength(){
 		return this.strength;
 	}
+	
 	/**
-	 * @post	If the given strength exceeds the maximum value, the strength is 
-	 * 			set to the maximum value. If the given strength is less than the 
-	 * 			minimum value, the strength is set to the minimum value. If the 
-	 * 			strength is in between minimum and maximum value, the weight is set 
-	 * 			to the given weight. 
-	 * @param newValue
+	 * Sets the strength of this Unit to the given strength
+	 * 
+	 * @post	If the given strength exceeds the maximum strength, the strength is 
+	 * 			set to the maximum strength. If the given strength is less than the 
+	 * 			minimum strength, the strength is set to the minimum strength. If the 
+	 * 			strength is in between minimum and maximum value, the strength is set 
+	 * 			to the given strength.
+	 * 			| if (minValue<= newValue  <= maxValue)
+	 * 			| then (this.strength == newValue)
+	 * 			| else if (newValue < minValue)
+	 * 			| then (this.strength == minValue)
+	 *			| else if (newValue > maxValue)
+	 *			| then (this.strength == maxValue)
+	 * @param	newValue
+	 * 			The chosen value to set as strength
 	 */
+	@Basic
 	public void setStrength(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.strength = newValue;
@@ -229,18 +261,33 @@ public class Unit {
 			this.strength = maxValue;
 		setWeight(this.weight);
 	}
+	
 	/**
-	 * ...
-	 * @return
+	 * Returns the current agility of this unit
 	 */
 	@Basic
 	public int getAgility(){
 		return this.agility;
 	}
+	
 	/**
-	 * ...
-	 * @param newValue
+	 * Sets the agility of this Unit to the given value
+	 * 
+	 * @post	If the given value exceeds the maximum agility, the strength is 
+	 * 			set to the maximum agility. If the given value is less than the 
+	 * 			minimum agility, the agility is set to the minimum agility. If the 
+	 * 			value is in between minimum and maximum value, the agility is set 
+	 * 			to the given value.
+	 * 			| if (minValue<= newValue  <= maxValue)
+	 * 			| then (this.weight == newValue)
+	 * 			| else if (newValue < minValue)
+	 * 			| then (this.weight == minValue)
+	 *			| else if (newValue > maxValue)
+	 *			| then (this.weight == maxValue)
+	 * @param	newValue
+	 * 			The chosen value to set as agility
 	 */
+	@Basic
 	public void setAgility(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.agility = newValue;
@@ -251,17 +298,31 @@ public class Unit {
 		setWeight(this.weight);
 	}
 	/**
-	 * 
-	 * @return
+	 * Returns the current toughness of this unit
 	 */
 	@Basic
 	public int getToughness(){
 		return this.toughness;
 	}
+
 	/**
+	 * Sets the toughness of this Unit to the given value
 	 * 
-	 * @param newValue
+	 * @post	If the given value exceeds the maximum toughness, the toughness is 
+	 * 			set to the maximum toughness. If the given value is less than the 
+	 * 			minimum toughness, the toughness is set to the minimum toughness. If the 
+	 * 			value is in between minimum and maximum value, the toughness is set 
+	 * 			to the given value.
+	 * 			| if (minValue<= newValue  <= maxValue)
+	 * 			| then (this.toughness == newValue)
+	 * 			| else if (newValue < minValue)
+	 * 			| then (this.toughness == minValue)
+	 *			| else if (newValue > maxValue)
+	 *			| then (this.toughness == maxValue)
+	 * @param	newValue
+	 * 			The chosen value to set as toughness
 	 */
+	@Basic
 	public void setToughness(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.toughness = newValue;
@@ -272,13 +333,17 @@ public class Unit {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Returns the maximal amount of hitpoints of this unit
 	 */
+	@Basic
 	public int getMaxHitPoints(){
 		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
-	
+	/**
+	 * Sets the hitpoints of the unit to the given value.
+	 * @param newValue
+	 * 			The value we wish to set the hitpoints of the unit on.
+	 */
 	public void setHitpoints(double newValue){
 		if (isValidHP((int)newValue))
 			this.hitpoints = newValue;
@@ -491,14 +556,9 @@ public class Unit {
 	 * @post 	The Unit's speed is directed towards the target position. 
 	 */
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
-		double[] speedvector = new double[3];
-		speedvector[0] = this.currentspeed * xdistance / totaldistance;
-		speedvector[1] = this.currentspeed * ydistance / totaldistance;
-		speedvector[2] = this.currentspeed * zdistance / totaldistance;
-		this.speedVector = speedvector;
-		this.xspeed = speedvector[0];
-		this.yspeed = speedvector[1];
-		this.zspeed = speedvector[2];
+		this.xspeed = this.currentspeed * xdistance / totaldistance;
+		this.yspeed = this.currentspeed * ydistance / totaldistance;
+		this.zspeed = this.currentspeed * zdistance / totaldistance;
 		setOrientation(Math.atan2(this.yspeed, this.xspeed));
 	}
 	/**
@@ -737,15 +797,8 @@ public class Unit {
 	private double hitpoints;
 	private double stamina;
 	private double[] position;
-	private double xposition;
-	private double yposition;
-	private double zposition;
 	private double orientation;
-	private double cubex;
-	private double cubey;
-	private double cubez;
 	private double distance;
-	private boolean isWalking;
 	private double currentspeed;
 	private static int minXPos = 0;
 	private static int maxXPos = 50;
@@ -755,7 +808,6 @@ public class Unit {
 	private static int maxZPos = 50;
 	private static int minStartVal = 25;
 	private static int maxStartVal = 100;
-	private double[] speedVector;
 	private double xspeed;
 	private double yspeed;
 	private double zspeed;
@@ -768,11 +820,9 @@ public class Unit {
 	private boolean isattacking;
 	double [] goal;
 	private double[] adjacant;
-	private Unit attacker;
 	private double lifetime;
 	private double resttime;
 	public boolean isworking;
-	private int[] cubecoordinate;
 	
 	
 }
