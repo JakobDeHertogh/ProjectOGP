@@ -8,12 +8,21 @@ import be.kuleuven.cs.som.annotate.Immutable;
 import ogp.framework.util.ModelException;
 
 
-
+//TODO: Check class invariants!
 
 /**
  * A class of game Units. Each Unit has a name, position and characteristics like weight, 
  * strength, agility and toughness. Units can move, work, rest and fight eachother. Default
  * behavior makes them select a random activity. 
+ * @invar	The name that applies to all units must be a valid name.
+ * 			| isValidName(getName())
+ * @invar	The position of every unit is a valid position.
+ * 			| isValidPosition(getPosition())
+ * @invar	Each unit has a valid amount of hit points and stamina points at all time.
+ * 			| isValidHP(getCurrentHP())
+ * 			| isValidStamina(getCurrentStamina())
+ * 
+ * @version 0.51
  * @author Kristof Van Cappellen
  * @author Jakob De Herthogh
  *
@@ -718,7 +727,7 @@ public class Unit {
 			runAwayFrom(other.getPosition(), other);
 		//DAMAGE
 		else if (random >= Pblock)
-			this.hitpoints -= other.strength /10;
+			setHitpoints(getCurrentHitPoints() - other.strength /10);
 		//BLOCK: gebeurt niets, dus niet nodig te vermelden!
 	}
 	/**
