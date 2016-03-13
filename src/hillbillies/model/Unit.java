@@ -5,6 +5,7 @@ import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
+import be.kuleuven.cs.som.annotate.Raw;
 import ogp.framework.util.ModelException;
 
 
@@ -12,7 +13,7 @@ import ogp.framework.util.ModelException;
 
 /**
  * A class of game Units. Each Unit has a name, position and characteristics like weight, 
- * strength, agility and toughness. Units can move, work, rest and fight eachother. Default
+ * strength, agility and toughness. Units can move, work, rest and fight each other. Default
  * behavior makes them select a random activity. 
  * @invar	The name that applies to all units must be a valid name.
  * 			| isValidName(getName())
@@ -21,6 +22,9 @@ import ogp.framework.util.ModelException;
  * @invar	Each unit has a valid amount of hit points and stamina points at all time.
  * 			| isValidHP(getCurrentHP())
  * 			| isValidStamina(getCurrentStamina())
+ * @invar	The starting value for each of the attributes of every unit must be valid.
+ * 			| isValidStartVal(weight) && isValidStartVal(toughness) isValidStartVal(agility) 
+ * 				&& isValidStartVal(strength)
  * 
  * @version 0.51
  * @author Kristof Van Cappellen
@@ -87,7 +91,7 @@ public class Unit {
 	 * 			| then (return minStartval)
 	 * @return 	Returns a valid starting value.	
 	 */
-	@Immutable
+	@Immutable @Raw
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
 			return val;
@@ -113,7 +117,6 @@ public class Unit {
 	 * 			other characters besides letters, spaces or quotes.
 	 * 			| !( (newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2) )
 	 */
-	@Basic
 	public void setName(String newName) throws ModelException{
 		if ((newName.matches("[A-Z][a-zA-Z\\s\'\"]*")) && (newName.length()>=2))
 			this.name = newName;
@@ -123,7 +126,7 @@ public class Unit {
 	/**
 	 * Returns the current position of this Unit
 	 */
-	@Basic
+	@Basic @Raw
 	public double[] getPosition(){
 		return this.position;
 	}
@@ -139,7 +142,6 @@ public class Unit {
 	 * 			The given position is not a valid position
 	 * 			| ! isValidPosition
 	 */
-	@Basic
 	public void setPosition(double[] newposition) throws ModelException{
 		if (!isValidPosition(newposition))
 			throw new ModelException();
@@ -167,6 +169,7 @@ public class Unit {
 	/**
 	 * Returns the X-component of the current position.
 	 */
+	@Raw
 	public double getXPosition(){
 		return this.position[0];
 	}
@@ -174,6 +177,7 @@ public class Unit {
 	/**
 	 * Returns the Y-component of the current position.
 	 */
+	@Raw
 	public double getYPosition(){
 		return this.position[1];
 	}
@@ -181,6 +185,7 @@ public class Unit {
 	/**
 	 * Returns the Z-component of the current position.
 	 */
+	@Raw
 	public double getZPosition(){
 		return this.position[2];
 	}
@@ -190,6 +195,7 @@ public class Unit {
 	 * Gets the coordinate of the cube the Unit occupies. 
 	 * @return
 	 */
+	@Raw
 	public int[] getCubeCoordinate (){
 		int[] cubecoordinate = new int[3];
 		cubecoordinate[0] = (int)Math.floor(this.getXPosition());
@@ -202,7 +208,7 @@ public class Unit {
 	/**
 	 * Returns the weight of this Unit. 
 	 */
-	@Basic
+	@Basic @Raw
 	public int getWeight(){
 		return this.weight;
 	}
@@ -224,7 +230,6 @@ public class Unit {
 	 * @param	newValue
 	 * 			The chosen value to set as weight
 	 */
-	@Basic
 	public void setWeight(int newValue){
 		int minWeight = (this.strength + this.agility)/2;
 		if ((newValue >= minWeight) && (newValue <= maxValue))
@@ -238,7 +243,7 @@ public class Unit {
 	/**
 	 * Returns the strength of this Unit. 
 	 */
-	@Basic
+	@Basic @Raw
 	public int getStrength(){
 		return this.strength;
 	}
@@ -260,7 +265,6 @@ public class Unit {
 	 * @param	newValue
 	 * 			The chosen value to set as strength
 	 */
-	@Basic
 	public void setStrength(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.strength = newValue;
@@ -274,7 +278,7 @@ public class Unit {
 	/**
 	 * Returns the current agility of this unit
 	 */
-	@Basic
+	@Basic @Raw
 	public int getAgility(){
 		return this.agility;
 	}
@@ -296,7 +300,6 @@ public class Unit {
 	 * @param	newValue
 	 * 			The chosen value to set as agility
 	 */
-	@Basic
 	public void setAgility(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.agility = newValue;
@@ -309,7 +312,7 @@ public class Unit {
 	/**
 	 * Returns the current toughness of this unit
 	 */
-	@Basic
+	@Basic @Raw
 	public int getToughness(){
 		return this.toughness;
 	}
@@ -331,7 +334,6 @@ public class Unit {
 	 * @param	newValue
 	 * 			The chosen value to set as toughness
 	 */
-	@Basic
 	public void setToughness(int newValue){
 		if ((newValue >= minValue) && (newValue <= maxValue))
 			this.toughness = newValue;
