@@ -91,11 +91,45 @@ public class UnitTest {
 			for (int j = 1 ; j < 20; j++){
 				Kobbe.advanceTime(0.5);
 			}
-			System.out.println(Arrays.toString(Kobbe.getPosition()));
 		}
 		assertDoublePositionEquals("Valid position", 0.5, 10.5, 10.5,
 				Kobbe.getPosition());
+		try {
+			Kobbe.moveToAdjacant(-1,0,0);
+		} catch (ModelException ex){
+			
+		}
+		assertDoublePositionEquals("Position out of bounds", 0.5, 10.5, 10.5,
+				Kobbe.getPosition());
 		
+		Kobbe.moveTo(new int [] {5,5,5});
+		for (int i = 1 ; i < 50; i++){
+			Kobbe.advanceTime(0.5);
+		}
+		assertDoublePositionEquals("Valid position", 5.5, 5.5, 5.5,
+				Kobbe.getPosition());
+		
+		try {
+			Kobbe.moveTo(new int [] {-1,-5,-5});
+			for (int i = 1 ; i < 10; i++){
+				Kobbe.advanceTime(0.5);
+			}
+		} catch (ModelException ex) {
+			
+		}
+		assertDoublePositionEquals("Position out of bounds", 5.5, 5.5, 5.5,
+				Kobbe.getPosition());
+		
+		try {
+			Kobbe.moveTo(new int [] {100,50,5});
+			for (int i = 1 ; i < 10; i++){
+				Kobbe.advanceTime(0.5);
+			}
+		} catch (ModelException ex) {
+			
+		}
+		assertDoublePositionEquals("Position out of bounds", 5.5, 5.5, 5.5,
+				Kobbe.getPosition());
 
 	}
 }

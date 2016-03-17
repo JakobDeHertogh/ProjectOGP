@@ -534,11 +534,13 @@ public class Unit {
 		newposition[0]= Math.floor(this.getXPosition() + dx) + 0.5;
 		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
 		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
-		this.adjacant = newposition;
 		
 		// We kijken of die een mogelijke positie is, indien niet ModelException
 		if (!isValidPosition(newposition))
 			throw new ModelException();
+		
+		this.adjacant = newposition;
+				
 		
 		// Goede positie -> berekenen verplaatsingssnelheid en -vector berekenen;
 		double xdistance =(newposition[0]-this.getXPosition());
@@ -624,30 +626,36 @@ public class Unit {
 	 * 			target's direction. 
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
-		this.goal = new double[3];
-		this.goal[0] = targetcube[0] + 0.5;
-		this.goal[1] = targetcube[1] + 0.5;
-		this.goal[2] = targetcube[2] + 0.5;
+		double [] temp = new double[3];
+		temp[0] = targetcube[0] + 0.5;
+		temp[1] = targetcube[1] + 0.5;
+		temp[2] = targetcube[2] + 0.5;
+		
+		if (!isValidPosition(temp))
+			throw new ModelException();
+		
+		this.goal = temp;
+		
 		int dx = 0;
 		int dy = 0;
 		int dz = 0;
-		if (this.position[0] == goal[0])
+		if (this.position[0] == this.goal[0])
 			dx = 0;
-		else if (this.position[0]<goal[0])
+		else if (this.position[0]<this.goal[0])
 			dx = 1;
-		else if (this.position[0]>goal[0])
+		else if (this.position[0]>this.goal[0])
 			dx = -1;
-		if (this.position[1] == goal[1])
+		if (this.position[1] == this.goal[1])
 			dy = 0;
-		else if (this.position[1]<goal[1])
+		else if (this.position[1]<this.goal[1])
 			dy = 1;
-		else if (this.position[1]>goal[1])
+		else if (this.position[1]>this.goal[1])
 			dy = -1;
-		if (this.position[2] == goal[2])
+		if (this.position[2] == this.goal[2])
 			dz = 0;
-		else if (this.position[2]<goal[2])
+		else if (this.position[2]<this.goal[2])
 			dz = 1;
-		else if (this.position[2]>goal[2])
+		else if (this.position[2]>this.goal[2])
 			dz = -1;
 		moveToAdjacant(dx, dy, dz);
 	}
@@ -829,7 +837,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	double [] goal;
+	private double [] goal;
 	private double[] adjacant;
 	private double lifetime;
 	private double resttime;
