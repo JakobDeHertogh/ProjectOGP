@@ -24,9 +24,10 @@ public class World {
 		}
 	}
 	
-	public CubeType getCubeTypeOf(int x,int y,int z){
-		return cubes[x][y][z].getType();
+	public int getCubeTypeOf(int x,int y,int z){
+		return cubes[x][y][z].getType().getValue();
 	}
+
 	
 	public int getNbCubesX(){
 		return this.nbXCubes;

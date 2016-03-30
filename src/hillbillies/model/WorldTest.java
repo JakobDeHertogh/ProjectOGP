@@ -20,6 +20,9 @@ public class WorldTest {
 
 		assertTrue(TestWorld.getNbCubesX() == 3);
 		
+		System.out.println(TestWorld.getCubeTypeOf(1,2,0));
+		System.out.println(TestWorld.getCubeTypeOf(1,0,0));
+		
 	}
 
 }

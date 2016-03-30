@@ -27,6 +27,10 @@ public class Cube {
 		this.cubetype = type;
 	}
 	
+	public boolean isPassableType(){
+		return this.getType().isPassable();
+	}
+	
 	private final int xPosition;
 	private final int yPosition;
 	private final int zPosition;
