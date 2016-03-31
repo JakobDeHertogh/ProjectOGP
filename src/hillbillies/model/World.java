@@ -1,7 +1,11 @@
 package hillbillies.model;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import hillbillies.part2.listener.TerrainChangeListener;
+import ogp.framework.util.ModelException;
 
 public class World {
 	
@@ -44,9 +48,49 @@ public class World {
 	public int getNbCubesZ(){
 		return this.nbZCubes;
 	}
+	
+	public Set<Faction> getActiveFactions(){
+		return this.activeFactions;
+	}
+	
+	public Set<Unit> getActiveUnits(){
+		Set<Unit> result = new HashSet<Unit>();
+		for (Faction i : this.activeFactions){
+			result.addAll(i.getMembers());
+		}
+		return result;
+	}
+	
+	private Faction getSmallestFaction(){
+		Faction result = null;
+		for (Faction i : this.activeFactions){
+			if (result == null || result.getNbMembers() < i.getNbMembers())
+				result = i;
+		}
+		return result;
+	}
+	
+	public void addUnit(Unit unit) throws ModelException{
+		if (unit.getFaction() != null || this.getActiveUnits().size() == activeUnitsLimit)
+			throw new ModelException();
+		if (this.activeFactions.size() < this.activeFactionslimit){
+			Faction newFaction = new Faction(this);
+			newFaction.addUnit(unit);
+			this.activeFactions.add(newFaction);
+		}
+		else 
+			this.getSmallestFaction().addUnit(unit);
+		
+	}
+	
+	private Set<Faction> activeFactions = new HashSet<Faction>();
+	
 	private Cube[][][] cubes;
 	
 	private final int nbXCubes;
 	private final int nbYCubes; 
 	private final int nbZCubes;
+	
+	private final int activeFactionslimit = 5;
+	private final int activeUnitsLimit = 100;
 }

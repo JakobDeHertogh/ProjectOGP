@@ -3,13 +3,14 @@ package hillbillies.model;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.junit.Test.None;
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import ogp.framework.util.ModelException;
 
 
-//TODO: Check class invariants!
 
 /**
  * A class of game Units. Each Unit has a name, position and characteristics like weight, 
@@ -78,6 +79,17 @@ public class Unit {
 		this.stamina= this.getMaxStaminaPoints();
 		this.hitpoints = this.getMaxHitPoints();
 		this.lifetime = 0;
+		
+		this.faction = null;
+	}
+	
+	public Faction getFaction(){
+		return this.faction;
+	}
+	// Zou enkel via addUnit uit faction mogen opgeroepen worden. 
+	public void setFaction(Faction faction){
+		if (this.faction == null)// of isTerminated()
+			this.faction = faction;
 	}
 	/**
 	 * Returns a value between minStartVal and maxStartVal. In this
@@ -842,6 +854,7 @@ public class Unit {
 	private double lifetime;
 	private double resttime;
 	public boolean isworking;
+	private Faction faction;
 	
 	
 }
