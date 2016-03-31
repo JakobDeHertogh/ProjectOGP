@@ -18,14 +18,18 @@ public class World {
 			for (int j = 0 ; j < terraintypes[0].length  ; j++){
 				for (int k = 0 ; k< terraintypes[0].length ; k++){
 					CubeType type = CubeType.getCubeTypeOfValue(terraintypes[i][j][k]);
-					cubes[i][j][k] = new Cube(i,j,k, type);
+					cubes[i][j][k] = new Cube(this, i,j,k, type);
 				}
 			}
 		}
 	}
 	
+	public Cube getCubeAtPos(int x, int y, int z){
+		return cubes[x][y][z];
+	}
+	
 	public int getCubeTypeOf(int x,int y,int z){
-		return cubes[x][y][z].getType().getValue();
+		return this.getCubeAtPos(x, y, z).getType().getValue();
 	}
 
 	

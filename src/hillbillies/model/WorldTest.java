@@ -22,7 +22,19 @@ public class WorldTest {
 		
 		System.out.println(TestWorld.getCubeTypeOf(1,2,0));
 		System.out.println(TestWorld.getCubeTypeOf(1,0,0));
+	}
+	
+	@Test
+	public void testAdjacants() throws ModelException{
 		
+		int[][][] types = new int[3][3][3];
+		types[1][2][0] = 1;
+		types[1][1][0] = 1;
+		types[1][0][1] = 3;
+		
+		World TestWorld = new World(types, new DefaultTerrainChangeListener());
+		
+		System.out.println(TestWorld.getCubeAtPos(1, 2, 0).getAdjacants());
 	}
 
 }
