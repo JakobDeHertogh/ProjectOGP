@@ -64,22 +64,26 @@ public class World {
 	private Faction getSmallestFaction(){
 		Faction result = null;
 		for (Faction i : this.activeFactions){
-			if (result == null || result.getNbMembers() < i.getNbMembers())
+			if (result == null)
+				result = i;
+			
+			else if (result.getNbMembers() > i.getNbMembers())
 				result = i;
 		}
 		return result;
 	}
 	
 	public void addUnit(Unit unit) throws ModelException{
-		if (unit.getFaction() != null || this.getActiveUnits().size() == activeUnitsLimit)
-			throw new ModelException();
-		if (this.activeFactions.size() < this.activeFactionslimit){
+		if (this.getActiveUnits().size() == activeUnitsLimit)
+			throw new ModelException("Maximum number of units reached!");
+		if (this.getActiveFactions().size() < this.activeFactionslimit){
 			Faction newFaction = new Faction(this);
 			newFaction.addUnit(unit);
 			this.activeFactions.add(newFaction);
 		}
-		else 
+		else {
 			this.getSmallestFaction().addUnit(unit);
+		}
 		
 	}
 	
