@@ -35,7 +35,11 @@ public class World {
 	public int getCubeTypeOf(int x,int y,int z){
 		return this.getCubeAtPos(x, y, z).getType().getValue();
 	}
-
+	
+	public boolean isPassableCube(int x,int y,int z){
+		return this.getCubeAtPos(x, y, z).isPassableType();
+	}
+	
 	
 	public int getNbCubesX(){
 		return this.nbXCubes;
@@ -49,9 +53,41 @@ public class World {
 		return this.nbZCubes;
 	}
 	
+	public void addBoulder(int[] position, int weight) throws ModelException{
+		Boulder newBoulder = new Boulder(this, position, weight);
+		this.boulders.add(newBoulder);
+	}
+	
+	public void addLog(int[] position, int weight) throws ModelException{
+		Log newLog = new Log(this, position, weight);
+		this.logs.add(newLog);
+	}
+	
+	public void addUnit(Unit unit) throws ModelException{
+		if (this.getActiveUnits().size() == activeUnitsLimit)
+			throw new ModelException("Maximum number of units reached!");
+		if (this.getActiveFactions().size() < this.activeFactionslimit){
+			Faction newFaction = new Faction(this);
+			newFaction.addUnit(unit);
+			this.activeFactions.add(newFaction);
+		}
+		else {
+			this.getSmallestFaction().addUnit(unit);
+		}
+	}
+	
+	public Set<Log> getLogs(){
+		return this.logs;
+	}
+	
+	public Set<Boulder> getBoulders(){
+		return this.boulders;
+	}
+	
 	public Set<Faction> getActiveFactions(){
 		return this.activeFactions;
 	}
+	
 	
 	public Set<Unit> getActiveUnits(){
 		Set<Unit> result = new HashSet<Unit>();
@@ -73,22 +109,9 @@ public class World {
 		return result;
 	}
 	
-	public void addUnit(Unit unit) throws ModelException{
-		if (this.getActiveUnits().size() == activeUnitsLimit)
-			throw new ModelException("Maximum number of units reached!");
-		if (this.getActiveFactions().size() < this.activeFactionslimit){
-			Faction newFaction = new Faction(this);
-			newFaction.addUnit(unit);
-			this.activeFactions.add(newFaction);
-		}
-		else {
-			this.getSmallestFaction().addUnit(unit);
-		}
-		
-	}
-	
 	private Set<Faction> activeFactions = new HashSet<Faction>();
-	
+	private Set<Boulder> boulders = new HashSet<Boulder>();
+	private Set<Log> logs = new HashSet<Log>();
 	private Cube[][][] cubes;
 	
 	private final int nbXCubes;
