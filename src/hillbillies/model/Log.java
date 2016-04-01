@@ -4,8 +4,10 @@ import ogp.framework.util.ModelException;
 
 public class Log {
 	
-	public Log ( World world, int[] startPosition, int weight) throws ModelException{
+	public Log (World world, int[] startPosition) throws ModelException{
 		this.world = world;
+		
+		int weight = (int)((Math.random()*this.weightRange)+this.minWeight);
 		this.setWeight(weight);
 		
 		double[] pos = new double[startPosition.length];
@@ -93,4 +95,8 @@ public class Log {
 	private int upperLimit = 50;
 	private double fallingTo;
 	private int fallSpeed = -3;
+	
+	private final int minWeight = 10;
+	private final int maxWeight = 50;
+	private final int weightRange = this.maxWeight - this.minWeight;
 }

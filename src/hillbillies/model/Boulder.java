@@ -4,7 +4,7 @@ import ogp.framework.util.ModelException;
 
 public class Boulder {
 	
-	public Boulder( World world, int[] startPosition, int weight) throws ModelException{
+	public Boulder( World world, int[] startPosition) throws ModelException{
 		this.world = world;
 		this.setWeight(weight);
 		

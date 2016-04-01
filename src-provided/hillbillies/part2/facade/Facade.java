@@ -262,7 +262,7 @@ public class Facade implements IFacade{
 	@Override
 	public boolean isSolidConnectedToBorder(World world, int x, int y, int z) throws ModelException {
 		// TODO Auto-generated method stub
-		return world.isSolidConnectedToBorder(x,y,z);
+		return isSolidConnectedToBorder(x,y,z);
 	}
 
 	@Override

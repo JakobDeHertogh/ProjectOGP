@@ -5,6 +5,8 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import ogp.framework.util.ModelException;
+
 public class Cube {
 	
 	public Cube(World World, int xPosition, int yPosition, int zPosition, CubeType type){
@@ -61,22 +63,19 @@ public class Cube {
 					
 	}
 	
-	public boolean isSolidConnectedToBorder(){
-		if (this.isPassableType())
-			return false;
-		
-		else {
-			for (Cube i : this.dirAdjacant){
-				if (i == null)
-					return true;
-				else 
-					return i.isSolidConnectedToBorder();
-			}
-			return false;
+	public void caveIn() throws ModelException {
+		this.setCubeType(CubeType.AIR);
+		double P = Math.random();
+		double PLog = 0.125;
+		double PBoulder = 0.125;
+		if (P <= PLog){
+			this.world.addLog(new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()});
+		} 
+		if ((P > PLog) && (P <= PBoulder)){
+			this.world.addBoulder(new int[]{this.getXPosition(),  this.getYPosition(), this.getZPosition()});
 		}
-			
 	}
-	
+		
 	public Set<Cube> dirAdjacant = new HashSet<Cube>();
 	
 	private final World world;
@@ -84,4 +83,5 @@ public class Cube {
 	private final int yPosition;
 	private final int zPosition;
 	private CubeType cubetype;
+
 }
