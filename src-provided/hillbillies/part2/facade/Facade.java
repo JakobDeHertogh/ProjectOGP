@@ -256,7 +256,7 @@ public class Facade implements IFacade{
 	@Override
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
 		// TODO Auto-generated method stub
-		world.setCubeTypeOf(x,y,z);
+		world.setCubeTypeOf(x,y,z, value);
 	}
 
 	@Override

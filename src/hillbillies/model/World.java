@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,14 +14,19 @@ public class World {
 		// for pos
 		// 		make new cube(x, y, z, type)
 		//	! change value to type 
-		this.nbXCubes = terraintypes[0].length; 
-		this.nbYCubes = terraintypes[1].length;
-		this.nbZCubes = terraintypes[2].length;
+		
+		this.nbXCubes = terraintypes.length; 
+		System.out.println("nbXcubes" + this.nbXCubes);
+		this.nbYCubes = terraintypes[0].length;
+		System.out.println("nbYcubes" + this.nbYCubes);
+		this.nbZCubes = terraintypes[0][0].length;
+		System.out.println("nbZcubes" + this.nbZCubes);
+
 		
 		this.cubes = new Cube[this.getNbCubesX()][this.getNbCubesY()][this.getNbCubesZ()];
-		for (int i = 0 ; i < terraintypes[0].length ; i++){
+		for (int i = 0 ; i < terraintypes.length ; i++){
 			for (int j = 0 ; j < terraintypes[0].length  ; j++){
-				for (int k = 0 ; k< terraintypes[0].length ; k++){
+				for (int k = 0 ; k< terraintypes[0][0].length ; k++){
 					CubeType type = CubeType.getCubeTypeOfValue(terraintypes[i][j][k]);
 					cubes[i][j][k] = new Cube(this, i,j,k, type);
 				}
@@ -36,8 +42,18 @@ public class World {
 		return this.getCubeAtPos(x, y, z).getType().getValue();
 	}
 	
+	public void setCubeTypeOf(int x, int y, int z, int value){
+		CubeType type = CubeType.getCubeTypeOfValue(value);
+		this.getCubeAtPos(x, y, z).setCubeType(type);
+	}
+	
+	
 	public boolean isPassableCube(int x,int y,int z){
 		return this.getCubeAtPos(x, y, z).isPassableType();
+	}
+	
+	public boolean isSolidConnectedToBorder(int x, int y, int z){
+		return this.getCubeAtPos(x, y, z).isSolidConnectedToBorder();
 	}
 	
 	

@@ -13,6 +13,8 @@ public class Cube {
 		this.yPosition = yPosition; 
 		this.zPosition = zPosition;
 		this.cubetype = type;
+		
+		this.getAdjacants();
 				
 	}
 	
@@ -57,6 +59,22 @@ public class Cube {
 		}
 		return this.dirAdjacant;
 					
+	}
+	
+	public boolean isSolidConnectedToBorder(){
+		if (this.isPassableType())
+			return false;
+		
+		else {
+			for (Cube i : this.dirAdjacant){
+				if (i == null)
+					return true;
+				else 
+					return i.isSolidConnectedToBorder();
+			}
+			return false;
+		}
+			
 	}
 	
 	public Set<Cube> dirAdjacant = new HashSet<Cube>();
