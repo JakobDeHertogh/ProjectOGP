@@ -37,5 +37,19 @@ public class WorldTest {
 		System.out.println(TestWorld.getCubeAtPos(1, 2, 0).getAdjacants());
 	
 	}
+	
+	@Test 
+	public void testCaveIn() throws ModelException{
+		
+		int[][][] types = new int[3][3][3];
+		types[1][2][0] = 1;
+		types[1][1][0] = 1;
+		types[1][0][1] = 3;
+		
+		World TestWorld = new World(types, new DefaultTerrainChangeListener());
+		
+		TestWorld.caveInCube(1, 2, 0);
+		assertEquals(TestWorld.getCubeTypeOf(1, 2, 0), 0);
+	}
 
 }

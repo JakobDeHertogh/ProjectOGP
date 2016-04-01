@@ -22,6 +22,7 @@ public class World {
 
 		//INITIALISE CONNECTEDTOBORDER 
 		ConnectedToBorder ctb = new ConnectedToBorder(this.nbXCubes, this.nbYCubes, this.nbZCubes);
+		this.ctb = ctb;
 
 		this.cubes = new Cube[this.getNbCubesX()][this.getNbCubesY()][this.getNbCubesZ()];
 		for (int i = 0 ; i < terraintypes.length ; i++){
@@ -37,7 +38,18 @@ public class World {
 				}
 			}
 		}
+	}
+	
+	public void advanceTime(double dt) throws ModelException{
 		
+		// caveIn alle cubes die moeten instorten. Onmiddellijk => max 5s delay?
+		for (int[] i : caveInCubes){
+			caveInCube(i[0], i[1], i[2]);
+		}
+	}
+	
+	public boolean isSolidConnectedToBorder(int x, int y, int z){
+		return this.ctb.isSolidConnectedToBorder(x,y,z);
 	}
 	
 	public void caveInCube(int x, int y, int z) throws ModelException{
@@ -136,6 +148,7 @@ public class World {
 	private Set<int[]> caveInCubes = new HashSet<int[]>();
 	private Cube[][][] cubes;
 	
+	private ConnectedToBorder ctb;
 	private final int nbXCubes;
 	private final int nbYCubes; 
 	private final int nbZCubes;
