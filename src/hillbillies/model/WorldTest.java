@@ -51,5 +51,10 @@ public class WorldTest {
 		TestWorld.caveInCube(1, 2, 0);
 		assertEquals(TestWorld.getCubeTypeOf(1, 2, 0), 0);
 	}
+	
+	@Test
+	public void testUnits() throws ModelException {
+		
+	}
 
 }

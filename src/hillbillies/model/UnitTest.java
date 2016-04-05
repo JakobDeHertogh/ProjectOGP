@@ -132,4 +132,13 @@ public class UnitTest {
 				Kobbe.getPosition());
 
 	}
+	
+	@Test
+	public void testLevelUp() throws ModelException{
+		Unit Kobbe = new Unit("Kobbe", new int[] {10,10,10},50,50,50,50, false);
+		Kobbe.levelUp();
+		Kobbe.levelUp();
+		Kobbe.levelUp();
+		assertEquals(Kobbe.getStrength() + Kobbe.getToughness() + Kobbe.getAgility(), 153);
+	}
 }

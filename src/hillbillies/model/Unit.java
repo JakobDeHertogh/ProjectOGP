@@ -81,7 +81,10 @@ public class Unit {
 		this.lifetime = 0;
 		
 		this.faction = null;
+		this.experiencePoints = 0;
 	}
+	
+	// FACTIONS
 	
 	public Faction getFaction(){
 		return this.faction;
@@ -91,6 +94,23 @@ public class Unit {
 		if (this.faction == null)// of isTerminated()
 			this.faction = faction;
 	}
+	
+	// EXPERIENCE
+	
+	public int getExperiencePoints(){
+		return this.experiencePoints;
+	}
+	
+	public void levelUp(){
+		double P = Math.random();
+		if (P < 0.33333)
+			this.setToughness(this.toughness + 1);
+		else if (P < 0.66666)
+			this.setAgility(this.agility + 1);
+		else if (P < 1)
+			this.setStrength(this.strength + 1);
+	}
+	
 	/**
 	 * Returns a value between minStartVal and maxStartVal. In this
 	 * case minStartVal equals 25 and maxStartVal equals 100. 
@@ -398,8 +418,7 @@ public class Unit {
 	 * @param value
 	 */
 	public void setStamina(double value){
-		if (isValidStamina((int)value))
-			this.stamina = value;
+		this.stamina = value;
 	}
 	/**
 	 * Checks if the given stamina value is not negative and below the max stamina limit.
@@ -442,20 +461,37 @@ public class Unit {
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
 		this.lifetime += dt;
-		if ((this.lifetime)%3 == 0)
-			this.isresting = true; //Om de drie minuten zal de unit automatisch gaan rusten.
+		if (((this.lifetime)%180 == 0) && (this.lifetime != 0)){
+			System.out.println("ping");
+			this.rest(); //Om de drie minuten zal de unit automatisch gaan rusten.
+		}
 		//MOGELIJKE ACTIES
 		//Resting
 		if (this.isResting()){
-				if ((this.hitpoints < this.getMaxHitPoints()) && (this.hitpoints>0)){
-					setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));}
-				else if ((this.stamina < this.getMaxStaminaPoints()) && (this.stamina >=0)){
-					setStamina(this.stamina + (this.toughness * dt)/(100*0.2));}
-				if ((this.hitpoints == this.getMaxHitPoints()) && (this.stamina == this.getMaxStaminaPoints()))
-					this.isresting = false;
-				this.resttime -= dt;}
+			boolean a = false;
+			boolean b = false;
+			if (this.getRegenHptime() <= dt){
+				this.setHitpoints(this.getMaxHitPoints());
+				System.out.println("ping");
+				a = true;
+			}
+			else 
+				setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));
+			
+			if (this.getRegenStaminatime() <= dt){
+				this.setStamina(this.getMaxStaminaPoints());
+				System.out.println("pong");
+				b = true;
+			}
+			else 
+				this.setStamina(this.stamina + (this.toughness * dt)/(100*0.2));
+			
+			if (a&&b)
+				this.isresting = false;
+		}
+			
 		//Movement
-		if (this.adjacant != null)
+		if (this.adjacant != null){
 			
 			if (this.distance < this.getCurrentSpeed()*dt){
 				this.setPosition(adjacant);
@@ -463,6 +499,9 @@ public class Unit {
 				if (Arrays.equals(this.position, this.goal))
 					this.goal = null;
 				this.currentspeed = 0;
+				
+				// Completed movement step => +1 exp
+				this.experiencePoints += 1;
 			}
 			else {
 				double[] newposition = new double[3];
@@ -477,6 +516,7 @@ public class Unit {
 					else if (this.stamina > 0)
 							this.stamina -= dt/0.1;
 			}
+		}
 		else if ((this.goal != null) && (this.goal != this.position)){
 			int[] target = new int[3];
 			for (int i = 0; i<target.length; i++)
@@ -677,7 +717,7 @@ public class Unit {
 	 * The Unit starts working for a fixed time depending on its strength. 
 	 * The current moveTo is interrupted. 
 	 */
-		public void work(){
+	public void work(){
 		this.worktime = 500.0/this.strength;
 		this.goal = null;
 	}
@@ -777,34 +817,34 @@ public class Unit {
 	public void rest(){
 		this.goal = null;
 		this.isresting = true;
-		if (this.getCurrentHitPoints() < this.getMaxHitPoints())
-			this.resttime = this.getRegenHptime();
-		else if (this.getCurrentStaminaPoint()<this.getMaxStaminaPoints())
-			this.resttime = this.getRegenStaminatime();
 	}
 	/**
 	 * ...
 	 * @return
 	 */
 	public boolean isResting(){
-		return ((this.resttime > 0) || (this.isresting));
+		return this.isresting;
 	}
 	/**
 	 * Calculates the time needed to regain to full HP. 
 	 * @return
 	 */
 	public double getRegenHptime(){
-		return this.toughness/200;
+		int dHP = this.getMaxHitPoints() - this.getCurrentHitPoints();
+		double regenPerSecond = this.toughness / 200.0 * 5;
+		return dHP/regenPerSecond;
 	}
 	/**
 	 * ...
 	 * @return
 	 */
 	public double getRegenStaminatime(){
-		return this.toughness/100;
+		int dSP = this.getMaxStaminaPoints() - this.getCurrentStaminaPoint();
+		double regenPerSecond = this.toughness / 100.0 * 5;
+		return dSP/regenPerSecond;
 	}
 	/**
-	 * Enables or disables the dafault behavior. 
+	 * Enables or disables the default behavior. 
 	 * @param value
 	 */
 	public void setDefaultBehaviorEnabled(boolean value){
@@ -855,6 +895,7 @@ public class Unit {
 	private double resttime;
 	public boolean isworking;
 	private Faction faction;
+	private int experiencePoints;
 	
 	
 }
