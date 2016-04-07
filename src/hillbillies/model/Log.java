@@ -15,6 +15,7 @@ public class Log {
 			pos[i] = startPosition[i];
 		}
 		this.setPosition(pos);
+		this.fallingTo = this.getzPosition();
 	}
 	
 	public int[] getCubeCoordinate (){
@@ -74,20 +75,21 @@ public class Log {
 	}
 	
 	public void advanceTime(double dt){
-		if (fallingTo == this.getzPosition()){
-			if (!isValidPosition(this.getCubeCoordinate())){
-				fallingTo -= 1.0;
-			}
+		if (this.fallingTo == this.getzPosition()){
+			if (! this.isValidPosition(this.getCubeCoordinate()))
+				this.fallingTo = this.getzPosition() -1;
 		}
 		else {
-			this.zPosition += fallSpeed*dt;
+			if (this.fallingTo - this.getzPosition() <= dt*this.fallSpeed)
+				this.position[2] = this.fallingTo;
+			else 
+				this.position[2] += dt*this.fallSpeed;
 		}
 	}
 	
 	
 	private World world;
 	private double[] position;
-	private double zPosition;
 	
 
 	private int weight;

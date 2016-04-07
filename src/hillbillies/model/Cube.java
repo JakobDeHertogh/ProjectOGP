@@ -63,6 +63,14 @@ public class Cube {
 					
 	}
 	
+	public boolean hasSolidAdjacant(){
+		for (Cube cube : this.dirAdjacant){
+			if (!cube.getType().isPassable())
+				return true;
+		}
+		return false;
+	}
+	
 	public void caveIn() throws ModelException {
 		this.setCubeType(CubeType.AIR);
 		double P = Math.random();

@@ -82,6 +82,7 @@ public class Unit {
 		
 		this.faction = null;
 		this.experiencePoints = 0;
+		this.fallingTo = this.getZPosition();
 	}
 	
 	// FACTIONS
@@ -109,6 +110,18 @@ public class Unit {
 			this.setAgility(this.agility + 1);
 		else if (P < 1)
 			this.setStrength(this.strength + 1);
+	}
+	
+	// FALLING 
+	
+	public Cube occupiesCube(){
+		return this.faction.getWorld().getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
+	}
+	
+	public boolean isValidCube(){
+		if ((this.occupiesCube().isPassableType())&&(this.occupiesCube().hasSolidAdjacant()))
+			return true;
+		return false;
 	}
 	
 	/**
@@ -461,18 +474,32 @@ public class Unit {
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
 		this.lifetime += dt;
-		if (((this.lifetime)%180 == 0) && (this.lifetime != 0)){
-			System.out.println("ping");
+		double c = (int)(this.lifetime/180); 
+		double d = (int)((this.lifetime - dt)/180);
+		if (c != d){
 			this.rest(); //Om de drie minuten zal de unit automatisch gaan rusten.
 		}
+		
 		//MOGELIJKE ACTIES
+		// Falling
+		if (this.fallingTo == this.getZPosition()){
+			if (! this.isValidCube())
+				this.fallingTo = this.getZPosition() -1;
+		}
+		else {
+			if (this.fallingTo - this.getZPosition() <= dt*this.fallingSpeed)
+				this.position[2] = this.fallingTo;
+			else 
+				this.position[2] += dt*this.fallingSpeed;
+		}
+		
+		
 		//Resting
 		if (this.isResting()){
 			boolean a = false;
 			boolean b = false;
 			if (this.getRegenHptime() <= dt){
 				this.setHitpoints(this.getMaxHitPoints());
-				System.out.println("ping");
 				a = true;
 			}
 			else 
@@ -480,7 +507,6 @@ public class Unit {
 			
 			if (this.getRegenStaminatime() <= dt){
 				this.setStamina(this.getMaxStaminaPoints());
-				System.out.println("pong");
 				b = true;
 			}
 			else 
@@ -848,14 +874,14 @@ public class Unit {
 	 * @param value
 	 */
 	public void setDefaultBehaviorEnabled(boolean value){
-		
+		this.defaultBehaviorEnabled = value;
 	}
 	/**
 	 * ...
 	 * @return
 	 */
 	public boolean isDefaultBehaviorEnabled(){
-		return true;
+		return this.defaultBehaviorEnabled;
 	}
 	
 	public String name;
@@ -892,10 +918,11 @@ public class Unit {
 	private double [] goal;
 	private double[] adjacant;
 	private double lifetime;
-	private double resttime;
 	public boolean isworking;
 	private Faction faction;
 	private int experiencePoints;
-	
+	private boolean defaultBehaviorEnabled;
+	private double fallingTo;
+	private int fallingSpeed = -3;
 	
 }
