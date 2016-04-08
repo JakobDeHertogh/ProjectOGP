@@ -20,6 +20,33 @@ public class Cube {
 				
 	}
 	
+	public Set<Log> isOccupiedByLogs(){
+		Set <Log> result = new HashSet<Log>();
+		for (Log i : this.world.getLogs()){
+			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
+				result.add(i);
+		}
+		return result;
+	}
+	
+	public Set<Boulder> isOccupiedByBoulders(){
+		Set <Boulder> result = new HashSet<Boulder>();
+		for (Boulder i : this.world.getBoulders()){
+			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
+				result.add(i);
+		}
+		return result;
+	}
+	
+	public Set<Unit> isOccupiedByUnits(){
+		Set <Unit> result = new HashSet<Unit>();
+		for (Unit i : this.world.getActiveUnits()){
+			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
+				result.add(i);
+		}
+		return result;
+	}
+	
 	public int getXPosition(){
 		return this.xPosition;
 	}

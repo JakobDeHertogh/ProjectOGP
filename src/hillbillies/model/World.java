@@ -69,6 +69,14 @@ public class World {
 		this.getCubeAtPos(x, y, z).setCubeType(type);
 	}
 	
+	public Set<Object> isOccupiedBy(Cube cube){
+		Set<Object> result = new HashSet<Object>();
+		result.addAll(cube.isOccupiedByBoulders());
+		result.addAll(cube.isOccupiedByLogs());
+		result.addAll(cube.isOccupiedByUnits());
+		return result;
+	}
+	
 	
 	public boolean isPassableCube(int x,int y,int z){
 		return this.getCubeAtPos(x, y, z).isPassableType();
