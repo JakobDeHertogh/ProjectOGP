@@ -768,13 +768,24 @@ public class Unit {
 		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
-		else if (this.isCarryingLog())
-			this.putDownLog(targetcube);
-		else if (this.isCarryingBoulder())
-			this.putDownBoulder(targetcube);
 		
-		else if ((targetcube.getType() == CubeType.WORKSHOP) && (targetcube.hasLogAndBoulderAvailable()))
-			
+		if (WorkConditions.PUTDOWNLOG.check(this, targetcube))
+			this.putDownLog(targetcube);
+		else if (WorkConditions.PUTDOWNBOULDER.check(this, targetcube))
+			this.putDownBoulder(targetcube);
+		else if (WorkConditions.WORKSHOP.check(this, targetcube)){
+			targetcube.randomLog().terminate();
+			targetcube.randomBoulder().terminate();
+			this.setWeight(this.getWeight() + 2);
+			this.setToughness(this.getToughness() +2);
+		}
+		else if (WorkConditions.PICKUPLOG.check(this, targetcube)){
+			Log log = targetcube.randomLog();
+			this.pickUp(log);
+		}
+		
+		
+		
 	}
 	
 	/**

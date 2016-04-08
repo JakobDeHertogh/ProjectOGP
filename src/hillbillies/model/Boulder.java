@@ -14,6 +14,7 @@ public class Boulder {
 		}
 		this.setPosition(pos);
 		this.fallingTo = this.getzPosition();
+		this.isTerminated = false;
 	}
 	
 	public int[] getCubeCoordinate (){
@@ -84,7 +85,10 @@ public class Boulder {
 				this.position[2] += dt*this.fallSpeed;
 		}
 	}
-	
+	public void terminate() {
+		this.isTerminated = true;
+		this.world.getBoulders().
+	}
 	
 	private World world;
 	private double[] position;
@@ -96,4 +100,6 @@ public class Boulder {
 	private int upperLimit = 50;
 	private double fallingTo;
 	private int fallSpeed = -3;
+	private boolean isTerminated;
+
 }

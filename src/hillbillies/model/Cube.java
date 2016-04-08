@@ -3,6 +3,7 @@ package hillbillies.model;
 
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import ogp.framework.util.ModelException;
@@ -27,6 +28,29 @@ public class Cube {
 				result.add(i);
 		}
 		return result;
+	}
+	public Log randomLog(){
+		int size = this.isOccupiedByLogs().size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for (Log log : this.isOccupiedByLogs()){
+			if (i == item)
+				return log;
+			i+=1;
+		}
+		return null;
+	}
+	
+	public Boulder randomBoulder(){
+		int size = this.isOccupiedByBoulders().size();
+		int item = new Random().nextInt(size);
+		int i = 0;
+		for (Boulder boulder : this.isOccupiedByBoulders()){
+			if (i == item)
+				return boulder;
+			i+=1;
+		}
+		return null;
 	}
 	
 	public Set<Boulder> isOccupiedByBoulders(){
