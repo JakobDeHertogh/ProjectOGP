@@ -502,10 +502,10 @@ public class Unit {
 				this.setHitpoints(this.getMaxHitPoints());
 				a = true;
 			}
-			else 
+			else if (this.getRegenHptime()>= dt)
 				setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));
 			
-			if (this.getRegenStaminatime() <= dt){
+			else if (this.getRegenStaminatime() <= dt){
 				this.setStamina(this.getMaxStaminaPoints());
 				b = true;
 			}
@@ -517,7 +517,7 @@ public class Unit {
 		}
 			
 		//Movement
-		if (this.adjacant != null){
+		else if (this.adjacant != null){
 			
 			if (this.distance < this.getCurrentSpeed()*dt){
 				this.setPosition(adjacant);
@@ -550,9 +550,14 @@ public class Unit {
 			this.moveTo(target);
 		}
 		//Work
-		else if ((isworking))
-			this.worktime = this.worktime - dt;
-		
+		else if (this.isWorking()){
+			System.out.println(this.worktime);
+			if (this.worktime < dt){
+				this.worktime = 0;
+			}
+			else
+				this.worktime = this.worktime - dt;
+		}
 		//Attack
 		else if (isattacking)
 			this.attacktime = this.attacktime - dt;
@@ -704,6 +709,7 @@ public class Unit {
 	 * 			target's direction. 
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
+		this.worktime = 0;
 		double [] temp = new double[3];
 		temp[0] = targetcube[0] + 0.5;
 		temp[1] = targetcube[1] + 0.5;
@@ -747,6 +753,30 @@ public class Unit {
 		this.worktime = 500.0/this.strength;
 		this.goal = null;
 	}
+	
+	public boolean isValidWorkingCube(Cube cube){
+		if (this.occupiesCube() == cube)
+			return true;
+		for (Cube i : cube.getAdjacants())
+			if (this.occupiesCube() == i)
+				return true;
+		return false;
+	}
+	
+	public void workAt(int x, int y, int z) throws ModelException{
+		this.work();
+		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
+		if (!isValidWorkingCube(targetcube))
+			throw new ModelException("Target cube not in range!");
+		else if (this.isCarryingLog())
+			this.putDownLog(targetcube);
+		else if (this.isCarryingBoulder())
+			this.putDownBoulder(targetcube);
+		
+		else if ((targetcube.getType() == CubeType.WORKSHOP) && (targetcube.hasLogAndBoulderAvailable()))
+			
+	}
+	
 	/**
 	 * ...
 	 * @return
@@ -918,7 +948,6 @@ public class Unit {
 	private double [] goal;
 	private double[] adjacant;
 	private double lifetime;
-	public boolean isworking;
 	private Faction faction;
 	private int experiencePoints;
 	private boolean defaultBehaviorEnabled;
