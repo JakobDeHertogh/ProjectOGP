@@ -123,14 +123,14 @@ public class Cube {
 	}
 	
 	public void caveIn() throws ModelException {
+		CubeType prevCubeType = this.getType();
 		this.setCubeType(CubeType.AIR);
 		double P = Math.random();
-		double PLog = 0.125;
-		double PBoulder = 0.125;
-		if (P <= PLog){
+		double PLogBoulder = 0.25;
+		if ((P <= PLogBoulder)&&(prevCubeType == CubeType.WOOD)){
 			this.world.addLog(new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()});
 		} 
-		if ((P > PLog) && (P <= PBoulder)){
+		if ((P <= PLogBoulder) && (prevCubeType == CubeType.ROCK)){
 			this.world.addBoulder(new int[]{this.getXPosition(),  this.getYPosition(), this.getZPosition()});
 		}
 	}

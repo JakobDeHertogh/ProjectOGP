@@ -1,11 +1,17 @@
 package hillbillies.model;
 
-public enum WorkConditions {
+import ogp.framework.util.ModelException;
+
+public enum WorkTypes {
 	PUTDOWNLOG(){
 		public boolean check(Unit unit, Cube cube){
 			boolean a = unit.isCarryingLog(); 
 			boolean b = cube.isPassableType();
 			return a&&b;
+		}
+		
+		public void execute(Unit unit, Cube cube){
+			unit.putDownLog(cube);
 		}
 	},
 	PUTDOWNBOULDER(){
@@ -13,6 +19,10 @@ public enum WorkConditions {
 			boolean a = unit.isCarryingBoulder();
 			boolean b = cube.isPassableType();
 			return a&&b;
+		}
+		
+		public void execute(Unit unit, Cube cube){
+			unit.putDownBoulder(cube);
 		}
 		
 	},
@@ -24,7 +34,12 @@ public enum WorkConditions {
 			return a&&b&&c;
 		}
 		
-		
+		public void execute(Unit unit, Cube cube){
+			cube.randomLog().terminate();
+			cube.randomBoulder().terminate();
+			unit.setWeight(unit.getWeight() + 2);
+			unit.setToughness(unit.getToughness() + 2);
+		}
 		
 	},
 	PICKUPLOG(){
@@ -35,6 +50,11 @@ public enum WorkConditions {
 			return a&&b&&c;
 		}
 		
+		public void execute(Unit unit, Cube cube){
+			Log log = cube.randomLog();
+			unit.pickUp(log);
+		}
+		
 	},
 	PICKUPBOULDER(){
 		public boolean check(Unit unit, Cube cube){
@@ -43,6 +63,11 @@ public enum WorkConditions {
 			boolean c = !cube.isOccupiedByBoulders().isEmpty();
 			return a&&b&&c;
 		}
+		
+		public void execute(Unit unit, Cube cube){
+			Boulder boulder = cube.randomBoulder();
+			unit.pickUp(boulder);
+		}
 	}, 
 	CHOPWOOD(){
 		public boolean check(Unit unit, Cube cube){
@@ -50,6 +75,12 @@ public enum WorkConditions {
 			return a;
 		}
 		
+		public void execute(Unit unit, Cube cube){
+			try {
+				cube.caveIn();
+			} catch (ModelException e) {
+			}
+		}
 	},
 	MINEROCK(){
 		public boolean check(Unit unit, Cube cube){
@@ -57,13 +88,21 @@ public enum WorkConditions {
 			return a;
 		}
 		
+		public void execute(Unit unit, Cube cube){
+			try {
+				cube.caveIn();
+			} catch (ModelException e) {
+			}
+		}
+		
 	};
 	
-	private WorkConditions(){
+	private WorkTypes(){
 		
 	}
 	
 	public abstract boolean check(Unit uit, Cube cube);
+	public abstract void execute(Unit unit, Cube cube);
 		
 	
 }
