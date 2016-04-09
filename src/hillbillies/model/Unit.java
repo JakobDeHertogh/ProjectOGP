@@ -1,5 +1,6 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -743,6 +744,7 @@ public class Unit {
 			dz = -1;
 		moveToAdjacant(dx, dy, dz);
 	}
+
 	
 	
 	/**
