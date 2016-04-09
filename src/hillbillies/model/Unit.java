@@ -1,6 +1,7 @@
 package hillbillies.model;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Random;
 
 import org.junit.Test.None;
@@ -551,9 +552,9 @@ public class Unit {
 		}
 		//Work
 		else if (this.isWorking()){
-			System.out.println(this.worktime);
 			if (this.worktime < dt){
 				this.worktime = 0;
+				this.workType.execute(this, this.workAtCube);
 			}
 			else
 				this.worktime = this.worktime - dt;
@@ -769,23 +770,13 @@ public class Unit {
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
 		
-		if (WorkConditions.PUTDOWNLOG.check(this, targetcube))
-			this.putDownLog(targetcube);
-		else if (WorkConditions.PUTDOWNBOULDER.check(this, targetcube))
-			this.putDownBoulder(targetcube);
-		else if (WorkConditions.WORKSHOP.check(this, targetcube)){
-			targetcube.randomLog().terminate();
-			targetcube.randomBoulder().terminate();
-			this.setWeight(this.getWeight() + 2);
-			this.setToughness(this.getToughness() +2);
+		for (WorkTypes i : WorkTypes.values()){
+			if (i.check(this, targetcube)){
+				this.workType = i;
+				this.workAtCube = targetcube;
+				break;
+			}
 		}
-		else if (WorkConditions.PICKUPLOG.check(this, targetcube)){
-			Log log = targetcube.randomLog();
-			this.pickUp(log);
-		}
-		
-		
-		
 	}
 	
 	/**
@@ -964,5 +955,6 @@ public class Unit {
 	private boolean defaultBehaviorEnabled;
 	private double fallingTo;
 	private int fallingSpeed = -3;
-	
+	private WorkTypes workType;
+	private Cube workAtCube;
 }
