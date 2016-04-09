@@ -75,7 +75,9 @@ public class Log {
 	}
 	
 	public void advanceTime(double dt){
-		if (this.fallingTo == this.getzPosition()){
+		if (this.isCarriedBy != null)
+			this.position = this.isCarriedBy.getPosition();
+		else if (this.fallingTo == this.getzPosition()){
 			if (! this.isValidPosition(this.getCubeCoordinate()))
 				this.fallingTo = this.getzPosition() -1;
 		}
@@ -85,6 +87,15 @@ public class Log {
 			else 
 				this.position[2] += dt*this.fallSpeed;
 		}
+	}
+	
+	public void terminate() {
+		this.isTerminated = true;
+		this.world.removeLog(this);
+	}
+	
+	public boolean isTerminated(){
+		return this.isTerminated;
 	}
 	
 	
@@ -101,4 +112,8 @@ public class Log {
 	private final int minWeight = 10;
 	private final int maxWeight = 50;
 	private final int weightRange = this.maxWeight - this.minWeight;
+	
+	Unit isCarriedBy = null;
+	
+	private boolean isTerminated = false;
 }

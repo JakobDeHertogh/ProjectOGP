@@ -74,7 +74,9 @@ public class Boulder {
 	}
 	
 	public void advanceTime(double dt){
-		if (this.fallingTo == this.getzPosition()){
+		if (this.isCarriedBy != null)
+			this.position = this.isCarriedBy.getPosition();
+		else if (this.fallingTo == this.getzPosition()){
 			if (! this.isValidPosition(this.getCubeCoordinate()))
 				this.fallingTo = this.getzPosition() -1;
 		}
@@ -87,7 +89,11 @@ public class Boulder {
 	}
 	public void terminate() {
 		this.isTerminated = true;
-		this.world.getBoulders().
+		this.world.removeBoulder(this);
+	}
+	
+	public boolean isTerminated(){
+		return this.isTerminated;
 	}
 	
 	private World world;
@@ -102,4 +108,5 @@ public class Boulder {
 	private int fallSpeed = -3;
 	private boolean isTerminated;
 
+	Unit isCarriedBy = null;
 }

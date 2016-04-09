@@ -99,9 +99,19 @@ public class World {
 		this.boulders.add(newBoulder);
 	}
 	
+	public void removeBoulder(Boulder boulder){
+		if (boulder.isTerminated())
+			this.boulders.remove(boulder);
+	}
+	
 	public void addLog(int[] position) throws ModelException{
 		Log newLog = new Log(this, position);
 		this.logs.add(newLog);
+	}
+	
+	public void removeLog(Log log){
+		if (log.isTerminated())
+			this.logs.remove(log);
 	}
 	
 	public void addUnit(Unit unit) throws ModelException{

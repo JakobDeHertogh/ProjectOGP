@@ -52,7 +52,7 @@ public enum WorkTypes {
 		
 		public void execute(Unit unit, Cube cube){
 			Log log = cube.randomLog();
-			unit.pickUp(log);
+			unit.pickUpLog(log);
 		}
 		
 	},
@@ -66,7 +66,7 @@ public enum WorkTypes {
 		
 		public void execute(Unit unit, Cube cube){
 			Boulder boulder = cube.randomBoulder();
-			unit.pickUp(boulder);
+			unit.pickUpBoulder(boulder);
 		}
 	}, 
 	CHOPWOOD(){
