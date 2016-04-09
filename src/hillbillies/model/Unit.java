@@ -550,9 +550,14 @@ public class Unit {
 		}
 		//Work
 		else if (this.isWorking()){
-			System.out.println(this.worktime);
 			if (this.worktime < dt){
 				this.worktime = 0;
+				for (WorkTypes i : WorkTypes.values()){
+					if (i.check(this, workAtCube)){
+						i.execute(this, workAtCube);
+						break;
+					}
+				}
 			}
 			else
 				this.worktime = this.worktime - dt;
@@ -768,20 +773,7 @@ public class Unit {
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
 		
-		if (WorkConditions.PUTDOWNLOG.check(this, targetcube))
-			this.putDownLog(targetcube);
-		else if (WorkConditions.PUTDOWNBOULDER.check(this, targetcube))
-			this.putDownBoulder(targetcube);
-		else if (WorkConditions.WORKSHOP.check(this, targetcube)){
-			targetcube.randomLog().terminate();
-			targetcube.randomBoulder().terminate();
-			this.setWeight(this.getWeight() + 2);
-			this.setToughness(this.getToughness() +2);
-		}
-		else if (WorkConditions.PICKUPLOG.check(this, targetcube)){
-			Log log = targetcube.randomLog();
-			this.pickUp(log);
-		}
+		this.workAtCube = targetcube;
 		
 		
 		
@@ -794,6 +786,43 @@ public class Unit {
 	public boolean isWorking(){		
 		return (this.worktime != 0);
 	}
+	
+	public boolean isCarryingBoulder(){
+		return !(this.isCarryingBoulder == null);
+	}
+	
+	public boolean isCarryingLog(){
+		return !(this.isCarryingLog == null);
+	}
+	
+	public void pickUpLog(Log log){
+		this.isCarryingLog = log;
+		log.isCarriedBy = this;
+		this.weight += log.getWeight();
+	}
+	
+	public void pickUpBoulder(Boulder boulder){
+		this.isCarryingBoulder = boulder;
+		boulder.isCarriedBy = this;
+		this.weight += boulder.getWeight();
+	}
+	
+	public void putDownLog(Cube cube){
+		this.isCarryingLog.isCarriedBy = null;
+		this.isCarryingLog.setPosition(new double[] {cube.getXPosition(), 
+				cube.getYPosition(), cube.getZPosition()});
+		this.setWeight(this.weight - this.isCarryingLog.getWeight());
+		this.isCarryingLog = null;
+	}
+	
+	public void putDownBoulder(Cube cube){
+		this.isCarryingBoulder.isCarriedBy = null;
+		this.isCarryingBoulder.setPosition(new double[] {cube.getXPosition(), 
+				cube.getYPosition(), cube.getZPosition()});
+		this.setWeight(this.weight - this.isCarryingBoulder.getWeight());
+		this.isCarryingBoulder = null;
+	}
+	
 	/**
 	 * The Unit attacks another Unit if it is in range.
 	 * @param other
@@ -876,6 +905,7 @@ public class Unit {
 			newpos[2] = this.getZPosition();
 		setPosition(newpos);
 	}
+	
 	
 	/**
 	 * Unit will rest until maxHP and maxStamina are achieved. 
@@ -964,4 +994,7 @@ public class Unit {
 	private boolean defaultBehaviorEnabled;
 	private double fallingTo;
 	private int fallingSpeed = -3;
+	private Cube workAtCube;
+	private Boulder isCarryingBoulder = null;
+	private Log isCarryingLog = null;
 }
