@@ -1,9 +1,6 @@
 package hillbillies.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Random;
+import java.util.*;
 
 import org.junit.Test.None;
 
@@ -553,9 +550,9 @@ public class Unit {
 		}
 		//Work
 		else if (this.isWorking()){
+			System.out.println(this.worktime);
 			if (this.worktime < dt){
 				this.worktime = 0;
-				this.workType.execute(this, this.workAtCube);
 			}
 			else
 				this.worktime = this.worktime - dt;
@@ -747,7 +744,6 @@ public class Unit {
 	}
 
 	
-	
 	/**
 	 * The Unit starts working for a fixed time depending on its strength. 
 	 * The current moveTo is interrupted. 
@@ -772,13 +768,23 @@ public class Unit {
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
 		
-		for (WorkTypes i : WorkTypes.values()){
-			if (i.check(this, targetcube)){
-				this.workType = i;
-				this.workAtCube = targetcube;
-				break;
-			}
+		if (WorkConditions.PUTDOWNLOG.check(this, targetcube))
+			this.putDownLog(targetcube);
+		else if (WorkConditions.PUTDOWNBOULDER.check(this, targetcube))
+			this.putDownBoulder(targetcube);
+		else if (WorkConditions.WORKSHOP.check(this, targetcube)){
+			targetcube.randomLog().terminate();
+			targetcube.randomBoulder().terminate();
+			this.setWeight(this.getWeight() + 2);
+			this.setToughness(this.getToughness() +2);
 		}
+		else if (WorkConditions.PICKUPLOG.check(this, targetcube)){
+			Log log = targetcube.randomLog();
+			this.pickUp(log);
+		}
+		
+		
+		
 	}
 	
 	/**
@@ -804,7 +810,7 @@ public class Unit {
 	 * @return
 	 */
 	private boolean isAttackable(Unit other){
-		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1))
+		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))
 			if (this.position[2] == other.position[2])
 				return true;
 		return false;
@@ -949,6 +955,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
+	private Queue<ArrayList> Q;
 	private double [] goal;
 	private double[] adjacant;
 	private double lifetime;
@@ -957,6 +964,4 @@ public class Unit {
 	private boolean defaultBehaviorEnabled;
 	private double fallingTo;
 	private int fallingSpeed = -3;
-	private WorkTypes workType;
-	private Cube workAtCube;
 }
