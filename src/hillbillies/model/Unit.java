@@ -746,16 +746,32 @@ public class Unit {
 				this.search(next);
 			}
 			if (this.CubeQueue.contains(startData.getCube())){
-				for(Data q : Q){
-					if 
+				Queue<Data> tempQueue = new LinkedList<Data>(Q);
+				Cube current = tempQueue.remove().getCube();
+				Cube next = tempQueue.peek().getCube();
+				int CostOfNext = tempQueue.peek().getCost();
+				
+				if (current.getSurroundingCubes().contains(next)){
+					ArrayList<Data> tryout = new ArrayList<Data>(Q);
+					for (Data data: tryout){
+						if ((current.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostOfNext)){
+							break;
+						}
+						//TODO HIER MOET NOG DE MOVETOADJACENT WORDEN OPGEROEPEN
+					}
+					
+					
+					
+					int dx = next.getXPosition() - current.getXPosition();
+					int dy = next.getYPosition() - current.getYPosition();
+					int dz = next.getZPosition() - current.getZPosition();
+					moveToAdjacant(dx, dy, dz);
 				}
 			}
-		}
-		
-		
-		
-		
+		}	
 	}
+	
+	
 	/**
 	 * Method that searches the route that needs to be taken to reach the goal data.
 	 * @param data The Data of the Unit's destination.
@@ -793,7 +809,7 @@ public class Unit {
 	
 	public void workAt(int x, int y, int z) throws ModelException{
 		this.work();
-		Cube targetcube = this.geftFaction().getWorld().getCubeAtPos(x, y, z);
+		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
 		

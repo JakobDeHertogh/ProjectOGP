@@ -55,6 +55,7 @@ public class Data {
 		return this.cost;
 	}
 	
+	
 private int[] position;
 private int cost;
 private Cube cube;
