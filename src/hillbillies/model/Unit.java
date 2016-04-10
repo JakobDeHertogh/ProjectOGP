@@ -85,22 +85,33 @@ public class Unit {
 	}
 	
 	// FACTIONS
-	
+	/**
+	 * @returns Returns the faction of this Unit.
+	 */
 	public Faction getFaction(){
 		return this.faction;
 	}
 	// Zou enkel via addUnit uit faction mogen opgeroepen worden. 
+	/**
+	 * Sets the faction of this Unit.
+	 * @post	If the Unit did not have a faction, then the faction will be set to the given faction.
+	 */
 	public void setFaction(Faction faction){
 		if (this.faction == null)// of isTerminated()
 			this.faction = faction;
 	}
 	
 	// EXPERIENCE
-	
+	/**
+	 * @returns The number of Experience Points this Unit has.
+	 */
 	public int getExperiencePoints(){
 		return this.experiencePoints;
 	}
-	
+	/**
+	 * Levels up a random trait of the Unit if a sufficient number of Experience Points have been collected.
+	 * @post 
+	 */
 	public void levelUp(){
 		double P = Math.random();
 		if (P < 0.33333)
@@ -112,11 +123,18 @@ public class Unit {
 	}
 	
 	// FALLING 
-	
+	/**
+	 * 
+	 * @return Returns the cube which the Unit occupies.
+	 */
 	public Cube occupiesCube(){
 		return this.faction.getWorld().getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
-	
+	/**
+	 * Checks whether the cube is valid for a Unit to occupy.
+	 * @param cube
+	 * 
+	 */
 	public boolean isValidCube(Cube cube){
 		if ((cube.isPassableType())&&(cube.hasSolidNeighbor()))
 			return true;
@@ -714,21 +732,29 @@ public class Unit {
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.worktime = 0;
+		Data startData = new Data(this.occupiesCube(), 0);
 		
 		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
 		Data goalData = new Data(this.goal, 0);
 		
 		while (this.occupiesCube() != this.goal){
 			this.Q.add(goalData);
+			this.CubeListQ.add(goalData.getCube());
 			
-			while((!this.Q.contains(this.occupiesCube()))&&(this.it.hasNext())){
+			while((!this.CubeListQ.contains(startData.getCube()))&&(this.it.hasNext())){
 				Data next = (Data) it.next();
 				this.search(next);
 			}
-			
-
-				
+			if (this.CubeListQ.contains(startData.getCube())){
+				for(Data q : Q){
+					if 
+				}
+			}
 		}
+		
+		
+		
+		
 	}
 	
 	public void search(Data data){
@@ -736,6 +762,7 @@ public class Unit {
 			Data dataCube = new Data(cube, data.getCost() + 1);
 			if ((this.isValidCube(cube))&&(this.Q.contains(dataCube)))
 				this.Q.add(dataCube);
+				this.CubeListQ.add(dataCube.getCube());
 		}
 	}
 
@@ -760,7 +787,7 @@ public class Unit {
 	
 	public void workAt(int x, int y, int z) throws ModelException{
 		this.work();
-		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
+		Cube targetcube = this.geftFaction().getWorld().getCubeAtPos(x, y, z);
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");
 		
@@ -906,7 +933,7 @@ public class Unit {
 		this.isresting = true;
 	}
 	/**
-	 * ...
+	 * Returns whether the Unit is resting or not.
 	 * @return
 	 */
 	public boolean isResting(){
@@ -977,6 +1004,8 @@ public class Unit {
 	private boolean isdefending;
 	private boolean isattacking;
 	private Queue<Data> Q;
+	private HashMap<Cube, Integer> QMap;
+	private ArrayList<Cube> CubeListQ;
 	private Iterator<Data> it = Q.iterator();	
 	private Cube goal;
 	private double[] adjacant;
