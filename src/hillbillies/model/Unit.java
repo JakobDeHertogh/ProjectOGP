@@ -758,6 +758,7 @@ public class Unit {
 						int dy = next.getYPosition() - current.getYPosition();
 						int dz = next.getZPosition() - current.getZPosition();
 						moveToAdjacant(dx, dy, dz);
+						Q.remove();
 					}
 				}
 				else{
