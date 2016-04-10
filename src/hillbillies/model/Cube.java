@@ -16,11 +16,10 @@ public class Cube {
 		this.yPosition = yPosition; 
 		this.zPosition = zPosition;
 		this.cubetype = type;
-		double[] pos = new double[3];
-		pos[0] = xPosition;
-		pos[1] = yPosition;
-		pos[2] = zPosition;
+		int[] pos = new int[]{this.xPosition, this.yPosition, this.zPosition};
+		double[]cubeCenter = new double[]{this.xPosition + 0.5, this.yPosition + 0.5, this.zPosition + 0.5};
 		this.Position = pos ;
+		this.cubeCenter = cubeCenter;
 						
 	}
 	
@@ -74,6 +73,12 @@ public class Cube {
 		return result;
 	}
 	
+	public boolean isValidCube(){
+		if ((this.isPassableType())&&(this.hasSolidNeighbor()))
+			return true;
+		return false;
+	}
+	
 	public int getXPosition(){
 		return this.xPosition;
 	}
@@ -83,8 +88,11 @@ public class Cube {
 	public int getZPosition(){
 		return this.zPosition;
 	}
-	public double[] getPosition(){
+	public int[] getPosition(){
 		return this.Position;
+	}
+	public double[] getCubeCenter(){
+		return this.cubeCenter;
 	}
 	
 	public CubeType getType(){
@@ -105,7 +113,11 @@ public class Cube {
 		for (int i = 0 ; i <= 2 ; i++){
 			for (int j = 0; j <= 2; j++){
 				for (int k = 0 ; k <= 2 ; k++){
-					result.add(this.world.getCubeAtPos(this.getXPosition()+(i-1), this.getYPosition()+(j-1), this.getZPosition()+(k-1)));
+					try {
+						result.add(this.world.getCubeAtPos(this.getXPosition()+(i-1), this.getYPosition()+(j-1), this.getZPosition()+(k-1)));
+					} catch (IndexOutOfBoundsException e) {
+						result.addAll(null);
+					}
 				}
 			}
 		}
@@ -114,11 +126,15 @@ public class Cube {
 	}
 	
 	public boolean hasSolidNeighbor(){
-		for (Cube cube : this.getSurroundingCubes()){
-			if (!cube.isPassableType())
-				return true;
+		try {
+			for (Cube cube : this.getSurroundingCubes()){
+				if (!cube.isPassableType())
+					return true;
+			}
+			return false;
+		} catch (NullPointerException e) {
+			return true;
 		}
-		return false;
 	}
 	
 	
@@ -133,13 +149,16 @@ public class Cube {
 		if ((P <= PLogBoulder) && (prevCubeType == CubeType.ROCK)){
 			this.world.addBoulder(new int[]{this.getXPosition(),  this.getYPosition(), this.getZPosition()});
 		}
+		if (this.isValidCube())
+			this.world.viableSpawnCubes.add(this);
 	}
 			
 	private final World world;
 	private final int xPosition;
 	private final int yPosition;
 	private final int zPosition;
-	private final double[] Position;
+	private final int[] Position;
+	private final double[] cubeCenter;
 	private CubeType cubetype;
 
 }

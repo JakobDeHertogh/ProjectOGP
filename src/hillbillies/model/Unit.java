@@ -131,16 +131,6 @@ public class Unit {
 	public Cube occupiesCube(){
 		return this.faction.getWorld().getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
-	/**
-	 * Checks whether the cube is valid for a Unit to occupy.
-	 * @param cube
-	 * 
-	 */
-	public boolean isValidCube(Cube cube){
-		if ((cube.isPassableType())&&(cube.hasSolidNeighbor()))
-			return true;
-		return false;
-	}
 	
 	/**
 	 * Returns a value between minStartVal and maxStartVal. In this
@@ -504,7 +494,7 @@ public class Unit {
 		//MOGELIJKE ACTIES
 		// Falling
 		if (this.fallingTo == this.getZPosition()){
-			if (! this.isValidCube(this.occupiesCube()))
+			if (! this.occupiesCube().isValidCube())
 				this.fallingTo = this.getZPosition() -1;
 		}
 		else {
@@ -543,7 +533,7 @@ public class Unit {
 			if (this.distance < this.getCurrentSpeed()*dt){
 				this.setPosition(adjacant);
 				this.adjacant = null;
-				if (Arrays.equals(this.position, this.goal.getPosition()))
+				if (Arrays.equals(this.position, this.goal.getCubeCenter()))
 					this.goal = null;
 				this.currentspeed = 0;
 				
@@ -564,7 +554,7 @@ public class Unit {
 							this.stamina -= dt/0.1;
 			}
 		}
-		else if ((this.goal != null) && (this.goal.getPosition() != this.position)){
+		else if ((this.goal != null) && (this.goal.getCubeCenter() != this.position)){
 			int[] target = new int[3];
 			for (int i = 0; i<target.length; i++)
 				target[i] = (int) goal.getPosition()[i];
@@ -792,7 +782,7 @@ public class Unit {
 	public void search(Data data){
 		for (Cube cube : data.getCube().getSurroundingCubes()){
 			Data dataCube = new Data(cube, data.getCost() + 1);
-			if ((this.isValidCube(cube))&&(!this.Q.contains(dataCube)))
+			if ((cube.isValidCube())&&(!this.Q.contains(dataCube)))
 				this.Q.add(dataCube);
 				this.CubeQueue.add(dataCube.getCube());
 				this.CostQueue.add(dataCube.getCost());
@@ -826,9 +816,6 @@ public class Unit {
 			throw new ModelException("Target cube not in range!");
 		
 		this.workAtCube = targetcube;
-		
-		
-		
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package hillbillies.model;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import hillbillies.part2.listener.TerrainChangeListener;
@@ -12,9 +13,6 @@ import ogp.framework.util.ModelException;
 public class World {
 	
 	public World(int[][][] terraintypes, TerrainChangeListener tcl){
-		// for pos
-		// 		make new cube(x, y, z, type)
-		//	! change value to type 
 		
 		this.nbXCubes = terraintypes.length; 
 		this.nbYCubes = terraintypes[0].length;
@@ -32,9 +30,11 @@ public class World {
 					cubes[i][j][k] = new Cube(this, i,j,k, type);
 					
 					//	UPDATE CONNECTEDTOBORDER
-					if (type.isPassable())
+					if (type.isPassable()){
 						caveInCubes.addAll(ctb.changeSolidToPassable(i, j, k));
-					
+						if (cubes[i][j][k].isValidCube())
+							this.viableSpawnCubes.add(cubes[i][j][k]);
+					}
 				}
 			}
 		}
@@ -117,6 +117,7 @@ public class World {
 	public void addUnit(Unit unit) throws ModelException{
 		if (this.getActiveUnits().size() == activeUnitsLimit)
 			throw new ModelException("Maximum number of units reached!");
+
 		if (this.getActiveFactions().size() < this.activeFactionslimit){
 			Faction newFaction = new Faction(this);
 			newFaction.addUnit(unit);
@@ -125,6 +126,20 @@ public class World {
 		else {
 			this.getSmallestFaction().addUnit(unit);
 		}
+		if (!unit.occupiesCube().isValidCube())
+			unit.setPosition(this.getRandomSpawnCube().getCubeCenter());
+	}
+	
+	public Cube getRandomSpawnCube(){
+		int size = this.viableSpawnCubes.size();
+		int random = new Random().nextInt(size);
+		int i = 0;
+		for (Cube cube : viableSpawnCubes){
+			if (i == random)
+				return cube;
+			i += 1;
+		}
+		return null; // kan eigenlijk niet voorkomen
 	}
 	
 	public Set<Log> getLogs(){
@@ -170,6 +185,7 @@ public class World {
 	private Set<Boulder> boulders = new HashSet<Boulder>();
 	private Set<Log> logs = new HashSet<Log>();
 	private Set<int[]> caveInCubes = new HashSet<int[]>();
+	public Set<Cube> viableSpawnCubes = new HashSet<Cube>();
 	private Cube[][][] cubes;
 	
 	private ConnectedToBorder ctb;
