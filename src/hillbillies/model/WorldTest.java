@@ -34,7 +34,6 @@ public class WorldTest {
 		
 		World TestWorld = new World(types, new DefaultTerrainChangeListener());
 		
-		System.out.println(TestWorld.getCubeAtPos(1, 2, 0).getAdjacants());
 	
 	}
 	

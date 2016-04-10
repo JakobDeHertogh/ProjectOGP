@@ -117,8 +117,8 @@ public class Unit {
 		return this.faction.getWorld().getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
 	
-	public boolean isValidCube(){
-		if ((this.occupiesCube().isPassableType())&&(this.occupiesCube().hasSolidAdjacant()))
+	public boolean isValidCube(Cube cube){
+		if ((cube.isPassableType())&&(cube.hasSolidNeighbor()))
 			return true;
 		return false;
 	}
@@ -135,7 +135,7 @@ public class Unit {
 	 * 			| then (return minStartval)
 	 * @return 	Returns a valid starting value.	
 	 */
-	@Immutable @Raw
+ 	@Immutable @Raw
 	public int validStartVal(int val){
 		if ((val <= maxStartVal) && (val >= minStartVal))
 			return val;
@@ -482,7 +482,7 @@ public class Unit {
 		//MOGELIJKE ACTIES
 		// Falling
 		if (this.fallingTo == this.getZPosition()){
-			if (! this.isValidCube())
+			if (! this.isValidCube(this.occupiesCube()))
 				this.fallingTo = this.getZPosition() -1;
 		}
 		else {
@@ -714,38 +714,29 @@ public class Unit {
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.worktime = 0;
-		double [] temp = new double[3];
-		temp[0] = targetcube[0] + 0.5;
-		temp[1] = targetcube[1] + 0.5;
-		temp[2] = targetcube[2] + 0.5;
 		
-		if (!isValidPosition(temp))
-			throw new ModelException();
+		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
+		Data goalData = new Data(this.goal, 0);
 		
-		this.goal = temp;
-		
-		int dx = 0;
-		int dy = 0;
-		int dz = 0;
-		if (this.position[0] == this.goal[0])
-			dx = 0;
-		else if (this.position[0]<this.goal[0])
-			dx = 1;
-		else if (this.position[0]>this.goal[0])
-			dx = -1;
-		if (this.position[1] == this.goal[1])
-			dy = 0;
-		else if (this.position[1]<this.goal[1])
-			dy = 1;
-		else if (this.position[1]>this.goal[1])
-			dy = -1;
-		if (this.position[2] == this.goal[2])
-			dz = 0;
-		else if (this.position[2]<this.goal[2])
-			dz = 1;
-		else if (this.position[2]>this.goal[2])
-			dz = -1;
-		moveToAdjacant(dx, dy, dz);
+		while (this.occupiesCube() != this.goal){
+			this.Q.add(goalData);
+			
+			while((!this.Q.contains(this.occupiesCube()))&&(this.it.hasNext())){
+				Data next = (Data) it.next();
+				this.search(next);
+			}
+			
+
+				
+		}
+	}
+	
+	public void search(Data data){
+		for (Cube cube : data.getCube().getSurroundingCubes()){
+			Data dataCube = new Data(cube, data.getCost() + 1);
+			if ((this.isValidCube(cube))&&(this.Q.contains(dataCube)))
+				this.Q.add(dataCube);
+		}
 	}
 
 	
@@ -761,7 +752,7 @@ public class Unit {
 	public boolean isValidWorkingCube(Cube cube){
 		if (this.occupiesCube() == cube)
 			return true;
-		for (Cube i : cube.getAdjacants())
+		for (Cube i : cube.getSurroundingCubes())
 			if (this.occupiesCube() == i)
 				return true;
 		return false;
@@ -956,7 +947,7 @@ public class Unit {
 	
 	public String name;
 	private int weight;
-	private int agility;
+	private int agility;	
 	private int strength;
 	private int toughness;
 	private static int minValue = 0;
@@ -985,8 +976,9 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	private Queue<ArrayList> Q;
-	private double [] goal;
+	private Queue<Data> Q;
+	private Iterator<Data> it = Q.iterator();	
+	private Cube goal;
 	private double[] adjacant;
 	private double lifetime;
 	private Faction faction;

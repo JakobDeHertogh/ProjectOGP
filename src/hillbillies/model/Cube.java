@@ -16,9 +16,7 @@ public class Cube {
 		this.yPosition = yPosition; 
 		this.zPosition = zPosition;
 		this.cubetype = type;
-		
-		this.getAdjacants();
-				
+						
 	}
 	
 	public Set<Log> isOccupiedByLogs(){
@@ -93,34 +91,28 @@ public class Cube {
 		return this.getType().isPassable();
 	}
 	
-	public Set<Cube> getAdjacants()throws IndexOutOfBoundsException{
-		int[] xPlusAdj = {this.getXPosition()+1,this.getYPosition(),this.getZPosition()};
-		int[] xMinAdj = {this.getXPosition()-1,this.getYPosition(),this.getZPosition()};
-		int[] yPlusAdj = {this.getXPosition(),this.getYPosition()+1,this.getZPosition()};
-		int[] yMinAdj = {this.getXPosition(),this.getYPosition()-1,this.getZPosition()};
-		int[] zPlusAdj = {this.getXPosition(),this.getYPosition(),this.getZPosition()+1};
-		int[] zMinAdj = {this.getXPosition(),this.getYPosition(),this.getZPosition()-1};
-		int[][] AdjPos = {xPlusAdj, xMinAdj, yPlusAdj,yMinAdj,zPlusAdj,zMinAdj};
-		
-		for (int[] i : AdjPos) {
-			try{
-				this.dirAdjacant.add(this.world.getCubeAtPos(i[0], i[1], i[2]));
-			} catch (IndexOutOfBoundsException exc){
-				this.dirAdjacant.add(null);
+	
+	public Set<Cube> getSurroundingCubes() throws IndexOutOfBoundsException{
+		Set<Cube> result = new HashSet<Cube>();
+		for (int i = 0 ; i <= 2 ; i++){
+			for (int j = 0; j <= 2; j++){
+				for (int k = 0 ; k <= 2 ; k++){
+					result.add(this.world.getCubeAtPos(this.getXPosition()+(i-1), this.getYPosition()+(j-1), this.getZPosition()+(k-1)));
+				}
 			}
-			
 		}
-		return this.dirAdjacant;
-					
+		result.remove(this);
+		return result;
 	}
 	
-	public boolean hasSolidAdjacant(){
-		for (Cube cube : this.dirAdjacant){
-			if (!cube.getType().isPassable())
+	public boolean hasSolidNeighbor(){
+		for (Cube cube : this.getSurroundingCubes()){
+			if (!cube.isPassableType())
 				return true;
 		}
 		return false;
 	}
+	
 	
 	public void caveIn() throws ModelException {
 		CubeType prevCubeType = this.getType();
@@ -134,9 +126,7 @@ public class Cube {
 			this.world.addBoulder(new int[]{this.getXPosition(),  this.getYPosition(), this.getZPosition()});
 		}
 	}
-		
-	public Set<Cube> dirAdjacant = new HashSet<Cube>();
-	
+			
 	private final World world;
 	private final int xPosition;
 	private final int yPosition;

@@ -8,14 +8,13 @@ public class Data {
 		this.position[1] = cube.getYPosition();
 		this.position[2] = cube.getZPosition();
 		this.setCost(cost);
+		this.cube = cube;
 	}
 	
-	public List getDataOfCube(Cube cube){
-		ArrayList data = new ArrayList();
-		data.add(this.getPosition());
-		data.add(this.getCost());
-		return data;
+	public Cube getCube(){
+		return this.cube;
 	}
+	
 	public int[] getPosition(){
 		return this.position;
 	}
@@ -28,4 +27,5 @@ public class Data {
 	
 private int[] position;
 private int cost;
+private Cube cube;
 }
