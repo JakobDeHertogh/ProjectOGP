@@ -41,7 +41,6 @@ public class World {
 	}
 	
 	public void advanceTime(double dt) throws ModelException{
-		
 		// caveIn alle cubes die moeten instorten. Onmiddellijk => max 5s delay?
 		for (int[] i : caveInCubes){
 			caveInCube(i[0], i[1], i[2]);
@@ -136,6 +135,7 @@ public class World {
 		}
 		if (!unit.occupiesCube().isValidCube())
 			unit.setPosition(this.getRandomSpawnCube().getCubeCenter());
+		System.out.println(Arrays.toString(unit.getPosition()));
 	}
 	
 	public Cube getRandomSpawnCube(){

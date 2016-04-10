@@ -82,7 +82,9 @@ public class Unit {
 		
 		this.faction = null;
 		this.experiencePoints = 0;
+		System.out.println("zpos" + this.getZPosition());
 		this.fallingTo = this.getZPosition();
+		System.out.println("fallingto" + fallingTo);
 	}
 	
 	// FACTIONS
@@ -199,6 +201,7 @@ public class Unit {
 		if (!isValidPosition(newposition))
 			throw new ModelException();
 		this.position = newposition;
+		this.fallingTo = this.getZPosition();
 	}
 	
 	/**
@@ -494,10 +497,14 @@ public class Unit {
 		//MOGELIJKE ACTIES
 		// Falling
 		if (this.fallingTo == this.getZPosition()){
+			System.out.println("ping");
 			if (! this.occupiesCube().isValidCube())
 				this.fallingTo = this.getZPosition() -1;
 		}
 		else {
+			System.out.println("pong");
+			System.out.println(this.fallingTo);
+			System.out.println(this.getZPosition());
 			if (this.fallingTo - this.getZPosition() <= dt*this.fallingSpeed)
 				this.position[2] = this.fallingTo;
 			else 
