@@ -1039,7 +1039,7 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	private Queue<Data> Q;
+	private Queue<Data> Q = new PriorityQueue<Data>();
 	private Queue<Cube> CubeQueue;
 	private Queue<Integer> CostQueue;
 	private ArrayList<Cube> CubeListQ;
