@@ -539,7 +539,7 @@ public class Unit {
 			if (this.distance < this.getCurrentSpeed()*dt){
 				this.setPosition(adjacant);
 				this.adjacant = null;
-				if (Arrays.equals(this.position, this.goal))
+				if (Arrays.equals(this.position, this.goal.getPosition()))
 					this.goal = null;
 				this.currentspeed = 0;
 				
@@ -560,10 +560,10 @@ public class Unit {
 							this.stamina -= dt/0.1;
 			}
 		}
-		else if ((this.goal != null) && (this.goal != this.position)){
+		else if ((this.goal != null) && (this.goal.getPosition() != this.position)){
 			int[] target = new int[3];
 			for (int i = 0; i<target.length; i++)
-				target[i] = (int) goal[i];
+				target[i] = (int) goal.getPosition()[i];
 			this.moveTo(target);
 		}
 		//Work

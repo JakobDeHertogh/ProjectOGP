@@ -16,6 +16,11 @@ public class Cube {
 		this.yPosition = yPosition; 
 		this.zPosition = zPosition;
 		this.cubetype = type;
+		double[] pos = new double[3];
+		pos[0] = xPosition;
+		pos[1] = yPosition;
+		pos[2] = zPosition;
+		this.Position = pos ;
 						
 	}
 	
@@ -78,6 +83,9 @@ public class Cube {
 	public int getZPosition(){
 		return this.zPosition;
 	}
+	public double[] getPosition(){
+		return this.Position;
+	}
 	
 	public CubeType getType(){
 		return this.cubetype;
@@ -131,6 +139,7 @@ public class Cube {
 	private final int xPosition;
 	private final int yPosition;
 	private final int zPosition;
+	private final double[] Position;
 	private CubeType cubetype;
 
 }
