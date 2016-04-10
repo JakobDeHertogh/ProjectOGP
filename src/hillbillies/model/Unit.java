@@ -492,6 +492,9 @@ public class Unit {
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
 		this.lifetime += dt;
+		if (this.getCurrentHitPoints() <= 0){
+			this.die();
+		}
 		double c = (int)(this.lifetime/180); 
 		double d = (int)((this.lifetime - dt)/180);
 		if (c != d){
