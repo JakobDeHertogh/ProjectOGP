@@ -19,20 +19,38 @@ public class Data {
 		this.setCost(cost);
 		this.cube = cube;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public Cube getCube(){
 		return this.cube;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public int[] getPosition(){
 		return this.position;
 	}
+	/**
+	 * 
+	 * @param cost
+	 */
 	public void setCost(int cost){
 		this.cost = cost;
 	}
+	/**
+	 * Checks whether a given cost is a valid value.
+	 * @return True if and only if the the cost is greater than or equal to 0.
+	 * 			Else returns False.
+	 */
 	public boolean isValidCost(int cost){
 		return cost>=0;
 	}
+	/**
+	 * Returns the current cost trait of the Data
+	 */
 	public int getCost(){
 		return this.cost;
 	}

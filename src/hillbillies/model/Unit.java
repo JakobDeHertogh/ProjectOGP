@@ -739,13 +739,13 @@ public class Unit {
 		
 		while (this.occupiesCube() != this.goal){
 			this.Q.add(goalData);
-			this.CubeListQ.add(goalData.getCube());
+			this.CubeQueue.add(goalData.getCube());
 			
-			while((!this.CubeListQ.contains(startData.getCube()))&&(this.it.hasNext())){
+			while((!this.CubeQueue.contains(startData.getCube()))&&(this.it.hasNext())){
 				Data next = (Data) it.next();
 				this.search(next);
 			}
-			if (this.CubeListQ.contains(startData.getCube())){
+			if (this.CubeQueue.contains(startData.getCube())){
 				for(Data q : Q){
 					if 
 				}
@@ -756,12 +756,18 @@ public class Unit {
 		
 		
 	}
-	
+	/**
+	 * Method that searches the route that needs to be taken to reach the goal data.
+	 * @param data The Data of the Unit's destination.
+	 * @post
+	 */
 	public void search(Data data){
 		for (Cube cube : data.getCube().getSurroundingCubes()){
 			Data dataCube = new Data(cube, data.getCost() + 1);
-			if ((this.isValidCube(cube))&&(this.Q.contains(dataCube)))
+			if ((this.isValidCube(cube))&&(!this.Q.contains(dataCube)))
 				this.Q.add(dataCube);
+				this.CubeQueue.add(dataCube.getCube());
+				this.CostQueue.add(dataCube.getCost());
 				this.CubeListQ.add(dataCube.getCube());
 		}
 	}
@@ -1004,7 +1010,8 @@ public class Unit {
 	private boolean isdefending;
 	private boolean isattacking;
 	private Queue<Data> Q;
-	private HashMap<Cube, Integer> QMap;
+	private Queue<Cube> CubeQueue;
+	private Queue<Integer> CostQueue;
 	private ArrayList<Cube> CubeListQ;
 	private Iterator<Data> it = Q.iterator();	
 	private Cube goal;
