@@ -732,40 +732,34 @@ public class Unit {
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.worktime = 0;
-		Data startData = new Data(this.occupiesCube(), 0);
 		
 		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
 		Data goalData = new Data(this.goal, 0);
 		
-		while (this.occupiesCube() != this.goal){
+		if (this.occupiesCube() != this.goal){
 			this.Q.add(goalData);
 			this.CubeQueue.add(goalData.getCube());
 			
-			while((!this.CubeQueue.contains(startData.getCube()))&&(this.it.hasNext())){
+			while((!this.CubeQueue.contains(this.occupiesCube()))&&(this.it.hasNext())){
+				// zoek path
 				Data next = (Data) it.next();
 				this.search(next);
 			}
-			if (this.CubeQueue.contains(startData.getCube())){
-				Queue<Data> tempQueue = new LinkedList<Data>(Q);
-				Cube current = tempQueue.remove().getCube();
-				Cube next = tempQueue.peek().getCube();
-				int CostOfNext = tempQueue.peek().getCost();
-				
-				if (current.getSurroundingCubes().contains(next)){
-					ArrayList<Data> tryout = new ArrayList<Data>(Q);
-					if (IsCheapestOfNeighbors(current, CostOfNext, tryout)){
-						int dx = next.getXPosition() - current.getXPosition();
-						int dy = next.getYPosition() - current.getYPosition();
-						int dz = next.getZPosition() - current.getZPosition();
+			if (this.CubeQueue.contains(this.occupiesCube())){
+				// path available
+				while (this.CubeQueue.peek()!= null){
+					if (this.occupiesCube().getSurroundingCubes().contains(this.CubeQueue.peek())){
+						Cube next = this.CubeQueue.poll();
+						int dx = next.getXPosition() - this.occupiesCube().getXPosition();
+						int dy = next.getYPosition() - this.occupiesCube().getYPosition();
+						int dz = next.getZPosition() - this.occupiesCube().getZPosition();
 						moveToAdjacant(dx, dy, dz);
-						Q.remove();
 					}
 				}
-				else{
-					break;
-				}
 			}
-		}	
+			else // no path available
+				this.goal = null;
+		}
 	}
 	
 	
