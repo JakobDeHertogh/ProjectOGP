@@ -30,6 +30,13 @@ public class Faction {
 			unit.setFaction(this);
 			this.members.add(unit);
 	}
+	
+	public void removeUnit(Unit unit){
+		this.members.remove(unit);
+		if (this.members.size() == 0){
+			this.world.removeFaction(this);
+		}
+	}
 
 	private Set<Unit> members = new HashSet<Unit>();
 	

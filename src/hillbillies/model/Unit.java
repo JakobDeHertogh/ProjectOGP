@@ -78,6 +78,7 @@ public class Unit {
 		this.stamina= this.getMaxStaminaPoints();
 		this.hitpoints = this.getMaxHitPoints();
 		this.lifetime = 0;
+		this.isAlive = true;
 		
 		this.faction = null;
 		this.experiencePoints = 0;
@@ -105,7 +106,7 @@ public class Unit {
 	/**
 	 * @returns The number of Experience Points this Unit has.
 	 */
-	public int getExperiencePoints(){
+	public int getExpPoints(){
 		return this.experiencePoints;
 	}
 	/**
@@ -1002,6 +1003,21 @@ public class Unit {
 		return this.defaultBehaviorEnabled;
 	}
 	
+	/**
+	 * 
+	 */
+	public void die(){
+		if (this.isCarryingBoulder()){
+			this.putDownBoulder(this.occupiesCube());
+		}
+		if (this.isCarryingLog()){
+			this.putDownLog(this.occupiesCube());
+		}
+		
+		this.getFaction().removeUnit(this);
+		this.isAlive = false;
+	}
+	
 	public String name;
 	private int weight;
 	private int agility;	
@@ -1049,4 +1065,5 @@ public class Unit {
 	private Cube workAtCube;
 	private Boulder isCarryingBoulder = null;
 	private Log isCarryingLog = null;
+	public boolean isAlive;
 }

@@ -139,6 +139,10 @@ public class World {
 		return this.activeFactions;
 	}
 	
+	public void removeFaction(Faction faction){
+		this.activeFactions.remove(faction);
+	}
+	
 	
 	public Set<Unit> getActiveUnits(){
 		Set<Unit> result = new HashSet<Unit>();
@@ -159,6 +163,8 @@ public class World {
 		}
 		return result;
 	}
+	
+	
 	
 	private Set<Faction> activeFactions = new HashSet<Faction>();
 	private Set<Boulder> boulders = new HashSet<Boulder>();
