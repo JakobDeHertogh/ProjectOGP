@@ -753,22 +753,35 @@ public class Unit {
 				
 				if (current.getSurroundingCubes().contains(next)){
 					ArrayList<Data> tryout = new ArrayList<Data>(Q);
-					for (Data data: tryout){
-						if ((current.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostOfNext)){
-							break;
-						}
-						//TODO HIER MOET NOG DE MOVETOADJACENT WORDEN OPGEROEPEN
+					if (IsCheapestOfNeighbors(current, CostOfNext, tryout)){
+						int dx = next.getXPosition() - current.getXPosition();
+						int dy = next.getYPosition() - current.getYPosition();
+						int dz = next.getZPosition() - current.getZPosition();
+						moveToAdjacant(dx, dy, dz);
 					}
-					
-					
-					
-					int dx = next.getXPosition() - current.getXPosition();
-					int dy = next.getYPosition() - current.getYPosition();
-					int dz = next.getZPosition() - current.getZPosition();
-					moveToAdjacant(dx, dy, dz);
+				}
+				else{
+					break;
 				}
 			}
 		}	
+	}
+	
+	
+	/**
+	 * Checks whether the chosen neighbor of the startcube is the lowest cost of all neighbors.
+	 * @param start
+	 * @param CostofChosen
+	 * @param possibilities
+	 * @return
+	 */
+	public boolean IsCheapestOfNeighbors(Cube start, int CostofChosen, ArrayList<Data> possibilities){
+		for (Data data: possibilities){
+			if ((start.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostofChosen)){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	

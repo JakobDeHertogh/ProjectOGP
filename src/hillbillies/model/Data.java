@@ -54,7 +54,7 @@ public class Data {
 	public int getCost(){
 		return this.cost;
 	}
-	
+
 	
 private int[] position;
 private int cost;
