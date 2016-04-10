@@ -20,21 +20,8 @@ public class WorldTest {
 
 		assertTrue(TestWorld.getNbCubesX() == 3);
 		
-		System.out.println(TestWorld.getCubeTypeOf(1,2,0));
-		System.out.println(TestWorld.getCubeTypeOf(1,0,0));
-	}
-	
-	@Test
-	public void testAdjacants() throws ModelException{
-		
-		int[][][] types = new int[3][3][3];
-		types[1][2][0] = 1;
-		types[1][1][0] = 1;
-		types[1][0][1] = 3;
-		
-		World TestWorld = new World(types, new DefaultTerrainChangeListener());
-		
-	
+		assertTrue(TestWorld.getCubeTypeOf(1, 2, 0) == 1);
+		assertTrue(TestWorld.getCubeTypeOf(1, 0, 0) == 0);
 	}
 	
 	@Test 
@@ -51,9 +38,4 @@ public class WorldTest {
 		assertEquals(TestWorld.getCubeTypeOf(1, 2, 0), 0);
 	}
 	
-	@Test
-	public void testUnits() throws ModelException {
-		
-	}
-
 }
