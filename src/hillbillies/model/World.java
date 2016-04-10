@@ -46,6 +46,14 @@ public class World {
 		for (int[] i : caveInCubes){
 			caveInCube(i[0], i[1], i[2]);
 		}
+		
+		for (Unit unit : this.getActiveUnits()){
+			unit.advanceTime(dt);
+		}
+	}
+	
+	public ConnectedToBorder getCTB(){
+		return this.ctb;
 	}
 	
 	public boolean isSolidConnectedToBorder(int x, int y, int z){
@@ -184,7 +192,7 @@ public class World {
 	private Set<Faction> activeFactions = new HashSet<Faction>();
 	private Set<Boulder> boulders = new HashSet<Boulder>();
 	private Set<Log> logs = new HashSet<Log>();
-	private Set<int[]> caveInCubes = new HashSet<int[]>();
+	Set<int[]> caveInCubes = new HashSet<int[]>();
 	public Set<Cube> viableSpawnCubes = new HashSet<Cube>();
 	private Cube[][][] cubes;
 	

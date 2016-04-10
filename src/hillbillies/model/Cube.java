@@ -23,6 +23,10 @@ public class Cube {
 						
 	}
 	
+	public World getWorld(){
+		return this.world;
+	}
+	
 	public Set<Log> isOccupiedByLogs(){
 		Set <Log> result = new HashSet<Log>();
 		for (Log i : this.world.getLogs()){
@@ -116,7 +120,7 @@ public class Cube {
 					try {
 						result.add(this.world.getCubeAtPos(this.getXPosition()+(i-1), this.getYPosition()+(j-1), this.getZPosition()+(k-1)));
 					} catch (IndexOutOfBoundsException e) {
-						result.addAll(null);
+						result.add(null);
 					}
 				}
 			}

@@ -2,6 +2,8 @@ package hillbillies.tests.facade;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,9 +52,7 @@ public class Part2TestPartial {
 		facade.addUnit(unit, world);
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 0));
 		assertTrue(facade.isSolidConnectedToBorder(world, 1, 1, 1));
-		System.out.println("something");
 		facade.workAt(unit, 1, 1, 0);
-		System.out.println("nothing");
 		advanceTimeFor(facade, world, 100, 0.02);
 		assertEquals(TYPE_AIR, facade.getCubeType(world, 1, 1, 0));
 		assertEquals(TYPE_AIR, facade.getCubeType(world, 1, 1, 1));

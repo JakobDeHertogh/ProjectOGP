@@ -78,6 +78,8 @@ public enum WorkTypes {
 		public void execute(Unit unit, Cube cube){
 			try {
 				cube.caveIn();
+				cube.getWorld().caveInCubes.addAll(cube.getWorld().getCTB().changeSolidToPassable(
+						cube.getXPosition(), cube.getYPosition(), cube.getZPosition()));
 			} catch (ModelException e) {
 			}
 		}
@@ -91,6 +93,8 @@ public enum WorkTypes {
 		public void execute(Unit unit, Cube cube){
 			try {
 				cube.caveIn();
+				cube.getWorld().caveInCubes.addAll(cube.getWorld().getCTB().changeSolidToPassable(
+						cube.getXPosition(), cube.getYPosition(), cube.getZPosition()));
 			} catch (ModelException e) {
 			}
 		}
