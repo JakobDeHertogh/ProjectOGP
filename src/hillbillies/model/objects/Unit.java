@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.objects;
 
 import java.util.*;
 
@@ -7,6 +7,10 @@ import org.junit.Test.None;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.Data;
+import hillbillies.model.Faction;
+import hillbillies.model.world.Cube;
+import hillbillies.model.world.WorkTypes;
 import ogp.framework.util.ModelException;
 
 

@@ -1,8 +1,7 @@
 package hillbillies.part1.facade;
 
-import hillbillies.model.Unit;
 import ogp.framework.util.ModelException;
-
+import hillbillies.model.objects.Unit;
 import hillbillies.part1.facade.IFacade;
 
 public class Facade implements IFacade{

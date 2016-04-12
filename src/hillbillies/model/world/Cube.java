@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.world;
 
 
 
@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import hillbillies.model.objects.Boulder;
+import hillbillies.model.objects.Log;
+import hillbillies.model.objects.Unit;
 import ogp.framework.util.ModelException;
 
 public class Cube {

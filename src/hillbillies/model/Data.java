@@ -2,6 +2,8 @@ package hillbillies.model;
 
 import java.util.*;
 
+import hillbillies.model.world.Cube;
+
 /**
  * 
  * @author Kristof Van Cappellen

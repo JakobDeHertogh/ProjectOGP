@@ -1,5 +1,8 @@
-package hillbillies.model;
+package hillbillies.model.world;
 
+import hillbillies.model.objects.Boulder;
+import hillbillies.model.objects.Log;
+import hillbillies.model.objects.Unit;
 import ogp.framework.util.ModelException;
 
 public enum WorkTypes {
