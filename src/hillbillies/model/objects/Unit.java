@@ -752,9 +752,11 @@ public class Unit {
 			this.Q.add(goalData);
 			this.CubeQueue.add(goalData.getCube());
 			
-			while((!this.CubeQueue.contains(this.occupiesCube()))&&(this.it.hasNext())){
+			Iterator<Data> it = Q.iterator();	
+
+			while((!this.CubeQueue.contains(this.occupiesCube()))&&(it.hasNext())){
 				// zoek path
-				Data next = (Data) it.next();
+				Data next = it.next();
 				this.search(next);
 			}
 			if (this.CubeQueue.contains(this.occupiesCube())){
@@ -775,21 +777,21 @@ public class Unit {
 	}
 	
 	
-	/**
-	 * Checks whether the chosen neighbor of the startcube is the lowest cost of all neighbors.
-	 * @param start
-	 * @param CostofChosen
-	 * @param possibilities
-	 * @return
-	 */
-	public boolean IsCheapestOfNeighbors(Cube start, int CostofChosen, ArrayList<Data> possibilities){
-		for (Data data: possibilities){
-			if ((start.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostofChosen)){
-				return false;
-			}
-		}
-		return true;
-	}
+//	/**
+//	 * Checks whether the chosen neighbor of the startcube is the lowest cost of all neighbors.
+//	 * @param start
+//	 * @param CostofChosen
+//	 * @param possibilities
+//	 * @return
+//	 */
+//	public boolean IsCheapestOfNeighbors(Cube start, int CostofChosen, ArrayList<Data> possibilities){
+//		for (Data data: possibilities){
+//			if ((start.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostofChosen)){
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 	
 	
 	/**
@@ -799,12 +801,17 @@ public class Unit {
 	 */
 	public void search(Data data){
 		for (Cube cube : data.getCube().getSurroundingCubes()){
-			Data dataCube = new Data(cube, data.getCost() + 1);
-			if ((cube.isValidCube())&&(!this.Q.contains(dataCube)))
-				this.Q.add(dataCube);
-				this.CubeQueue.add(dataCube.getCube());
-				this.CostQueue.add(dataCube.getCost());
-				this.CubeListQ.add(dataCube.getCube());
+			try {
+				Data dataCube = new Data(cube, data.getCost() + 1);
+				if ((cube.isValidCube())&&(!this.Q.contains(dataCube))){
+					this.Q.add(dataCube);
+					this.CubeQueue.add(dataCube.getCube());
+					this.CostQueue.add(dataCube.getCost());
+					this.CubeListQ.add(dataCube.getCube());
+				}
+			} catch (NullPointerException e) {
+				continue;
+			}
 		}
 	}
 
@@ -1057,11 +1064,10 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	private Queue<Data> Q = new PriorityQueue<Data>();
-	private Queue<Cube> CubeQueue;
-	private Queue<Integer> CostQueue;
+	private Queue<Data> Q = new LinkedList<Data>();
+	private Queue<Cube> CubeQueue = new LinkedList<Cube>();
+	private Queue<Integer> CostQueue = new LinkedList<Integer>();
 	private ArrayList<Cube> CubeListQ;
-	private Iterator<Data> it = Q.iterator();	
 	private Cube goal;
 	private double[] adjacant;
 	private double lifetime;
