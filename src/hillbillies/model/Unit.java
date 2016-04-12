@@ -540,8 +540,6 @@ public class Unit {
 			if (this.distance < this.getCurrentSpeed()*dt){
 				this.setPosition(adjacant);
 				this.adjacant = null;
-				if (Arrays.equals(this.position, this.goal.getCubeCenter()))
-					this.goal = null;
 				this.currentspeed = 0;
 				
 				// Completed movement step => +1 exp
@@ -636,28 +634,30 @@ public class Unit {
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
 		// Eerst definieren we de positie waar we naartoe zullen bewegen.
-		double[] newposition = new double[3];
-		newposition[0]= Math.floor(this.getXPosition() + dx) + 0.5;
-		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
-		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
+//		double[] newposition = new double[3];
+//		newposition[0]= Math.floor(this.getXPosition() + dx) + 0.5;
+//		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
+//		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
 		
-		// We kijken of die een mogelijke positie is, indien niet ModelException
-		if (!isValidPosition(newposition))
+		Cube newCube = this.occupiesCube().getWorld().getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
+				this.occupiesCube().getYPosition() + dy, this.occupiesCube().getZPosition()+dz);
+		
+		if (! newCube.isValidCube())
 			throw new ModelException();
-		
-		this.adjacant = newposition;
+
+		this.adjacant = newCube.getCubeCenter();
 				
 		
 		// Goede positie -> berekenen verplaatsingssnelheid en -vector berekenen;
-		double xdistance =(newposition[0]-this.getXPosition());
-		double ydistance =(newposition[1]-this.getYPosition());
-		double zdistance = (newposition[2]-this.getZPosition());
+		double xdistance =(this.adjacant[0]-this.getXPosition());
+		double ydistance =(this.adjacant[1]-this.getYPosition());
+		double zdistance = (this.adjacant[2]-this.getZPosition());
 		
 		//We maken alle parameters klaar voor de verplaatsing naar een andere cube.
-		this.distance = Math.sqrt(Math.pow((newposition[0]-this.getXPosition()), 2) 
-				+ Math.pow((newposition[1]-this.getYPosition()), 2) 
-				+ Math.pow((newposition[2]-this.getZPosition()), 2));
-		setCurrentspeed(this.position, newposition);
+		this.distance = Math.sqrt(Math.pow((this.adjacant[0]-this.getXPosition()), 2) 
+				+ Math.pow((this.adjacant[1]-this.getYPosition()), 2) 
+				+ Math.pow((this.adjacant[2]-this.getZPosition()), 2));
+		setCurrentspeed(this.position, this.adjacant);
 		if (isSprinting())
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
