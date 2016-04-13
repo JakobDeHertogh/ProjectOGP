@@ -113,6 +113,10 @@ public class Unit {
 	public int getExpPoints(){
 		return this.experiencePoints;
 	}
+	
+	public void gainExperience(int dExp){
+		this.experiencePoints += dExp;
+	}
 	/**
 	 * Levels up a random trait of the Unit if a sufficient number of Experience Points have been collected.
 	 * @post 
@@ -495,7 +499,7 @@ public class Unit {
 		if (c != d){
 			this.rest(); //Om de drie minuten zal de unit automatisch gaan rusten.
 		}
-		
+		int currentExp = this.getExpPoints();
 		//MOGELIJKE ACTIES
 		// Falling
 
@@ -507,8 +511,6 @@ public class Unit {
 			}
 		}
 		else {
-			System.out.println("fallingto = " + this.fallingTo);
-			System.out.println("getZpos = " + this.getZPosition());
 			if (this.fallingTo - this.getZPosition() >= dt*this.fallingSpeed){
 				//this.setPosition(new double[]{this.getXPosition(), this.getYPosition(), this.fallingTo});
 				this.position[2] = this.fallingTo;
@@ -553,7 +555,7 @@ public class Unit {
 				this.currentspeed = 0;
 				
 				// Completed movement step => +1 exp
-				this.experiencePoints += 1;
+				this.gainExperience(1);
 			}
 			else {
 				double[] newposition = new double[3];
@@ -582,6 +584,7 @@ public class Unit {
 				for (WorkTypes i : WorkTypes.values()){
 					if (i.check(this, workAtCube)){
 						i.execute(this, workAtCube);
+						this.gainExperience(20);
 						break;
 					}
 				}
@@ -598,6 +601,9 @@ public class Unit {
 		else if (isdefending)
 			this.defendtime -= dt;
 		
+		int updatedExp = this.getExpPoints();
+		if (updatedExp/10 != currentExp/10)
+			this.levelUp();
 	}
 	
 	
