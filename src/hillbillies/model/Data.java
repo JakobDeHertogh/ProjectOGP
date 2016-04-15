@@ -16,10 +16,7 @@ import hillbillies.model.world.Cube;
 public class Data {
 	public Data(Cube cube, int cost){
 		
-		int xPos = cube.getXPosition();
-		int yPos = cube.getYPosition();
-		int zPos = cube.getZPosition();
-		this.position = new int[]{xPos, yPos, zPos};
+		this.position = new int[]{cube.getXPosition(), cube.getYPosition(), cube.getZPosition()};
 		this.setCost(cost);
 		this.cube = cube;
 	}
@@ -58,7 +55,6 @@ public class Data {
 	public int getCost(){
 		return this.cost;
 	}
-	
 	
 	private int[] position;
 	private int cost;
