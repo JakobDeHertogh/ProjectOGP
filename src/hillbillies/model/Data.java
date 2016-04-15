@@ -14,10 +14,10 @@ import hillbillies.model.world.Cube;
  *
  */
 public class Data {
-	public Data(Cube cube, int cost){
+	public Data(Cube cube, double priority){
 		
 		this.position = new int[]{cube.getXPosition(), cube.getYPosition(), cube.getZPosition()};
-		this.setCost(cost);
+		this.setPriority(priority);
 		this.cube = cube;
 	}
 	/**
@@ -38,25 +38,25 @@ public class Data {
 	 * 
 	 * @param cost
 	 */
-	public void setCost(int cost){
-		this.cost = cost;
+	public void setPriority(double priority){
+		this.priority = priority;
 	}
 	/**
 	 * Checks whether a given cost is a valid value.
 	 * @return True if and only if the the cost is greater than or equal to 0.
 	 * 			Else returns False.
 	 */
-	public boolean isValidCost(int cost){
-		return cost>=0;
+	public boolean isValidCost(double priority){
+		return priority>=0;
 	}
 	/**
 	 * Returns the current cost trait of the Data
 	 */
-	public int getCost(){
-		return this.cost;
+	public double getPriority(){
+		return this.priority;
 	}
 	
 	private int[] position;
-	private int cost;
+	private double priority;
 	private Cube cube;
 }
