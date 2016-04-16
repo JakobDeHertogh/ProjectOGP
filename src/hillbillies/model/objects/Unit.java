@@ -753,73 +753,50 @@ public class Unit {
 		
 		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
 		Data goalData = new Data(this.goal, 0);
-		
-		if (this.occupiesCube() != this.goal){
-			this.Q.add(goalData);
-			this.CubeQueue.add(goalData.getCube());
-			
-			Iterator<Data> it = Q.iterator();	
-
-			while((!this.CubeQueue.contains(this.occupiesCube()))&&(it.hasNext())){
-				// zoek path
-				Data next = it.next();
-				this.search(next);
+		Cube start = this.getFaction().getWorld().getCubeAtPos((int)this.getXPosition(), (int)this.getYPosition(), (int)this.getZPosition());
+		Path path = new Path(start, goal);
+		Stack<Cube> route = path.getRoute();
+		while(this.occupiesCube()!=goal){
+			if(route.isEmpty()){
+				throw new ModelException();
 			}
-			if (this.CubeQueue.contains(this.occupiesCube())){
-				// path available
-				while (this.CubeQueue.peek()!= null){
-					if (this.occupiesCube().getSurroundingCubes().contains(this.CubeQueue.peek())){
-						Cube next = this.CubeQueue.poll();
-						int dx = next.getXPosition() - this.occupiesCube().getXPosition();
-						int dy = next.getYPosition() - this.occupiesCube().getYPosition();
-						int dz = next.getZPosition() - this.occupiesCube().getZPosition();
-						moveToAdjacant(dx, dy, dz);
-					}
-				}
+			else{
+				Cube next = route.pop();
+				int dx = next.getXPosition() - this.occupiesCube().getXPosition();
+				int dy = next.getYPosition() - this.occupiesCube().getYPosition();
+				int dz = next.getZPosition() - this.occupiesCube().getZPosition();
+				moveToAdjacant(dx, dy, dz);
 			}
-			else // no path available
-				this.goal = null;
 		}
 	}
-	
-	
-//	/**
-//	 * Checks whether the chosen neighbor of the startcube is the lowest cost of all neighbors.
-//	 * @param start
-//	 * @param CostofChosen
-//	 * @param possibilities
-//	 * @return
-//	 */
-//	public boolean IsCheapestOfNeighbors(Cube start, int CostofChosen, ArrayList<Data> possibilities){
-//		for (Data data: posseeibilities){
-//			if ((start.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostofChosen)){
-//				return false;
+//			this.Q.add(goalData);
+//			this.CubeQueue.add(goalData.getCube());
+//			
+//			Iterator<Data> it = Q.iterator();	
+//
+//			while((!this.CubeQueue.contains(this.occupiesCube()))&&(it.hasNext())){
+//				// zoek path
+//				Data next = it.next();
+//				this.search(next);
 //			}
+//			if (this.CubeQueue.contains(this.occupiesCube())){
+//				// path available
+//				while (this.CubeQueue.peek()!= null){
+//					if (this.occupiesCube().getSurroundingCubes().contains(this.CubeQueue.peek())){
+//						Cube next = this.CubeQueue.poll();
+//						int dx = next.getXPosition() - this.occupiesCube().getXPosition();
+//						int dy = next.getYPosition() - this.occupiesCube().getYPosition();
+//						int dz = next.getZPosition() - this.occupiesCube().getZPosition();
+//						moveToAdjacant(dx, dy, dz);
+//					}
+//				}
+//			}
+//			else // no path available
+//				this.goal = null;
 //		}
-//		return true;
 //	}
 	
-	
-	/**
-	 * Method that searches the route that needs to be taken to reach the goal data.
-	 * @param data The Data of the Unit's destination.
-	 * @post
-	 */
-	public void search(Data data){
-		for (Cube cube : data.getCube().getSurroundingCubes()){
-			try {
-				Data dataCube = new Data(cube, data.getCost() + 1);
-				if ((cube.isValidCube())&&(!this.Q.contains(dataCube))){
-					this.Q.add(dataCube);
-					this.CubeQueue.add(dataCube.getCube());
-					this.CostQueue.add(dataCube.getCost());
-					this.CubeListQ.add(dataCube.getCube());
-				}
-			} catch (NullPointerException e) {
-				continue;
-			}
-		}
-	}
+
 
 	
 	/**

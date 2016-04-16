@@ -1,6 +1,5 @@
 package hillbillies.model.objects;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import hillbillies.model.world.*;
 import hillbillies.model.Data;
@@ -9,33 +8,27 @@ public class Path {
 	
 	
 	
-	public Path(Unit unit, Cube start, Cube end){
-		this.searchPath(start, end);
-		this.setStart(start);
-		this.setEnd(end);
-	}
-	
-	public double CalcCost(Cube a, Cube b){
-		int[] aPos = a.getPosition();
-		int[] bPos = b.getPosition();
-		return Math.abs(aPos[0]-bPos[0]) + Math.abs(aPos[1]-bPos[1]) + Math.abs(aPos[2]-bPos[2]);
-	}
-	
-	public void searchPath(Cube start, Cube end){
+	public Path(Cube start, Cube end){
+		
+		
+		// HET VINDEN VAN HET OMGEKEERDE PAD (Opzoeken in came_from geeft de vorige cube in de gevolgde weg)
 		PriorityQueue<Data> frontier = new PriorityQueue<Data>();
 		Data startData = new Data(start, 0);
 		frontier.add(startData);
 		HashMap<Cube, Cube>  came_from= new HashMap<Cube, Cube>();
 		HashMap<Cube, Double> Cost_so_far = new HashMap<Cube, Double>();
+		Stack<Cube> Path = new Stack<Cube>();
 		came_from.put(start, null);
 		Cost_so_far.put(start, 0.0);
 		
 		
 		
 		while (!frontier.isEmpty()){
-			Cube current = frontier.peek().getCube();
+			Cube current = frontier.remove().getCube();
 			
 			if (current == end) {
+				this.came_from = came_from;
+				this.Cost_so_far = Cost_so_far;
 				break;
 			}
 			
@@ -51,10 +44,29 @@ public class Path {
 				}
 			}
 		}
-		this.came_from = came_from;
-		this.Cost_so_far = Cost_so_far;
+		// HET OPBOUWEN VAN HET PAD IN DE JUISTE RICHTING
+		Cube latestCube = end;
+		while(came_from.get(latestCube) != null){
+			Path.push(latestCube);
+			latestCube = came_from.get(latestCube);
+		}
+		this.path = Path;
 		
+		
+		this.setStart(start);
+		this.setEnd(end);
 	}
+	
+	public double CalcCost(Cube a, Cube b){
+		int[] aPos = a.getPosition();
+		int[] bPos = b.getPosition();
+		return Math.abs(aPos[0]-bPos[0]) + Math.abs(aPos[1]-bPos[1]) + Math.abs(aPos[2]-bPos[2]);
+	}
+	
+	public Stack<Cube> getRoute(){
+		return this.path;
+	}
+
 	
 	public Cube getStart(){
 		return this.start;
@@ -77,4 +89,5 @@ public class Path {
 	private Cube end;
 	private HashMap<Cube, Cube>  came_from;
 	private HashMap<Cube, Double> Cost_so_far;
+	private Stack<Cube> path;
 }
