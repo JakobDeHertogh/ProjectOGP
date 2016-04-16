@@ -41,7 +41,7 @@ public class Path {
 			
 			for (Cube next: current.getSurroundingCubes()){
 				double new_cost = Cost_so_far.get(current)+ 1;
-				if ((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))){
+				if (((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))) && (next.isValidCube())){
 					Cost_so_far.put(next, new_cost);
 					double priority = new_cost + CalcCost(end, next);
 					Data nextData = new Data(next, priority);

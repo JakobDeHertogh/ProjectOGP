@@ -791,7 +791,7 @@ public class Unit {
 //	 * @return
 //	 */
 //	public boolean IsCheapestOfNeighbors(Cube start, int CostofChosen, ArrayList<Data> possibilities){
-//		for (Data data: possibilities){
+//		for (Data data: posseeibilities){
 //			if ((start.getSurroundingCubes().contains(data.getCube())) &&(data.getCost() < CostofChosen)){
 //				return false;
 //			}
