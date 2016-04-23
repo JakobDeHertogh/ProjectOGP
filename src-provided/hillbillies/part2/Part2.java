@@ -32,7 +32,7 @@ public class Part2 extends HillbilliesApplication<Part2Options, IFacade, IHillbi
 
 	public static void main(String[] args) {
 		Application.launch(args);
-	}
+	} 
 
 	@Override
 	protected String getTitle() {

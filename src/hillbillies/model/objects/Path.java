@@ -12,7 +12,7 @@ public class Path {
 		
 		
 		// HET VINDEN VAN HET OMGEKEERDE PAD (Opzoeken in came_from geeft de vorige cube in de gevolgde weg)
-		PriorityQueue<Data> frontier = new PriorityQueue<Data>();
+		LinkedList<Data> frontier = new LinkedList<Data>();
 		Data startData = new Data(start, 0);
 		frontier.add(startData);
 		HashMap<Cube, Cube>  came_from= new HashMap<Cube, Cube>();
@@ -33,14 +33,20 @@ public class Path {
 			}
 			
 			for (Cube next: current.getSurroundingCubes()){
-				double new_cost = Cost_so_far.get(current)+ 1;
-				if (((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))) && (next.isValidCube())){
-					Cost_so_far.put(next, new_cost);
-					double priority = new_cost + CalcCost(end, next);
-					Data nextData = new Data(next, priority);
-					frontier.add(nextData);
-					came_from.put(next, current);
-					
+				try {
+					double new_cost = Cost_so_far.get(current)+ 1;
+					if (((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))) && (next.isValidCube())){
+						System.out.println("current " + Arrays.toString(current.getPosition()));
+						System.out.println("next " + Arrays.toString(next.getPosition()));
+						Cost_so_far.put(next, new_cost);
+						double priority = new_cost + CalcCost(end, next);
+						Data nextData = new Data(next, priority);
+						frontier.add(nextData);
+						came_from.put(next, current);
+						
+					}
+				} catch (NullPointerException e) {
+					continue;
 				}
 			}
 		}

@@ -139,7 +139,6 @@ public class World {
 		}
 		if (!unit.occupiesCube().isValidCube())
 			unit.setPosition(this.getRandomSpawnCube().getCubeCenter());
-		System.out.println(Arrays.toString(unit.getPosition()));
 	}
 	
 	public Cube getRandomSpawnCube(){
