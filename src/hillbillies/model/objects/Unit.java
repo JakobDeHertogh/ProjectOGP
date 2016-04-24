@@ -752,49 +752,16 @@ public class Unit {
 		this.worktime = 0;
 		
 		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
-		Data goalData = new Data(this.goal, 0);
-		Cube start = this.getFaction().getWorld().getCubeAtPos((int)this.getXPosition(), (int)this.getYPosition(), (int)this.getZPosition());
+		Cube start = this.occupiesCube();
 		Path path = new Path(start, goal);
-		Stack<Cube> route = path.getRoute();
-		while(this.occupiesCube()!=goal){
-			if(route.isEmpty()){
-				throw new ModelException();
-			}
-			else{
-				Cube next = route.pop();
-				int dx = next.getXPosition() - this.occupiesCube().getXPosition();
-				int dy = next.getYPosition() - this.occupiesCube().getYPosition();
-				int dz = next.getZPosition() - this.occupiesCube().getZPosition();
-				moveToAdjacant(dx, dy, dz);
-			}
-		}
+		Cube next = path.getRoute().pop();
+		
+		int dx = next.getXPosition() - start.getXPosition();
+		int dy = next.getYPosition() - start.getYPosition();
+		int dz = next.getZPosition() - start.getZPosition();
+		this.moveToAdjacant(dx, dy, dz);
+		
 	}
-//			this.Q.add(goalData);
-//			this.CubeQueue.add(goalData.getCube());
-//			
-//			Iterator<Data> it = Q.iterator();	
-//
-//			while((!this.CubeQueue.contains(this.occupiesCube()))&&(it.hasNext())){
-//				// zoek path
-//				Data next = it.next();
-//				this.search(next);
-//			}
-//			if (this.CubeQueue.contains(this.occupiesCube())){
-//				// path available
-//				while (this.CubeQueue.peek()!= null){
-//					if (this.occupiesCube().getSurroundingCubes().contains(this.CubeQueue.peek())){
-//						Cube next = this.CubeQueue.poll();
-//						int dx = next.getXPosition() - this.occupiesCube().getXPosition();
-//						int dy = next.getYPosition() - this.occupiesCube().getYPosition();
-//						int dz = next.getZPosition() - this.occupiesCube().getZPosition();
-//						moveToAdjacant(dx, dy, dz);
-//					}
-//				}
-//			}
-//			else // no path available
-//				this.goal = null;
-//		}
-//	}
 	
 
 

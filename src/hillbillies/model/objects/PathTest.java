@@ -1,5 +1,6 @@
 package hillbillies.model.objects;
 
+import static hillbillies.tests.util.PositionAsserts.assertDoublePositionEquals;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -34,6 +35,11 @@ public class PathTest {
 		
 		Unit TestUnit = new Unit("Test", new int[]{0,0,0}, 50,50,50,50, false);
 		TestWorld.addUnit(TestUnit);
+		TestUnit.moveTo(new int[]{0,2,0});
+		for (int i = 0; i<100; i++)
+			TestWorld.advanceTime(0.1);
+		assertDoublePositionEquals("Position must be the center of the cube", 0.5, 2.5, 0.5,
+				TestUnit.getPosition());		
 		
 		
 	}
