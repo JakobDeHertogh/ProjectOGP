@@ -4,7 +4,7 @@ import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import ogp.framework.util.ModelException;
 /**
- * A class of game Logs. Each Unit has a position and a weight. Logs can move and fall.
+ * A class of game Logs. Each Log has a position and a weight. Logs can move and fall.
  * @invar	The starting value for the weight of every Log must be valid.
  * 			| isValidWeight(weight)
  * 

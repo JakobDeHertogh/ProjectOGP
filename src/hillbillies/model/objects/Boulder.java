@@ -4,8 +4,24 @@ import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import ogp.framework.util.ModelException;
 
+/**
+ * A class of game Boulders. Each Boulder has a position and a weight. Boulders can move and fall.
+ * @invar	The starting value for the weight of every Boulder must be valid.
+ * 			| isValidWeight(weight)
+ * 
+ * @version 0.51
+ * @author Kristof Van Cappellen
+ * @author Jakob De Herthogh
+ *
+ */
 public class Boulder {
 	
+	/**
+	 * 
+	 * @param world
+	 * @param startPosition
+	 * @throws ModelException If the given weight is not valid.
+	 */
 	public Boulder( World world, int[] startPosition) throws ModelException{
 		this.world = world;
 		this.setWeight(weight);
@@ -19,6 +35,9 @@ public class Boulder {
 		this.isTerminated = false;
 	}
 	
+	/**
+	 * Returns the coordinate of the Cube which is occupied by this Boulder.
+	 */
 	public int[] getCubeCoordinate (){
 		int[] cubecoordinate = new int[3];
 		cubecoordinate[0] = (int)Math.floor(this.position[0]);
@@ -66,7 +85,7 @@ public class Boulder {
 	public int getWeight() {
 		return this.weight;
 	}
-
+	
 	public void setWeight(int weight) throws ModelException{
 		if (!isValidWeight(weight)){
 			throw new ModelException("Invalid weight");
@@ -75,6 +94,10 @@ public class Boulder {
 		
 	}
 	
+	/**
+	 * Adapts the Boulder's current position on whether it is falling or being carried.
+	 * @param dt
+	 */
 	public void advanceTime(double dt){
 		if (this.isCarriedBy != null)
 			this.position = this.isCarriedBy.getPosition();
@@ -89,11 +112,17 @@ public class Boulder {
 				this.position[2] += dt*this.fallSpeed;
 		}
 	}
+	
+	/**
+	 * Removes this Log from the game world.
+	 */
 	public void terminate() {
 		this.isTerminated = true;
 		this.world.removeBoulder(this);
 	}
-	
+	/**
+	 * Checks whether this Boulder is terminated.
+	 */
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
