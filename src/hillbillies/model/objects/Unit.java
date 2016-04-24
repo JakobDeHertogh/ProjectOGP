@@ -556,6 +556,9 @@ public class Unit {
 				
 				// Completed movement step => +1 exp
 				this.gainExperience(1);
+				
+				if (this.occupiesCube() == this.goal)
+					this.goal = null;
 			}
 			else {
 				double[] newposition = new double[3];
