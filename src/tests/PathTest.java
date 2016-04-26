@@ -1,4 +1,4 @@
-package hillbillies.model.objects;
+package tests;
 
 import static hillbillies.tests.util.PositionAsserts.assertDoublePositionEquals;
 import static org.junit.Assert.*;
@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import hillbillies.model.objects.Path;
+import hillbillies.model.objects.Unit;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;

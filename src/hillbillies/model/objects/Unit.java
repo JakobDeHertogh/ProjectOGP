@@ -11,6 +11,7 @@ import hillbillies.model.Data;
 import hillbillies.model.Faction;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.WorkTypes;
+import hillbillies.model.world.World;
 import ogp.framework.util.ModelException;
 
 
@@ -84,7 +85,6 @@ public class Unit {
 		this.lifetime = 0;
 		this.isAlive = true;
 		
-		this.faction = null;
 		this.experiencePoints = 0;
 		this.fallingTo = this.getZPosition();
 	}
@@ -102,8 +102,10 @@ public class Unit {
 	 * @post	If the Unit did not have a faction, then the faction will be set to the given faction.
 	 */
 	public void setFaction(Faction faction){
-		if (this.faction == null)// of isTerminated()
+		if (this.faction == null){// of isTerminated()
 			this.faction = faction;
+			this.world = faction.getWorld();
+		}
 	}
 	
 	// EXPERIENCE
@@ -136,8 +138,8 @@ public class Unit {
 	 * 
 	 * @return Returns the cube which the Unit occupies.
 	 */
-	public Cube occupiesCube(){
-		return this.faction.getWorld().getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
+	public Cube occupiesCube(){			
+		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
 	
 	/**
@@ -222,7 +224,21 @@ public class Unit {
 				| (position[2]>=minZPos) && (position[2]<maxZPos))
 	 */
 	public boolean isValidPosition(double[] pos){
+		System.out.println((int)pos[0]);
+		if (this.world != null){
+			
+			try{
+				Cube cube = this.world.getCubeAtPos((int)pos[0], (int)pos[1], (int)pos[2]);
+				if (!cube.isValidCube())
+					return false;
+			} catch (IndexOutOfBoundsException ex){
+				return false;
+			}
+			
+		}
 		
+		
+
 		return ((pos[0]>=minXPos) && (pos[0]<maxXPos) && 
 				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
 				(pos[2]>=minZPos) && (pos[2]<maxZPos));
@@ -659,13 +675,17 @@ public class Unit {
 //		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
 //		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
 		
-		Cube newCube = this.occupiesCube().getWorld().getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
-				this.occupiesCube().getYPosition() + dy, this.occupiesCube().getZPosition()+dz);
-		
-		if (! newCube.isValidCube())
-			throw new ModelException();
-
-		this.adjacant = newCube.getCubeCenter();
+		try{
+			Cube newCube = this.world.getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
+					this.occupiesCube().getYPosition() + dy, this.occupiesCube().getZPosition()+dz);
+			
+			if (! newCube.isValidCube())
+				throw new ModelException("Invalid target cube");
+			this.adjacant = newCube.getCubeCenter();
+			
+		} catch (IndexOutOfBoundsException ex){
+			throw new ModelException("You can't move outside the world");
+		}		
 				
 		
 		// Goede positie -> berekenen verplaatsingssnelheid en -vector berekenen;
@@ -754,7 +774,11 @@ public class Unit {
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.worktime = 0;
 		
-		this.goal = this.getFaction().getWorld().getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
+		try{
+			this.goal = this.world.getCubeAtPos(targetcube[0], targetcube[1], targetcube[2]);
+		} catch (IndexOutOfBoundsException ex){
+			throw new ModelException("Given position out of bounds");
+		}
 		Cube start = this.occupiesCube();
 		Path path = new Path(start, goal);
 		Cube next = path.getRoute().pop();
@@ -1024,7 +1048,8 @@ public class Unit {
 	private Cube goal;
 	private double[] adjacant;
 	private double lifetime;
-	private Faction faction;
+	private Faction faction = null;
+	private World world = null; 
 	private int experiencePoints;
 	private boolean defaultBehaviorEnabled;
 	private double fallingTo;

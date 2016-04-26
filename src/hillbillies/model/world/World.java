@@ -137,7 +137,7 @@ public class World {
 		else {
 			this.getSmallestFaction().addUnit(unit);
 		}
-		if (!unit.occupiesCube().isValidCube())
+		if (!unit.isValidPosition(unit.getPosition()))
 			unit.setPosition(this.getRandomSpawnCube().getCubeCenter());
 	}
 	
