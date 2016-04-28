@@ -99,16 +99,7 @@ public class Log {
 	public double getzPosition() {
 		return this.position[2];
 	}
-	
-	/**
-	 * Checks whether the given weight is a valid option for a Log's weight.
-	 * @param weight
-	 * @return true if the given weight lies between the given lowerlimit and upperlimit.
-	 * @return false if the given weight does not lie between the given lowerlimit and upperlimit.
-	 */
-	public boolean isValidWeight(int weight){
-		return ((weight>lowerLimit)&&(weight<upperLimit));
-	}
+
 	/**
 	 * 
 	 * @return The weight of this Log.
@@ -122,9 +113,6 @@ public class Log {
 	 * @throws ModelException if the given weight is not a valid weight for a Log.
 	 */
 	public void setWeight(int weight) throws ModelException{
-		if (!isValidWeight(weight)){
-			throw new ModelException("Invalid weight");
-		}
 		this.weight = weight;
 		
 	}
@@ -169,8 +157,6 @@ public class Log {
 	
 
 	private int weight;
-	private int lowerLimit = 10;
-	private int upperLimit = 50;
 	private double fallingTo;
 	private int fallSpeed = -3;
 	

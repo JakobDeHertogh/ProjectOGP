@@ -36,8 +36,6 @@ public class Path {
 				try {
 					double new_cost = Cost_so_far.get(current)+ 1;
 					if (((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))) && (next.isValidCube())){
-						System.out.println("current " + Arrays.toString(current.getPosition()));
-						System.out.println("next " + Arrays.toString(next.getPosition()));
 						Cost_so_far.put(next, new_cost);
 						double priority = new_cost + CalcCost(end, next);
 						Data nextData = new Data(next, priority);

@@ -24,6 +24,8 @@ public class Boulder {
 	 */
 	public Boulder( World world, int[] startPosition) throws ModelException{
 		this.world = world;
+		
+		int weight = (int)((Math.random()*this.weightRange)+this.minWeight);
 		this.setWeight(weight);
 		
 		double[] pos = new double[startPosition.length];
@@ -77,19 +79,12 @@ public class Boulder {
 	public double getzPosition() {
 		return this.position[2];
 	}
-		
-	public boolean isValidWeight(int weight){
-		return ((weight>lowerLimit)&&(weight<upperLimit));
-	}
 	
 	public int getWeight() {
 		return this.weight;
 	}
 	
 	public void setWeight(int weight) throws ModelException{
-		if (!isValidWeight(weight)){
-			throw new ModelException("Invalid weight");
-		}
 		this.weight = weight;
 		
 	}
@@ -129,15 +124,15 @@ public class Boulder {
 	
 	private World world;
 	private double[] position;
-	private double zPosition;
-	
 
 	private int weight;
-	private int lowerLimit = 10;
-	private int upperLimit = 50;
 	private double fallingTo;
 	private int fallSpeed = -3;
 	private boolean isTerminated;
 
+	private final int minWeight = 10;
+	private final int maxWeight = 50;
+	private final int weightRange = this.maxWeight - this.minWeight;
+	
 	Unit isCarriedBy = null;
 }

@@ -224,9 +224,7 @@ public class Unit {
 				| (position[2]>=minZPos) && (position[2]<maxZPos))
 	 */
 	public boolean isValidPosition(double[] pos){
-		System.out.println((int)pos[0]);
 		if (this.world != null){
-			
 			try{
 				Cube cube = this.world.getCubeAtPos((int)pos[0], (int)pos[1], (int)pos[2]);
 				if (!cube.isValidCube())
@@ -620,9 +618,12 @@ public class Unit {
 		else if (isdefending)
 			this.defendtime -= dt;
 		
+		//Update Experience
 		int updatedExp = this.getExpPoints();
-		if (updatedExp/10 != currentExp/10)
+		while (updatedExp/10 != currentExp/10){
 			this.levelUp();
+			currentExp += 10;
+		}
 	}
 	
 	

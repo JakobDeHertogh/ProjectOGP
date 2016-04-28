@@ -26,13 +26,7 @@ public class PathTest {
 		
 		World TestWorld = new World(types, new DefaultTerrainChangeListener());
 		
-		Path path = new Path(TestWorld.getCubeAtPos(0, 2, 0), TestWorld.getCubeAtPos(2, 2, 0));
-		System.out.println("finished");
-		System.out.println(Arrays.toString(path.getRoute().peek().getPosition()));
-		for (Cube cube : path.getRoute())
-			System.out.println(Arrays.toString(cube.getPosition()));
-		
-		
+		Path path = new Path(TestWorld.getCubeAtPos(0, 2, 0), TestWorld.getCubeAtPos(2, 2, 0));	
 		
 		
 		Unit TestUnit = new Unit("Test", new int[]{0,0,0}, 50,50,50,50, false);
