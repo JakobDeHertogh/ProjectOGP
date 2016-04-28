@@ -173,11 +173,12 @@ public class UnitTest {
 		types[1][0][1] = 3;
 		types[1][1][1] = 1;
 		types[0][1][1] = 3;
+		
 		World TestWorld = new World(types, new DefaultTerrainChangeListener());
 		TestWorld.addUnit(Kobbe);
 		TestWorld.addBoulder(new int[]{0,1,1});
 		TestWorld.addLog(new int[]{0,1,1});
-				
+		
 		Kobbe.workAt(1, 2, 0);
 		assertTrue("The unit should be working", Kobbe.isWorking());
 		for (int i= 0; i<200; i++){
@@ -186,10 +187,8 @@ public class UnitTest {
 		assertTrue("The target cube should be of type AIR", TestWorld.getCubeTypeOf(1, 2, 0) == 0);
 		assertTrue("The unit should have stopped working", !Kobbe.isWorking());
 		assertTrue("The unit should have upgraded two attributes", 
-				Kobbe.getAgility() + Kobbe.getStrength() + Kobbe.getToughness() + Kobbe.getWeight() == 202 ||
-				// it may happen that both upgrades happen in strenght or agility, causing weight to increase as well. 
-				Kobbe.getAgility() + Kobbe.getStrength() + Kobbe.getToughness() + Kobbe.getWeight() == 203);	
-		
+				Kobbe.getAgility() + Kobbe.getStrength() + Kobbe.getToughness() == 152);
+						
 		Kobbe.workAt(0,1,1);
 		for(int i=0; i<200; i++)
 			TestWorld.advanceTime(0.1);
@@ -201,11 +200,37 @@ public class UnitTest {
 	}
 	
 	@Test
-	public void testLevelUp() throws ModelException{
-		Unit Kobbe = new Unit("Kobbe", new int[] {10,10,10},50,50,50,50, false);
-		Kobbe.levelUp();
-		Kobbe.levelUp();
-		Kobbe.levelUp();
-		assertEquals(Kobbe.getStrength() + Kobbe.getToughness() + Kobbe.getAgility(), 153);
+	public void testRest() throws ModelException{
+		Unit Kobbe = new Unit("Kobbe", new int[] {0,2,0},50,50,50,50, false);
+		int[][][] types = new int[3][3][3];
+		types[1][2][0] = 1;
+		types[1][1][0] = 1;
+		types[1][0][1] = 3;
+		types[1][1][1] = 1;
+		types[0][1][1] = 3;
+		
+		World TestWorld = new World(types, new DefaultTerrainChangeListener());
+		TestWorld.addUnit(Kobbe);
+		
+		Kobbe.rest();
+		assertTrue("The unit should be resting", Kobbe.isResting());
+		Kobbe.advanceTime(0.1);
+		assertTrue("The unit should have stopped resting since it's at maxHP", ! Kobbe.isResting());
+		
+		Kobbe.setHitpoints(20);
+		Kobbe.setStamina(20);
+		Kobbe.rest();
+		for (int i = 0; i < 20; i++){
+			Kobbe.advanceTime(0.1);
+		}
+		assertTrue("The unit should have restored some of its HP", Kobbe.getCurrentHitPoints() > 20);
+		assertEquals("The unit should not have restored stamina yet", Kobbe.getCurrentStaminaPoint(), 20);
+		for (int i = 0; i < 500; i++){
+			Kobbe.advanceTime(0.1);
+		}
+		assertEquals("The unit should have restored all of its HP", Kobbe.getCurrentHitPoints(), Kobbe.getMaxHitPoints());
+		assertEquals("The unit should have restored all of its stamina", Kobbe.getCurrentStaminaPoint(), Kobbe.getMaxStaminaPoints());
+		assertTrue("The unit should have stopped resting", !Kobbe.isResting());
 	}
+
 }

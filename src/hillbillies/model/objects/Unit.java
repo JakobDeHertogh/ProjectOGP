@@ -234,12 +234,7 @@ public class Unit {
 			}
 			
 		}
-		
-		
-
-		return ((pos[0]>=minXPos) && (pos[0]<maxXPos) && 
-				(pos[1]>=minYPos) && (pos[1]<maxYPos) && 
-				(pos[2]>=minZPos) && (pos[2]<maxZPos));
+		return true;
 	}
 	
 	/**
@@ -549,11 +544,11 @@ public class Unit {
 			else if (this.getRegenHptime()>= dt)
 				setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));
 			
-			else if (this.getRegenStaminatime() <= dt){
+			if (this.getRegenStaminatime() <= dt){
 				this.setStamina(this.getMaxStaminaPoints());
 				b = true;
 			}
-			else 
+			else if (a== true)
 				this.setStamina(this.stamina + (this.toughness * dt)/(100*0.2));
 			
 			if (a&&b)
@@ -1024,12 +1019,6 @@ public class Unit {
 	private double orientation;
 	private double distance;
 	private double currentspeed;
-	private static int minXPos = 0;
-	private static int maxXPos = 50;
-	private static int minYPos = 0;
-	private static int maxYPos = 50;
-	private static int minZPos = 0;
-	private static int maxZPos = 50;
 	private static int minStartVal = 25;
 	private static int maxStartVal = 100;
 	private double xspeed;

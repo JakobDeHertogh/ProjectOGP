@@ -268,7 +268,7 @@ public class Facade implements IFacade{
 	@Override
 	public Unit spawnUnit(World world, boolean enableDefaultBehavior) throws ModelException {
 		// TODO Auto-generated method stub
-		Unit RandomUnit = new Unit("Random", new int []{0,0,0}, 50,50,50,50, enableDefaultBehavior);
+		Unit RandomUnit = new Unit("Random", world.getRandomSpawnCube().getPosition(), 50,50,50,50, enableDefaultBehavior);
 		world.addUnit(RandomUnit);
 		return RandomUnit;
 	}

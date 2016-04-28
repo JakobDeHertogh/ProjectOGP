@@ -137,8 +137,15 @@ public class World {
 		else {
 			this.getSmallestFaction().addUnit(unit);
 		}
-		if (!unit.isValidPosition(unit.getPosition()))
-			unit.setPosition(this.getRandomSpawnCube().getCubeCenter());
+		// some originally valid positions may have caved in. Find another viable spot.
+		while (! unit.isValidPosition(unit.getPosition())){
+			try{
+				Cube a = this.getRandomSpawnCube();
+				unit.setPosition(a.getCubeCenter());
+			} catch (ModelException ex){
+				continue;
+			}
+		}
 	}
 	
 	public Cube getRandomSpawnCube(){
