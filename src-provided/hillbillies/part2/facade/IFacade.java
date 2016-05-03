@@ -3,10 +3,11 @@ package hillbillies.part2.facade;
 import java.util.Set;
 
 import hillbillies.model.Faction;
-import hillbillies.model.objects.Boulder;
-import hillbillies.model.objects.Log;
-import hillbillies.model.objects.Unit;
-import hillbillies.model.world.World;
+import hillbillies.model.Unit;
+import hillbillies.model.World;
+import hillbillies.model.Boulder;
+import hillbillies.model.Log;
+
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
@@ -240,7 +241,7 @@ public interface IFacade extends hillbillies.part1.facade.IFacade {
 	 *            Whether the unit should act according to the default behaviour
 	 *            or not.
 	 * 
-	 * @return The newly spawned unit.
+	 * @return The newly spawned unit, or null if no unit could be spawned.
 	 * 
 	 * @throws ModelException
 	 *             A precondition was violated or an exception was thrown.

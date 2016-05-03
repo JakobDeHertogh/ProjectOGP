@@ -3,8 +3,6 @@ package hillbillies.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import hillbillies.model.objects.Unit;
-import hillbillies.model.world.World;
 import ogp.framework.util.ModelException;
 
 public class Faction {

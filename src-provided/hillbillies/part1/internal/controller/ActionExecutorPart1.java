@@ -9,7 +9,7 @@ import hillbillies.common.internal.controller.CubeSelectionMode.Cube;
 import hillbillies.common.internal.controller.UnitSelectionMode;
 import hillbillies.common.internal.inputmodes.InputMode;
 import hillbillies.common.internal.selection.Selection;
-import hillbillies.model.objects.Unit;
+import hillbillies.model.Unit;
 import hillbillies.part1.facade.IFacade;
 import ogp.framework.util.ModelException;
 
@@ -18,7 +18,7 @@ public class ActionExecutorPart1 extends BaseActionExecutor {
 	public ActionExecutorPart1(IGameController1<?> game, Consumer<ModelException> errorHandler) {
 		super(game, errorHandler);
 	}
-	
+
 	@Override
 	public IGameController1<?> getGame() {
 		return (IGameController1<?>) super.getGame();
@@ -91,6 +91,7 @@ public class ActionExecutorPart1 extends BaseActionExecutor {
 	protected <T> void select(String info, AbstractSelectionMode<T> selMode, Consumer<T> action) {
 		getGame().getView().setStatusText(info);
 		InputMode oldMode = getGame().getCurrentInputMode();
+		selMode.setOnCanceled(() -> getGame().switchInputMode(oldMode));
 		selMode.setOnSelected(unit -> {
 			getGame().switchInputMode(oldMode);
 			if (unit != null) {
@@ -181,5 +182,5 @@ public class ActionExecutorPart1 extends BaseActionExecutor {
 			}
 		}
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package hillbillies.model.world;
+package hillbillies.model;
 
 public enum CubeType {
 	

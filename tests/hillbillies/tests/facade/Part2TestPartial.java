@@ -7,8 +7,8 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import hillbillies.model.objects.Unit;
-import hillbillies.model.world.World;
+import hillbillies.model.Unit;
+import hillbillies.model.World;
 import hillbillies.part2.facade.Facade;
 import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;

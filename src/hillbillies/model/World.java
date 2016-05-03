@@ -1,4 +1,4 @@
-package hillbillies.model.world;
+package hillbillies.model;
 
 
 import java.util.Arrays;
@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import hillbillies.model.Faction;
-import hillbillies.model.objects.Boulder;
-import hillbillies.model.objects.Log;
-import hillbillies.model.objects.Unit;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 import ogp.framework.util.ModelException;

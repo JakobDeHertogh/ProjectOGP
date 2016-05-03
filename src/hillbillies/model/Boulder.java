@@ -1,7 +1,5 @@
-package hillbillies.model.objects;
+package hillbillies.model;
 
-import hillbillies.model.world.Cube;
-import hillbillies.model.world.World;
 import ogp.framework.util.ModelException;
 
 /**

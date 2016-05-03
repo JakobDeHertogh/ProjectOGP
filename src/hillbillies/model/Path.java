@@ -1,8 +1,5 @@
-package hillbillies.model.objects;
+package hillbillies.model;
 import java.util.*;
-
-import hillbillies.model.world.*;
-import hillbillies.model.Data;
 
 public class Path {
 	

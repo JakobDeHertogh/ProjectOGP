@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import hillbillies.model.objects.Unit;
-import hillbillies.model.world.World;
+import hillbillies.model.Unit;
+import hillbillies.model.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import ogp.framework.util.ModelException;
 

@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import hillbillies.common.internal.providers.WorldInfoProvider;
-import hillbillies.model.objects.Unit;
+import hillbillies.model.Unit;
 import hillbillies.part1.facade.IFacade;
 import hillbillies.part1.internal.map.EmptyMap;
 import ogp.framework.util.ModelException;
@@ -52,7 +52,7 @@ public class WorldInfoProviderPart1 implements WorldInfoProvider {
 	}
 
 	@Override
-	public Set<?> getObjectsInBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+	public Set<? super Unit> getObjectsInBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		Set<Unit> result = getUnits().stream()
 				.filter(u -> unitLiesInBox(u, new double[] { minX, minY, minZ }, new double[] { maxX, maxY, maxZ }))
 				.collect(Collectors.toSet());
