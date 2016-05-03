@@ -49,14 +49,14 @@ public class Log {
 	
 	
 	/**
-	 * Returns the Cube on top of which this Log is sitting.
+	 * Returns the cube below the occupied cube. 
 	 */
 	public Cube getCubeUnder(){
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]-1);
 	}
 	
 	/**
-	 * Returns the World which the Log is situated in.
+	 * Returns the World in which the Log is situated.
 	 */
 	public World getWorld(){
 		return this.world;
@@ -85,8 +85,6 @@ public class Log {
 
 	/**
 	 * Sets the position of the Log to the given position.
-	 * @param newPosition
-	 *
 	 */
 	public void setPosition(double[] newPosition){
 		this.position = newPosition;
@@ -94,7 +92,7 @@ public class Log {
 	
 	/**
 	 * 
-	 * @return The z-value of the Log's position.
+	 * Returns the z-value of the Log's position.
 	 */
 	public double getzPosition() {
 		return this.position[2];

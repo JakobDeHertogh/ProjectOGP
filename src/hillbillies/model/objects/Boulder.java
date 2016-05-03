@@ -6,8 +6,8 @@ import ogp.framework.util.ModelException;
 
 /**
  * A class of game Boulders. Each Boulder has a position and a weight. Boulders can move and fall.
- * @invar	The starting value for the weight of every Boulder must be valid.
- * 			| isValidWeight(weight)
+ * @invar	Each boulder belongs to a world and has a valid position in that world.
+ * @invar	Each boulder has a weight between a given upper and lower limit. 
  * 
  * @version 0.51
  * @author Kristof Van Cappellen
@@ -17,6 +17,10 @@ import ogp.framework.util.ModelException;
 public class Boulder {
 	
 	/**
+	 * @post	The boulder has a starting position within the game world. 
+	 * @post 	The boulder has a valid weight, randomly chosen between the upper
+	 * 			and lower limit. 
+	 * @post	The boulder is not carried by a Unit. 
 	 * 
 	 * @param world
 	 * @param startPosition
@@ -48,19 +52,34 @@ public class Boulder {
 		return cubecoordinate;
 	}
 	
-	
+	/**
+	 * Returns the Cube which is occupied by this boulder.
+	 */
 	public Cube occupiesCube(){
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
 	
+	/**
+	 * Returns the cube below the occupied cube. 
+	 */
 	public Cube getCubeUnder(){
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]-1);
 	}
 	
+	/**
+	 * Returns the World in which the boulder is situated.
+	 */
 	public World getWorld(){
 		return this.world;
 	}
 	
+	/**
+	 * Checks whether the given position is a valid position for a boulder.
+	 * @param position
+	 * @return true if and only if the Cube at the given position is of a passable type, 
+	 * 			and the Cube under that Cube is of unpassable type.
+	 * 			Else returns false. 
+	 */
 	public boolean isValidPosition(int [] position){
 		if ((this.occupiesCube().isPassableType())&&( ! this.getCubeUnder().isPassableType()))
 			return true;
@@ -72,18 +91,28 @@ public class Boulder {
 	}
 
 
+	/**
+	 * Sets the position of the boulder to the given position.
+	 */
 	public void setPosition(double[] newPosition){
 		this.position = newPosition;
 	}
-	
+	/**
+	 * Returns the z coordinate of the boulder
+	 */
 	public double getzPosition() {
 		return this.position[2];
 	}
 	
+	/**
+	 * Returns the weight of this boulder
+	 */
 	public int getWeight() {
 		return this.weight;
 	}
-	
+	/**
+	 * sets the weight to the given value. 
+	 */
 	public void setWeight(int weight) throws ModelException{
 		this.weight = weight;
 		
@@ -122,7 +151,7 @@ public class Boulder {
 		return this.isTerminated;
 	}
 	
-	private World world;
+	private final World world;
 	private double[] position;
 
 	private int weight;

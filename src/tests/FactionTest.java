@@ -23,36 +23,14 @@ public class FactionTest {
 		World TestWorld = new World(types, new DefaultTerrainChangeListener());
 		
 		TestWorld.addUnit(Test);
+		assertEquals(TestWorld.getActiveFactions().size(), 1);
+		assertTrue(Test.getWorld() == TestWorld);
 				
-		Unit Test2 = new Unit("Testt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test2);
-		Unit Test3 = new Unit("Testtt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test3);
-		Unit Test4 = new Unit("Testttt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test4);
-		Unit Test5 = new Unit("Testtttt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test5);
-		Unit Test6 = new Unit("Testttttt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test6);
-		Unit Test7 = new Unit("Testttttt", new int[]{0,0,0}, 50,50,50,50, false);
-		TestWorld.addUnit(Test7);
-		
-		System.out.println(Test.getFaction());
-		System.out.println(Test2.getFaction());
-		System.out.println(Test3.getFaction());
-		System.out.println(Test4.getFaction());
-		System.out.println(Test5.getFaction());
-		System.out.println(Test6.getFaction());
-		System.out.println(Test7.getFaction());
-
-		
-		
-		
+		for (int i = 0; i<7; i++)
+			TestWorld.addUnit(new Unit("Test", new int[]{0,0,0}, 50,50,50,50, false));
 		
 		assertEquals(TestWorld.getActiveFactions().size(), 5);
-
-		 
-
+		assertEquals(TestWorld.getActiveUnits().size(), 8);
 		
 	}
 

@@ -108,6 +108,10 @@ public class Unit {
 		}
 	}
 	
+	public World getWorld(){
+		return this.world;
+	}
+	
 	// EXPERIENCE
 	/**
 	 * @returns The number of Experience Points this Unit has.
@@ -665,11 +669,6 @@ public class Unit {
 	 * @throws ModelException 
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
-		// Eerst definieren we de positie waar we naartoe zullen bewegen.
-//		double[] newposition = new double[3];
-//		newposition[0]= Math.floor(this.getXPosition() + dx) + 0.5;
-//		newposition[1]= Math.floor(this.getYPosition() + dy) + 0.5;
-//		newposition[2]= Math.floor(this.getZPosition() + dz) + 0.5;
 		
 		try{
 			Cube newCube = this.world.getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
@@ -698,6 +697,7 @@ public class Unit {
 			this.currentspeed = 2* this.currentspeed;
 		setSpeedVector(xdistance, ydistance, zdistance, this.distance);
 	}
+
 
 	/**
 	 * Sets the speed vector depending on the current speed and the target
@@ -1031,10 +1031,6 @@ public class Unit {
 	private boolean isresting;
 	private boolean isdefending;
 	private boolean isattacking;
-	private Queue<Data> Q = new LinkedList<Data>();
-	private Queue<Cube> CubeQueue = new LinkedList<Cube>();
-	private Queue<Integer> CostQueue = new LinkedList<Integer>();
-	private ArrayList<Cube> CubeListQ;
 	private Cube goal;
 	private double[] adjacant;
 	private double lifetime;
