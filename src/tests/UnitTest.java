@@ -181,9 +181,8 @@ public class UnitTest {
 		
 		Kobbe.workAt(1, 2, 0);
 		assertTrue("The unit should be working", Kobbe.isWorking());
-		for (int i= 0; i<200; i++){
+		for (int i= 0; i<200; i++)
 			TestWorld.advanceTime(0.1);
-		}
 		assertTrue("The target cube should be of type AIR", TestWorld.getCubeTypeOf(1, 2, 0) == 0);
 		assertTrue("The unit should have stopped working", !Kobbe.isWorking());
 		assertTrue("The unit should have upgraded two attributes", 
@@ -214,6 +213,7 @@ public class UnitTest {
 		
 		Kobbe.rest();
 		assertTrue("The unit should be resting", Kobbe.isResting());
+		System.out.println(Kobbe.currentActivity);
 		Kobbe.advanceTime(0.1);
 		assertTrue("The unit should have stopped resting since it's at maxHP", ! Kobbe.isResting());
 		

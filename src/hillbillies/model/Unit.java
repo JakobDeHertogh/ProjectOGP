@@ -520,20 +520,17 @@ public class Unit {
 		}
 		else {
 			if (this.fallingTo - this.getZPosition() >= dt*this.fallingSpeed){
-				//this.setPosition(new double[]{this.getXPosition(), this.getYPosition(), this.fallingTo});
 				this.position[2] = this.fallingTo;
 			}
 				
 			else 
-				//this.setPosition(new double[]{this.getXPosition(), this.getYPosition(), 
-				//		this.getZPosition() + dt*this.fallingSpeed});
-
 				this.position[2] += dt*this.fallingSpeed;
 		}
 		
-		
-		//Resting
-		if (this.isResting()){
+		if (this.currentActivity != null){
+					
+		switch(currentActivity){
+		case REST: 
 			boolean a = false;
 			boolean b = false;
 			if (this.getRegenHptime() <= dt){
@@ -551,45 +548,49 @@ public class Unit {
 				this.setStamina(this.stamina + (this.toughness * dt)/(100*0.2));
 			
 			if (a&&b)
-				this.isresting = false;
-		}
-			
-		//Movement
-		else if (this.adjacant != null){
-			
-			if (this.distance < this.getCurrentSpeed()*dt){
-				this.setPosition(adjacant);
-				this.adjacant = null;
-				this.currentspeed = 0;
+				this.currentActivity = null;
+			break;
+		
+		case MOVE:
+			if (this.adjacant != null){
 				
-				// Completed movement step => +1 exp
-				this.gainExperience(1);
-				
-				if (this.occupiesCube() == this.goal)
-					this.goal = null;
+				if (this.distance < this.getCurrentSpeed()*dt){
+					this.setPosition(adjacant);
+					this.adjacant = null;
+					this.currentspeed = 0;
+					
+					// Completed movement step => +1 exp
+					this.gainExperience(1);
+					
+					if (this.occupiesCube() == this.goal){
+						this.goal = null;
+					}
+					if (this.goal == null && this.adjacant == null)
+						this.currentActivity = null;
+				}
+				else {
+					double[] newposition = new double[3];
+					newposition[0] = this.getXPosition() + dt * this.xspeed;
+					newposition[1] = this.getYPosition() + dt * this.yspeed;
+					newposition[2] = this.getZPosition() + dt * this.zspeed;
+					this.distance -= this.getCurrentSpeed()*dt;
+					setPosition(newposition);
+					if (isSprinting())
+						if (this.stamina<=0)
+							stopSprinting();
+						else if (this.stamina > 0)
+								this.stamina -= dt/0.1;
+				}
 			}
-			else {
-				double[] newposition = new double[3];
-				newposition[0] = this.getXPosition() + dt * this.xspeed;
-				newposition[1] = this.getYPosition() + dt * this.yspeed;
-				newposition[2] = this.getZPosition() + dt * this.zspeed;
-				this.distance -= this.getCurrentSpeed()*dt;
-				setPosition(newposition);
-				if (isSprinting())
-					if (this.stamina<=0)
-						stopSprinting();
-					else if (this.stamina > 0)
-							this.stamina -= dt/0.1;
+			else if ((this.goal != null) && (this.goal.getCubeCenter() != this.position)){
+				int[] target = new int[3];
+				for (int i = 0; i<target.length; i++)
+					target[i] = (int) goal.getPosition()[i];
+				this.moveTo(target);
 			}
-		}
-		else if ((this.goal != null) && (this.goal.getCubeCenter() != this.position)){
-			int[] target = new int[3];
-			for (int i = 0; i<target.length; i++)
-				target[i] = (int) goal.getPosition()[i];
-			this.moveTo(target);
-		}
-		//Work
-		else if (this.isWorking()){
+			break;
+		
+		case WORK: 
 			if (this.worktime < dt){
 				this.worktime = 0;
 				for (WorkTypes i : WorkTypes.values()){
@@ -599,18 +600,102 @@ public class Unit {
 						break;
 					}
 				}
+				this.currentActivity = null;
 			}
 			else
+				
 				this.worktime = this.worktime - dt;
-		}
-		//Attack
-		else if (isattacking)
-			this.attacktime = this.attacktime - dt;
+			break;
 			
-		
-		//Defense
-		else if (isdefending)
-			this.defendtime -= dt;
+		case FIGHT: 
+			if (this.isAttacking())
+				this.attacktime -= dt;
+			else if (this.isdefending)
+				this.defendtime -= dt;
+			break;
+		}
+		}
+//		//Resting
+//		
+//		
+//		if (this.isResting()){
+//			boolean a = false;
+//			boolean b = false;
+//			if (this.getRegenHptime() <= dt){
+//				this.setHitpoints(this.getMaxHitPoints());
+//				a = true;
+//			}
+//			else if (this.getRegenHptime()>= dt)
+//				setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));
+//			
+//			if (this.getRegenStaminatime() <= dt){
+//				this.setStamina(this.getMaxStaminaPoints());
+//				b = true;
+//			}
+//			else if (a== true)
+//				this.setStamina(this.stamina + (this.toughness * dt)/(100*0.2));
+//			
+//			if (a&&b)
+//				this.isresting = false;
+//		}
+//			
+//		//Movement
+//		else if (this.adjacant != null){
+//			
+//			if (this.distance < this.getCurrentSpeed()*dt){
+//				this.setPosition(adjacant);
+//				this.adjacant = null;
+//				this.currentspeed = 0;
+//				
+//				// Completed movement step => +1 exp
+//				this.gainExperience(1);
+//				
+//				if (this.occupiesCube() == this.goal)
+//					this.goal = null;
+//			}
+//			else {
+//				double[] newposition = new double[3];
+//				newposition[0] = this.getXPosition() + dt * this.xspeed;
+//				newposition[1] = this.getYPosition() + dt * this.yspeed;
+//				newposition[2] = this.getZPosition() + dt * this.zspeed;
+//				this.distance -= this.getCurrentSpeed()*dt;
+//				setPosition(newposition);
+//				if (isSprinting())
+//					if (this.stamina<=0)
+//						stopSprinting();
+//					else if (this.stamina > 0)
+//							this.stamina -= dt/0.1;
+//			}
+//		}
+//		else if ((this.goal != null) && (this.goal.getCubeCenter() != this.position)){
+//			int[] target = new int[3];
+//			for (int i = 0; i<target.length; i++)
+//				target[i] = (int) goal.getPosition()[i];
+//			this.moveTo(target);
+//		}
+//		//Work
+//		else if (this.isWorking()){
+//			if (this.worktime < dt){
+//				this.worktime = 0;
+//				for (WorkTypes i : WorkTypes.values()){
+//					if (i.check(this, workAtCube)){
+//						i.execute(this, workAtCube);
+//						this.gainExperience(20);
+//						break;
+//					}
+//				}
+//			}
+//			else
+//				this.worktime = this.worktime - dt;
+//		}
+//		//Attack
+//		else if (isattacking)
+//			this.attacktime = this.attacktime - dt;
+//			
+//		
+//		//Defense
+//		else if (isdefending)
+//			this.defendtime -= dt;
 		
 		//Update Experience
 		int updatedExp = this.getExpPoints();
@@ -618,6 +703,7 @@ public class Unit {
 			this.levelUp();
 			currentExp += 10;
 		}
+		
 	}
 	
 	
@@ -664,7 +750,7 @@ public class Unit {
 	 * @throws ModelException 
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
-		
+
 		try{
 			Cube newCube = this.world.getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
 					this.occupiesCube().getYPosition() + dy, this.occupiesCube().getZPosition()+dz);
@@ -672,6 +758,8 @@ public class Unit {
 			if (! newCube.isValidCube())
 				throw new ModelException("Invalid target cube");
 			this.adjacant = newCube.getCubeCenter();
+			
+			this.currentActivity = Activity.MOVE;
 			
 		} catch (IndexOutOfBoundsException ex){
 			throw new ModelException("You can't move outside the world");
@@ -731,7 +819,8 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isMoving(){
-		return (this.currentspeed != 0);
+		return this.currentActivity == Activity.MOVE;
+		//return (this.currentspeed != 0);
 	}
 	/**
 	 * ...
@@ -791,6 +880,7 @@ public class Unit {
 	public void work(){
 		this.worktime = 500.0/this.strength;
 		this.goal = null;
+		this.currentActivity = Activity.WORK;
 	}
 	
 	public boolean isValidWorkingCube(Cube cube){
@@ -803,12 +893,13 @@ public class Unit {
 	}
 	
 	public void workAt(int x, int y, int z) throws ModelException{
-		this.work();
 		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
 		if (!isValidWorkingCube(targetcube))
-			throw new ModelException("Target cube not in range!");
-		
+			throw new ModelException("Target cube not in range!");	
 		this.workAtCube = targetcube;
+		this.setOrientation(Math.atan2(targetcube.getCubeCenter()[1]-this.getYPosition(), 
+				targetcube.getCubeCenter()[0]-this.getXPosition()));
+		this.work();
 	}
 	
 	/**
@@ -816,7 +907,8 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isWorking(){		
-		return (this.worktime != 0);
+		return this.currentActivity == Activity.WORK;
+		//return (this.worktime != 0);
 	}
 	
 	public boolean isCarryingBoulder(){
@@ -861,8 +953,11 @@ public class Unit {
 	 * @throws ModelException
 	 */
 	public void fight(Unit other) throws ModelException{
-		if (isAttackable(other))
+		if (isAttackable(other)){
 			attack(other);
+			this.currentActivity = Activity.FIGHT;
+		}
+			
 	}
 	/**
 	 * Checks whether target Unit is in range to attack. Units must be on the 
@@ -897,7 +992,8 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isAttacking(){
-		return this.attacktime > 0;
+		return this.currentActivity == Activity.FIGHT;
+//		return this.attacktime > 0;
 	}
 	/**
 	 * Unit defends itself against an attacking Unit. The Unit will either
@@ -944,14 +1040,14 @@ public class Unit {
 	 */
 	public void rest(){
 		this.goal = null;
-		this.isresting = true;
+		this.currentActivity = Activity.REST;
 	}
 	/**
 	 * Returns whether the Unit is resting or not.
 	 * @return
 	 */
 	public boolean isResting(){
-		return this.isresting;
+		return this.currentActivity == Activity.REST;
 	}
 	/**
 	 * Calculates the time needed to regain to full HP. 
@@ -1039,4 +1135,6 @@ public class Unit {
 	private Boulder isCarryingBoulder = null;
 	private Log isCarryingLog = null;
 	public boolean isAlive;
+	
+	public Activity currentActivity;
 }
