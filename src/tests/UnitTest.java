@@ -232,5 +232,25 @@ public class UnitTest {
 		assertEquals("The unit should have restored all of its stamina", Kobbe.getCurrentStaminaPoint(), Kobbe.getMaxStaminaPoints());
 		assertTrue("The unit should have stopped resting", !Kobbe.isResting());
 	}
-
+	
+	@Test
+	public void testDefault() throws ModelException{
+		Unit Kobbe = new Unit("Kobbe", new int[] {0,2,0},50,50,50,50, true);
+		int[][][] types = new int[3][3][3];
+		types[1][2][0] = 1;
+		types[1][1][0] = 1;
+		types[1][0][1] = 3;
+		types[1][1][1] = 1;
+		types[0][1][1] = 3;
+		
+		World TestWorld = new World(types, new DefaultTerrainChangeListener());
+		TestWorld.addUnit(Kobbe);
+		
+		assertTrue("The unit's default behavior should be enabled", Kobbe.isDefaultBehaviorEnabled());
+		assertEquals("The unit's current activity should be null", Kobbe.currentActivity, null);
+		System.out.println(Kobbe.currentActivity);
+		TestWorld.advanceTime(0.2);
+		System.out.println(Kobbe.currentActivity);
+		assertTrue("The unit's activity should no longer be null", Kobbe.currentActivity != null);
+	}
 }

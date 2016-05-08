@@ -527,8 +527,16 @@ public class Unit {
 				this.position[2] += dt*this.fallingSpeed;
 		}
 		
-		if (this.currentActivity != null){
-					
+		if (this.currentActivity == null){
+			if (this.isDefaultBehaviorEnabled()){
+				//Select random activity
+				Random x = new Random();
+				List<Activity> allAct = Arrays.asList(Activity.values());				
+				Activity RandomAct = allAct.get(x.nextInt(allAct.size()));
+				RandomAct.defaultAction(this);
+			}
+		}
+		else{
 		switch(currentActivity){
 		case REST: 
 			boolean a = false;
@@ -953,10 +961,11 @@ public class Unit {
 	 * @throws ModelException
 	 */
 	public void fight(Unit other) throws ModelException{
-		if (isAttackable(other)){
-			attack(other);
-			this.currentActivity = Activity.FIGHT;
+		if (!isAttackable(other)){
+			throw new ModelException("not a valid target");
 		}
+		attack(other);
+		this.currentActivity = Activity.FIGHT;
 			
 	}
 	/**
