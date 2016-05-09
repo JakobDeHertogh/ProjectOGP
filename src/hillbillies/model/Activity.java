@@ -33,7 +33,6 @@ public enum Activity {
 //				target = a.getPosition();
 //			}
 			for (Cube c : unit.getWorld().viableSpawnCubes){
-				System.out.println(Arrays.toString(c.getPosition()));
 				try{
 					unit.moveTo(c.getPosition());
 					break;

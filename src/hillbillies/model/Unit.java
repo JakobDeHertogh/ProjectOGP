@@ -1022,7 +1022,7 @@ public class Unit {
 		this.goal = null;
 		double Pdodge = 0.20*(this.agility)/(other.agility);
 		double random = Math.random();
-		double Pblock = 0.25*(this.strength + this.agility)/(other.strength + other.agility);
+		double Pblock = Pdodge + 0.25*(this.strength + this.agility)/(other.strength + other.agility);
 		//DODGE
 		if (random<= Pdodge)
 			runAwayFrom(other.getPosition(), other);
