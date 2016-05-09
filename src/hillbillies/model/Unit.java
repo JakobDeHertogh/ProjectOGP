@@ -532,8 +532,9 @@ public class Unit {
 				//Select random activity
 				Random x = new Random();
 				List<Activity> allAct = Arrays.asList(Activity.values());				
-				Activity RandomAct = allAct.get(x.nextInt(allAct.size()));
-				RandomAct.defaultAction(this);
+				Activity randomAct = allAct.get(x.nextInt(allAct.size()));
+				System.out.println(randomAct);
+				randomAct.defaultAction(this);
 			}
 		}
 		else{
@@ -869,12 +870,17 @@ public class Unit {
 		}
 		Cube start = this.occupiesCube();
 		Path path = new Path(start, goal);
-		Cube next = path.getRoute().pop();
+		try{
+			Cube next = path.getRoute().pop();
+			int dx = next.getXPosition() - start.getXPosition();
+			int dy = next.getYPosition() - start.getYPosition();
+			int dz = next.getZPosition() - start.getZPosition();
+			this.moveToAdjacant(dx, dy, dz);
+		} catch (EmptyStackException ex){
+			throw new ModelException("No path available");
+		}
 		
-		int dx = next.getXPosition() - start.getXPosition();
-		int dy = next.getYPosition() - start.getYPosition();
-		int dz = next.getZPosition() - start.getZPosition();
-		this.moveToAdjacant(dx, dy, dz);
+		
 		
 	}
 	
@@ -908,6 +914,7 @@ public class Unit {
 		this.setOrientation(Math.atan2(targetcube.getCubeCenter()[1]-this.getYPosition(), 
 				targetcube.getCubeCenter()[0]-this.getXPosition()));
 		this.work();
+		System.out.println("ping");
 	}
 	
 	/**

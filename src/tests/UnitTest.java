@@ -213,7 +213,6 @@ public class UnitTest {
 		
 		Kobbe.rest();
 		assertTrue("The unit should be resting", Kobbe.isResting());
-		System.out.println(Kobbe.currentActivity);
 		Kobbe.advanceTime(0.1);
 		assertTrue("The unit should have stopped resting since it's at maxHP", ! Kobbe.isResting());
 		
@@ -248,9 +247,7 @@ public class UnitTest {
 		
 		assertTrue("The unit's default behavior should be enabled", Kobbe.isDefaultBehaviorEnabled());
 		assertEquals("The unit's current activity should be null", Kobbe.currentActivity, null);
-		System.out.println(Kobbe.currentActivity);
 		TestWorld.advanceTime(0.2);
-		System.out.println(Kobbe.currentActivity);
 		assertTrue("The unit's activity should no longer be null", Kobbe.currentActivity != null);
 	}
 }
