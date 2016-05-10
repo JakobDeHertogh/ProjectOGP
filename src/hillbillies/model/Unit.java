@@ -832,20 +832,21 @@ public class Unit {
 		//return (this.currentspeed != 0);
 	}
 	/**
-	 * ...
-	 * @return
+	 * Returns whether the Unit is sprinting.
 	 */
 	public boolean isSprinting(){
 		return this.issprinting;
 	}
 	/**
-	 * ... 
+	 * Makes the Unit start sprinting.
+	 * @post issprinting = true;
 	 */
 	public void startSprinting(){
 		this.issprinting = true;
 	}
 	/**
-	 * ...
+	 * Makes the Unit stop sprinting.
+	 * @post issprinting = false;
 	 */
 	public void stopSprinting(){
 		this.issprinting = false;
@@ -905,20 +906,29 @@ public class Unit {
 				return true;
 		return false;
 	}
-	
+	/**
+	 * Makes the Unit work on the Cube at the given x, y and z coordinates.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws ModelException if the target Cube is not a valid Cube to work at.
+	 * 			| !isValidWorkingCube(targetcube)
+	 * @effect setOrientation(newOrientation)
+	 */
 	public void workAt(int x, int y, int z) throws ModelException{
 		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
 		if (!isValidWorkingCube(targetcube))
 			throw new ModelException("Target cube not in range!");	
 		this.workAtCube = targetcube;
-		this.setOrientation(Math.atan2(targetcube.getCubeCenter()[1]-this.getYPosition(), 
-				targetcube.getCubeCenter()[0]-this.getXPosition()));
+		double newOrientation = Math.atan2(targetcube.getCubeCenter()[1]-this.getYPosition(), 
+				targetcube.getCubeCenter()[0]-this.getXPosition());
+		this.setOrientation(newOrientation);
 		this.work();
 		System.out.println("ping");
 	}
 	
 	/**
-	 * ...
+	 * Returns whether the Unit is working.
 	 * @return
 	 */
 	public boolean isWorking(){		
@@ -926,26 +936,48 @@ public class Unit {
 		//return (this.worktime != 0);
 	}
 	
+	/**
+	 * Returns whether this Unit is carrying a Boulder.
+	 * @return
+	 */
 	public boolean isCarryingBoulder(){
 		return !(this.isCarryingBoulder == null);
 	}
 	
+	/**
+	 * Returns whether this Unit is carrying a Log.
+	 * @return
+	 */
 	public boolean isCarryingLog(){
 		return !(this.isCarryingLog == null);
 	}
 	
+	/**
+	 * Makes the Unit pick up a Log.
+	 * @param log
+	 */
 	public void pickUpLog(Log log){
 		this.isCarryingLog = log;
 		log.isCarriedBy = this;
 		this.weight += log.getWeight();
 	}
 	
+	/**
+	 * Makes the Unit pick up a Boulder.
+	 * @param boulder
+	 */
 	public void pickUpBoulder(Boulder boulder){
 		this.isCarryingBoulder = boulder;
 		boulder.isCarriedBy = this;
 		this.weight += boulder.getWeight();
 	}
 	
+	/**
+	 * Makes the Unit put down a Log at the given Cube.
+	 * @param cube
+	 * @effect 	The weight of the Unit is adjusted for the loss of the Log.
+	 * 		|	setWeight(this.weight - this.isCarryingLog.getWeight())
+	 */
 	public void putDownLog(Cube cube){
 		this.isCarryingLog.isCarriedBy = null;
 		this.isCarryingLog.setPosition(new double[] {cube.getXPosition(), 
@@ -954,6 +986,12 @@ public class Unit {
 		this.isCarryingLog = null;
 	}
 	
+	/**
+	 * Makes the Unit put down a Boulder at a given Cube.
+	 * @param cube
+	 * @effect	The weight of the Unit is adjusted for the loss of the Boulder.
+	 * 		|	setWeight(this.weight - this.isCarryingBoulder.getWeight())
+	 */
 	public void putDownBoulder(Cube cube){
 		this.isCarryingBoulder.isCarriedBy = null;
 		this.isCarryingBoulder.setPosition(new double[] {cube.getXPosition(), 
@@ -966,6 +1004,8 @@ public class Unit {
 	 * The Unit attacks another Unit if it is in range.
 	 * @param other
 	 * @throws ModelException
+	 * 			The target Unit is not attackable.
+	 * 			|!isAttackable(Unit other
 	 */
 	public void fight(Unit other) throws ModelException{
 		if (!isAttackable(other)){
