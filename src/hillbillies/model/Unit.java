@@ -968,7 +968,7 @@ public class Unit {
 		log.isCarriedBy = this;
 		this.weight += log.getWeight();
 		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(log.getPosition()[0]), (int)Math.floor(log.getPosition()[1]),(int) Math.floor(log.getPosition()[2]));
-		cube.
+		cube.isOccupiedByLogs();
 		
 	}
 	
@@ -980,6 +980,9 @@ public class Unit {
 		this.isCarryingBoulder = boulder;
 		boulder.isCarriedBy = this;
 		this.weight += boulder.getWeight();
+		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(boulder.getPosition()[0]), 
+				(int)Math.floor(boulder.getPosition()[1]),(int) Math.floor(boulder.getPosition()[2]));
+		cube.isOccupiedByBoulders();
 	}
 	
 	/**

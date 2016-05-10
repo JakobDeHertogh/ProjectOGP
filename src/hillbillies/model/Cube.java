@@ -63,7 +63,7 @@ public class Cube {
 	public Set<Boulder> isOccupiedByBoulders(){
 		Set <Boulder> result = new HashSet<Boulder>();
 		for (Boulder i : this.world.getBoulders()){
-			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
+			if (i.getPosition() == new double[]{this.getXPosition()+0.5, this.getYPosition()+0.5, this.getZPosition()+0.5})
 				result.add(i);
 		}
 		return result;
@@ -148,7 +148,7 @@ public class Cube {
 		CubeType prevCubeType = this.getType();
 		this.setCubeType(CubeType.AIR);
 		double P = Math.random();
-		double PLogBoulder = 0.25;
+		double PLogBoulder = 1.00;
 		if ((P <= PLogBoulder)&&(prevCubeType == CubeType.WOOD)){
 			this.world.addLog(new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()});
 		} 

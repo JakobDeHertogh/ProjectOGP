@@ -19,10 +19,7 @@ public class Log {
 		int weight = (int)((Math.random()*this.weightRange)+this.minWeight);
 		this.setWeight(weight);
 		
-		double[] pos = new double[startPosition.length];
-		for (int i = 0;i<startPosition.length; i++){
-			pos[i] = startPosition[i];
-		}
+		double[] pos = new double[]{startPosition[0]+0.5, startPosition[1]+0.5, startPosition[2]};
 		this.setPosition(pos);
 		this.fallingTo = this.getzPosition();
 	}
@@ -85,7 +82,7 @@ public class Log {
 	 * Sets the position of the Log to the given position.
 	 */
 	public void setPosition(double[] newPosition){
-		double[] pos = new double[]{newPosition[0]+0.5, newPosition[1]+0.5, newPosition[2]+0.5};
+		double[] pos = new double[]{newPosition[0], newPosition[1], newPosition[2]};
 		this.position = pos;
 	}
 	
