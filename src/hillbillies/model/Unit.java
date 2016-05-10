@@ -948,7 +948,7 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isCarryingBoulder(){
-		return !(this.isCarryingBoulder == null);
+		return !(this.CarriesBoulder == null);
 	}
 	
 	/**
@@ -956,7 +956,7 @@ public class Unit {
 	 * @return
 	 */
 	public boolean isCarryingLog(){
-		return !(this.isCarryingLog == null);
+		return !(this.CarriesLog == null);
 	}
 	
 	/**
@@ -964,12 +964,15 @@ public class Unit {
 	 * @param log
 	 */
 	public void pickUpLog(Log log){
-		this.isCarryingLog = log;
+		this.CarriesLog = log;
 		log.isCarriedBy = this;
 		this.weight += log.getWeight();
-		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(log.getPosition()[0]), (int)Math.floor(log.getPosition()[1]),(int) Math.floor(log.getPosition()[2]));
-		cube.isOccupiedByLogs();
-		
+		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(log.getPosition()[0]),
+				(int)Math.floor(log.getPosition()[1]),(int) Math.floor(log.getPosition()[2]));
+		cube.removeLog(log);
+		this.getWorld().removeLog(log);
+		System.out.println(cube.getLogs());
+		System.out.println(this.CarriesLog);
 	}
 	
 	/**
@@ -977,12 +980,13 @@ public class Unit {
 	 * @param boulder
 	 */
 	public void pickUpBoulder(Boulder boulder){
-		this.isCarryingBoulder = boulder;
+		this.CarriesBoulder = boulder;
 		boulder.isCarriedBy = this;
 		this.weight += boulder.getWeight();
 		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(boulder.getPosition()[0]), 
 				(int)Math.floor(boulder.getPosition()[1]),(int) Math.floor(boulder.getPosition()[2]));
-		cube.isOccupiedByBoulders();
+		cube.removeBoulder(boulder);
+		this.getWorld().removeBoulder(boulder);
 	}
 	
 	/**
@@ -992,11 +996,12 @@ public class Unit {
 	 * 		|	setWeight(this.weight - this.isCarryingLog.getWeight())
 	 */
 	public void putDownLog(Cube cube){
-		this.isCarryingLog.isCarriedBy = null;
-		this.isCarryingLog.setPosition(new double[] {cube.getXPosition(), 
-				cube.getYPosition(), cube.getZPosition()});
-		this.setWeight(this.weight - this.isCarryingLog.getWeight());
-		this.isCarryingLog = null;
+		this.CarriesLog.isCarriedBy = null;
+		this.CarriesLog.setPosition(new double[] {cube.getXPosition()+0.5, 
+				cube.getYPosition()+0.5, cube.getZPosition()+0.5});
+		this.getWorld().addLog(this.CarriesLog);
+		this.setWeight(this.weight - this.CarriesLog.getWeight());
+		this.CarriesLog = null;
 	}
 	
 	/**
@@ -1006,11 +1011,12 @@ public class Unit {
 	 * 		|	setWeight(this.weight - this.isCarryingBoulder.getWeight())
 	 */
 	public void putDownBoulder(Cube cube){
-		this.isCarryingBoulder.isCarriedBy = null;
-		this.isCarryingBoulder.setPosition(new double[] {cube.getXPosition(), 
-				cube.getYPosition(), cube.getZPosition()});
-		this.setWeight(this.weight - this.isCarryingBoulder.getWeight());
-		this.isCarryingBoulder = null;
+		this.CarriesBoulder.isCarriedBy = null;
+		this.CarriesBoulder.setPosition(new double[] {cube.getXPosition()+0.5, 
+				cube.getYPosition()+0.5, cube.getZPosition()+0.5});
+		this.getWorld().addBoulder(this.CarriesBoulder);
+		this.setWeight(this.weight - this.CarriesBoulder.getWeight());
+		this.CarriesBoulder = null;
 	}
 	
 	/**
@@ -1201,8 +1207,8 @@ public class Unit {
 	private double fallingTo;
 	private int fallingSpeed = -3;
 	private Cube workAtCube;
-	private Boulder isCarryingBoulder = null;
-	private Log isCarryingLog = null;
+	private Boulder CarriesBoulder = null;
+	private Log CarriesLog = null;
 	public boolean isAlive;
 	
 	public Activity currentActivity;

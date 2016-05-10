@@ -27,20 +27,26 @@ public class Cube {
 	public World getWorld(){
 		return this.world;
 	}
-	
-	public Set<Log> isOccupiedByLogs(){
-		Set <Log> result = new HashSet<Log>();
-		for (Log i : this.world.getLogs()){
-			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
-				result.add(i);
-		}
-		return result;
+	public void addLog(Log log){
+		this.Logs.add(log);
 	}
+	
+	public Set<Log> getLogs(){
+		return this.Logs;
+	}
+	
+	public void removeLog(Log log){
+		this.Logs.remove(log);
+	}
+	
+
+	
+	
 	public Log randomLog(){
-		int size = this.isOccupiedByLogs().size();
+		int size = this.getLogs().size();
 		int item = new Random().nextInt(size);
 		int i = 0;
-		for (Log log : this.isOccupiedByLogs()){
+		for (Log log : this.getLogs()){
 			if (i == item)
 				return log;
 			i+=1;
@@ -49,10 +55,10 @@ public class Cube {
 	}
 	
 	public Boulder randomBoulder(){
-		int size = this.isOccupiedByBoulders().size();
+		int size = this.Boulders.size();
 		int item = new Random().nextInt(size);
 		int i = 0;
-		for (Boulder boulder : this.isOccupiedByBoulders()){
+		for (Boulder boulder : this.getBoulders()){
 			if (i == item)
 				return boulder;
 			i+=1;
@@ -60,20 +66,26 @@ public class Cube {
 		return null;
 	}
 	
-	public Set<Boulder> isOccupiedByBoulders(){
-		Set <Boulder> result = new HashSet<Boulder>();
-		for (Boulder i : this.world.getBoulders()){
-			if (i.getPosition() == new double[]{this.getXPosition()+0.5, this.getYPosition()+0.5, this.getZPosition()+0.5})
-				result.add(i);
-		}
-		return result;
+	public void addBoulder(Boulder boulder){
+		this.Boulders.add(boulder);
+	}
+	
+	public Set<Boulder> getBoulders(){
+		return this.Boulders;
+	}
+	
+	public void removeBoulder(Boulder boulder){
+		this.Boulders.remove(boulder);
 	}
 	
 	public Set<Unit> isOccupiedByUnits(){
 		Set <Unit> result = new HashSet<Unit>();
 		for (Unit i : this.world.getActiveUnits()){
-			if (i.getPosition() == new double[]{this.getXPosition(), this.getYPosition(), this.getZPosition()})
+			if (((int)Math.floor(i.getXPosition())==this.getXPosition()) 
+					&& ((int)Math.floor(i.getYPosition())==this.getYPosition()) 
+					&&((int)Math.floor(i.getZPosition())==this.getZPosition())){
 				result.add(i);
+			}
 		}
 		return result;
 	}
@@ -150,10 +162,14 @@ public class Cube {
 		double P = Math.random();
 		double PLogBoulder = 1.00;
 		if ((P <= PLogBoulder)&&(prevCubeType == CubeType.WOOD)){
-			this.world.addLog(new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()});
+			int[] logpos = new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()};
+			Log newLog = new Log(this.world, logpos);
+			this.world.addLog(newLog);
 		} 
 		if ((P <= PLogBoulder) && (prevCubeType == CubeType.ROCK)){
-			this.world.addBoulder(new int[]{this.getXPosition(),  this.getYPosition(), this.getZPosition()});
+			int[] boulderpos = new int[]{this.getXPosition(), this.getYPosition(), this.getZPosition()};
+			Boulder newBoulder = new Boulder(this.world, boulderpos);
+			this.world.addBoulder(newBoulder);
 		}
 		if (this.isValidCube())
 			this.world.viableSpawnCubes.add(this);
@@ -166,5 +182,7 @@ public class Cube {
 	private final int[] Position;
 	private final double[] cubeCenter;
 	private CubeType cubetype;
+	private Set<Log> Logs= new HashSet<Log>();
+	private Set<Boulder> Boulders = new HashSet<Boulder>();
 
 }

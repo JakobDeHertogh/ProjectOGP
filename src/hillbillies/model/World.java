@@ -79,8 +79,8 @@ public class World {
 	
 	public Set<Object> isOccupiedBy(Cube cube){
 		Set<Object> result = new HashSet<Object>();
-		result.addAll(cube.isOccupiedByBoulders());
-		result.addAll(cube.isOccupiedByLogs());
+		result.addAll(cube.getBoulders());
+		result.addAll(cube.getLogs());
 		result.addAll(cube.isOccupiedByUnits());
 		return result;
 	}
@@ -102,24 +102,27 @@ public class World {
 		return this.nbZCubes;
 	}
 	
-	public void addBoulder(int[] position) throws ModelException{
-		Boulder newBoulder = new Boulder(this, position);
+	public void addBoulder(Boulder newBoulder){
 		this.boulders.add(newBoulder);
+		int[] position = new int[]{(int)Math.floor(newBoulder.getPosition()[0]),
+				(int)Math.floor(newBoulder.getPosition()[1]),
+				(int)Math.floor(newBoulder.getPosition()[2])};
+		this.getCubeAtPos(position[0], position[1], position[2]).addBoulder(newBoulder);
 	}
 	
 	public void removeBoulder(Boulder boulder){
-		if (boulder.isTerminated())
-			this.boulders.remove(boulder);
+		this.boulders.remove(boulder);
 	}
 	
-	public void addLog(int[] position) throws ModelException{
-		Log newLog = new Log(this, position);
+	public void addLog(Log newLog){
 		this.logs.add(newLog);
+		int[] position = new int[]{(int)Math.floor(newLog.getPosition()[0]), (int)Math.floor(newLog.getPosition()[1]),
+				(int)Math.floor(newLog.getPosition()[2])};
+		this.getCubeAtPos(position[0], position[1], position[2]).addLog(newLog);
 	}
 	
 	public void removeLog(Log log){
-		if (log.isTerminated())
-			this.logs.remove(log);
+		this.logs.remove(log);
 	}
 	
 	public void addUnit(Unit unit) throws ModelException{

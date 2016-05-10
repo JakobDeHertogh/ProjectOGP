@@ -29,8 +29,8 @@ public enum WorkTypes {
 	WORKSHOP(){
 		public boolean check(Unit unit, Cube cube){
 			boolean a = cube.getType() == CubeType.WORKSHOP;
-			boolean b = !cube.isOccupiedByBoulders().isEmpty();
-			boolean c = !cube.isOccupiedByLogs().isEmpty();
+			boolean b = !cube.getBoulders().isEmpty();
+			boolean c = !cube.getLogs().isEmpty();
 			return a&&b&&c;
 		}
 		
@@ -46,7 +46,7 @@ public enum WorkTypes {
 		public boolean check(Unit unit, Cube cube){
 			boolean a = !unit.isCarryingLog();
 			boolean b = !unit.isCarryingBoulder();
-			boolean c = !cube.isOccupiedByLogs().isEmpty();
+			boolean c = !cube.getLogs().isEmpty();
 			return a&&b&&c;
 		}
 		
@@ -60,7 +60,7 @@ public enum WorkTypes {
 		public boolean check(Unit unit, Cube cube){
 			boolean a =	!unit.isCarryingLog();
 			boolean b = !unit.isCarryingBoulder();
-			boolean c = !cube.isOccupiedByBoulders().isEmpty();
+			boolean c = !cube.getBoulders().isEmpty();
 			return a&&b&&c;
 		}
 		

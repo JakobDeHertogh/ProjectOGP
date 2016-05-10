@@ -22,17 +22,22 @@ public class Log {
 		double[] pos = new double[]{startPosition[0]+0.5, startPosition[1]+0.5, startPosition[2]};
 		this.setPosition(pos);
 		this.fallingTo = this.getzPosition();
+		
+		this.setCubeCoordinate();
 	}
+	
+	public void setCubeCoordinate(){
+		int[] cubecoordinate = new int[]{(int)Math.floor(this.position[0]),(int)Math.floor(this.position[1]),
+				(int)Math.floor(this.position[2])};
+		this.CubeCoordinate = cubecoordinate;
+	}
+	
 	
 	/**
 	 * Returns the coordinate of the Cube which is occupied by this Log.
 	 */
-	public int[] getCubeCoordinate (){
-		int[] cubecoordinate = new int[3];
-		cubecoordinate[0] = (int)Math.floor(this.position[0]);
-		cubecoordinate[1] = (int)Math.floor(this.position[1]);
-		cubecoordinate[2] = (int)Math.floor(this.position[2]);
-		return cubecoordinate;
+	public int[] getCubeCoordinate(){
+		return this.CubeCoordinate;
 	}
 	
 	/**
@@ -82,8 +87,7 @@ public class Log {
 	 * Sets the position of the Log to the given position.
 	 */
 	public void setPosition(double[] newPosition){
-		double[] pos = new double[]{newPosition[0], newPosition[1], newPosition[2]};
-		this.position = pos;
+		this.position = newPosition;
 	}
 	
 	/**
@@ -116,7 +120,7 @@ public class Log {
 	 */
 	public void advanceTime(double dt){
 		if (this.isCarriedBy != null)
-			this.position = this.isCarriedBy.getPosition();
+			this.setPosition(this.isCarriedBy.getPosition());
 		else if (this.fallingTo == this.getzPosition()){
 			if (! this.isValidPosition(this.getCubeCoordinate()))
 				this.fallingTo = this.getzPosition() -1;
@@ -148,6 +152,7 @@ public class Log {
 	
 	private World world;
 	private double[] position;
+	private int[] CubeCoordinate;
 	
 
 	private int weight;
