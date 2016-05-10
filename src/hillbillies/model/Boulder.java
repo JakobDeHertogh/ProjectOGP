@@ -93,7 +93,8 @@ public class Boulder {
 	 * Sets the position of the boulder to the given position.
 	 */
 	public void setPosition(double[] newPosition){
-		this.position = newPosition;
+		double[] pos = new double[]{newPosition[0]+0.5, newPosition[1]+0.5, newPosition[2]};
+		this.position = pos;
 	}
 	/**
 	 * Returns the z coordinate of the boulder

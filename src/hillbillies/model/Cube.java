@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
 public class Cube {
@@ -105,6 +106,7 @@ public class Cube {
 	
 	public void setCubeType(CubeType type){
 		this.cubetype = type;
+		this.world.getTCL().notifyTerrainChanged(this.getXPosition(), this.getYPosition(), this.getZPosition());
 	}
 	
 	public boolean isPassableType(){

@@ -85,7 +85,8 @@ public class Log {
 	 * Sets the position of the Log to the given position.
 	 */
 	public void setPosition(double[] newPosition){
-		this.position = newPosition;
+		double[] pos = new double[]{newPosition[0]+0.5, newPosition[1]+0.5, newPosition[2]+0.5};
+		this.position = pos;
 	}
 	
 	/**

@@ -838,14 +838,14 @@ public class Unit {
 		return this.issprinting;
 	}
 	/**
-	 * Makes the Unit start sprinting.
+	 * The Unit starts sprinting.
 	 * @post issprinting = true;
 	 */
 	public void startSprinting(){
 		this.issprinting = true;
 	}
 	/**
-	 * Makes the Unit stop sprinting.
+	 * The Unit stops sprinting.
 	 * @post issprinting = false;
 	 */
 	public void stopSprinting(){
@@ -898,6 +898,13 @@ public class Unit {
 		this.currentActivity = Activity.WORK;
 	}
 	
+	/**
+	 * Returns whether the given Cube is a valid Cube to work on.
+	 * @param cube
+	 * 		  The Cube the Unit must work on.
+	 * @return true if and only if the target Cube is the Cube which is occupied by the Unit or that Cube's surrounding Cubes.
+	 * 		   false if the above conditions are not met.
+	 */
 	public boolean isValidWorkingCube(Cube cube){
 		if (this.occupiesCube() == cube)
 			return true;
@@ -960,6 +967,9 @@ public class Unit {
 		this.isCarryingLog = log;
 		log.isCarriedBy = this;
 		this.weight += log.getWeight();
+		Cube cube = this.getWorld().getCubeAtPos((int)Math.floor(log.getPosition()[0]), (int)Math.floor(log.getPosition()[1]),(int) Math.floor(log.getPosition()[2]));
+		cube.
+		
 	}
 	
 	/**
@@ -1115,7 +1125,7 @@ public class Unit {
 		return dHP/regenPerSecond;
 	}
 	/**
-	 * ...
+	 * Returns the time the Unit needs to fully recover its stamina points.
 	 * @return
 	 */
 	public double getRegenStaminatime(){
@@ -1131,7 +1141,7 @@ public class Unit {
 		this.defaultBehaviorEnabled = value;
 	}
 	/**
-	 * ...
+	 * Checks whether default behavior is enabled for the Unit.
 	 * @return
 	 */
 	public boolean isDefaultBehaviorEnabled(){
@@ -1139,7 +1149,7 @@ public class Unit {
 	}
 	
 	/**
-	 * 
+	 * The Unit dies, and is removed from the game world.
 	 */
 	public void die(){
 		if (this.isCarryingBoulder()){

@@ -38,6 +38,7 @@ public class World {
 				}
 			}
 		}
+		this.tcl = tcl;
 	}
 	
 	public void advanceTime(double dt) throws ModelException{
@@ -181,6 +182,10 @@ public class World {
 		return result;
 	}
 	
+	public TerrainChangeListener getTCL(){
+		return this.tcl;
+	}
+	
 	private Faction getSmallestFaction(){
 		Faction result = null;
 		for (Faction i : this.activeFactions){
@@ -201,6 +206,7 @@ public class World {
 	Set<int[]> caveInCubes = new HashSet<int[]>();
 	public Set<Cube> viableSpawnCubes = new HashSet<Cube>();
 	private Cube[][][] cubes;
+	private final TerrainChangeListener tcl;
 	
 	private ConnectedToBorder ctb;
 	private final int nbXCubes;
