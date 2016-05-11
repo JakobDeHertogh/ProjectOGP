@@ -23,6 +23,14 @@ public class Faction {
 		return this.world;
 	}
 	
+	public Scheduler getScheduler(){
+		return this.scheduler;
+	}
+	
+	public void setScheduler(Scheduler scheduler){
+		this.scheduler = scheduler;
+	}
+	
 	public void addUnit(Unit unit){
 		//if (unit.isTerminated())
 		//	throw new ModelException("This unit is terminated");
@@ -39,6 +47,7 @@ public class Faction {
 	}
 
 	private Set<Unit> members = new HashSet<Unit>();
+	private Scheduler scheduler;
 	
 	private final World world;
 }
