@@ -4,7 +4,6 @@ import hillbillies.model.Unit;
 
 public abstract class BooleanExpression extends Expression{
 	
-	
 	public BooleanExpression(Unit unit){
 		super(unit);
 	}
