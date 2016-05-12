@@ -1,7 +1,7 @@
 package hillbillies.expression.bool;
 import hillbillies.model.Unit;
 
-public class SingleExpression extends BooleanExpression {
+public abstract class SingleExpression extends BooleanExpression {
 	
 	
 	public SingleExpression(Unit unit, BooleanExpression booleanexpression){
@@ -22,9 +22,20 @@ public class SingleExpression extends BooleanExpression {
 	
 	public boolean isValidExpression(BooleanExpression expression){
 		return (expression!=null);
+		
 	}
-
 	
+	@Override
+	public void setUnit(Unit unit){
+		super.setUnit(unit);
+		
+		getExpression().setUnit(unit);
+	}
+	
+	@Override
+	public abstract boolean Execute();
 	
 	private BooleanExpression expression;
+	private Unit unit;
+
 }
