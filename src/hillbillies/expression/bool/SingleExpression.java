@@ -32,8 +32,7 @@ public abstract class SingleExpression extends BooleanExpression {
 		getExpression().setUnit(unit);
 	}
 	
-	@Override
-	public abstract boolean Execute();
+	
 	
 	private BooleanExpression expression;
 	private Unit unit;
