@@ -89,11 +89,11 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 	@Override
 	public Expression<BoolType> createIsSolid(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new UnaryExpression<PosType, BoolType>( a -> new BoolType(a.getValue() ), position)
+		return new UnaryExpression<PosType, BoolType>( a -> new BoolType(a.getValue() ), position);
 	}
 
 	@Override
-	public Object createIsPassable(Object position, SourceLocation sourceLocation) {
+	public Expression<BoolType> createIsPassable(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
