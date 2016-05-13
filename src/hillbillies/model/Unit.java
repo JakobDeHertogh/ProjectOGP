@@ -624,87 +624,6 @@ public class Unit {
 			break;
 		}
 		}
-//		//Resting
-//		
-//		
-//		if (this.isResting()){
-//			boolean a = false;
-//			boolean b = false;
-//			if (this.getRegenHptime() <= dt){
-//				this.setHitpoints(this.getMaxHitPoints());
-//				a = true;
-//			}
-//			else if (this.getRegenHptime()>= dt)
-//				setHitpoints(this.hitpoints +(this.toughness * dt)/(200*0.2));
-//			
-//			if (this.getRegenStaminatime() <= dt){
-//				this.setStamina(this.getMaxStaminaPoints());
-//				b = true;
-//			}
-//			else if (a== true)
-//				this.setStamina(this.stamina + (this.toughness * dt)/(100*0.2));
-//			
-//			if (a&&b)
-//				this.isresting = false;
-//		}
-//			
-//		//Movement
-//		else if (this.adjacant != null){
-//			
-//			if (this.distance < this.getCurrentSpeed()*dt){
-//				this.setPosition(adjacant);
-//				this.adjacant = null;
-//				this.currentspeed = 0;
-//				
-//				// Completed movement step => +1 exp
-//				this.gainExperience(1);
-//				
-//				if (this.occupiesCube() == this.goal)
-//					this.goal = null;
-//			}
-//			else {
-//				double[] newposition = new double[3];
-//				newposition[0] = this.getXPosition() + dt * this.xspeed;
-//				newposition[1] = this.getYPosition() + dt * this.yspeed;
-//				newposition[2] = this.getZPosition() + dt * this.zspeed;
-//				this.distance -= this.getCurrentSpeed()*dt;
-//				setPosition(newposition);
-//				if (isSprinting())
-//					if (this.stamina<=0)
-//						stopSprinting();
-//					else if (this.stamina > 0)
-//							this.stamina -= dt/0.1;
-//			}
-//		}
-//		else if ((this.goal != null) && (this.goal.getCubeCenter() != this.position)){
-//			int[] target = new int[3];
-//			for (int i = 0; i<target.length; i++)
-//				target[i] = (int) goal.getPosition()[i];
-//			this.moveTo(target);
-//		}
-//		//Work
-//		else if (this.isWorking()){
-//			if (this.worktime < dt){
-//				this.worktime = 0;
-//				for (WorkTypes i : WorkTypes.values()){
-//					if (i.check(this, workAtCube)){
-//						i.execute(this, workAtCube);
-//						this.gainExperience(20);
-//						break;
-//					}
-//				}
-//			}
-//			else
-//				this.worktime = this.worktime - dt;
-//		}
-//		//Attack
-//		else if (isattacking)
-//			this.attacktime = this.attacktime - dt;
-//			
-//		
-//		//Defense
-//		else if (isdefending)
-//			this.defendtime -= dt;
 		
 		//Update Experience
 		int updatedExp = this.getExpPoints();
@@ -880,13 +799,8 @@ public class Unit {
 		} catch (EmptyStackException ex){
 			throw new ModelException("No path available");
 		}
-		
-		
-		
 	}
 	
-
-
 	
 	/**
 	 * The Unit starts working for a fixed time depending on its strength. 
@@ -1170,6 +1084,74 @@ public class Unit {
 		
 		this.getFaction().removeUnit(this);
 		this.isAlive = false;
+	}
+	
+	public Log getNearestLog(){
+		Log nearestLog = null;
+		double currentDistance = Double.MAX_VALUE;
+		for (Log i : this.getWorld().getLogs()){
+			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
+			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
+			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
+			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
+			
+			if (dist < currentDistance){
+				nearestLog = i;
+				currentDistance = dist;
+			}
+		}
+		return nearestLog;
+	}
+	
+	public Boulder getNearestBoulder(){
+		Boulder nearestBoulder = null;
+		double currentDistance = Double.MAX_VALUE;
+		for (Boulder i : this.getWorld().getBoulders()){
+			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
+			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
+			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
+			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
+			
+			if (dist < currentDistance){
+				nearestBoulder = i;
+				currentDistance = dist;
+			}
+		}
+		return nearestBoulder;
+	}
+	
+	public Unit getNearestFriend(){
+		Unit nearestFriend = null;
+		double currentDistance = Double.MAX_VALUE;
+		for (Unit i : this.getWorld().getActiveUnits()){
+			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
+			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
+			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
+			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
+			
+			if ((dist < currentDistance) && (i.getFaction() == this.getFaction())){
+				nearestFriend = i;
+				currentDistance = dist;
+			}
+		}
+		return nearestFriend;
+	}
+	
+	public Unit getNearestEnemy(){
+		Unit nearestEnemy = null;
+		double currentDistance = Double.MAX_VALUE;
+		for (Unit i : this.getWorld().getActiveUnits()){
+			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
+			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
+			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
+			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
+			
+			if ((dist < currentDistance) && (i.getFaction() != this.getFaction())){
+				nearestEnemy = i;
+				currentDistance = dist;
+			}
+		}
+		return nearestEnemy;
 	}
 	
 	public String name;

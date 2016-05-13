@@ -105,60 +105,52 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 	}
 
 	@Override
-	public Object createIsEnemy(Object unit, SourceLocation sourceLocation) {
+	public Expression<BoolType> createIsEnemy(Expression unit, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new 
 	}
 
 	@Override
 	public Expression<BoolType> createIsAlive(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new UnaryExpression<UnitType, BoolType>(a-> new BoolType(a.getValue().isAlive), unit);
 	}
 
 	@Override
 	public Expression<BoolType> createCarriesItem(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new UnaryExpression<UnitType, BoolType>(a-> new BoolType(
 				a.getValue().isCarryingBoulder() || a.getValue().isCarryingLog()), unit);
 	}
 
 	@Override
 	public Expression<BoolType> createNot(Expression expression, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new UnaryExpression<BoolType, BoolType>( a -> new BoolType(!a.getValue()), expression);
 	}
 
 	@Override
 	public Expression<BoolType> createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new BinaryExpression<BoolType, BoolType, BoolType>( (a,b) -> new BoolType(a.getValue() && b.getValue()),
 				left, right);
 	}
 
 	@Override
 	public Expression<BoolType> createOr(Expression left, Expression right, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new BinaryExpression<BoolType, BoolType, BoolType>( (a,b) -> new BoolType(a.getValue() || b.getValue()),
 				left, right);
 	}
 
 	@Override
 	public Expression<PosType> createHerePosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ThisPositionExpression();
 	}
 
 	@Override
 	public Expression<PosType> createLogPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LogExpression();
 	}
 
 	@Override
 	public Expression<PosType> createBoulderPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BoulderExpression();
 	}
 
 	@Override
@@ -194,7 +186,7 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 	@Override
 	public Expression<UnitType> createThis(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return new ValueExpression<UnitType>(new UnitType())
+		return new ThisUnitExpression();
 	}
 
 	@Override
