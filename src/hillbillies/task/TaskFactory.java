@@ -1,8 +1,20 @@
-package hillbillies.part3.programs;
+package hillbillies.task;
 
 import java.util.List;
 
-public class TaskFactory implements ITaskFactory{
+import hillbillies.model.Task;
+import hillbillies.part3.programs.ITaskFactory;
+import hillbillies.part3.programs.SourceLocation;
+import hillbillies.task.expression.BinaryExpression;
+import hillbillies.task.expression.Expression;
+import hillbillies.task.expression.UnaryExpression;
+import hillbillies.task.expression.ValueExpression;
+import hillbillies.task.statement.Statement;
+import hillbillies.task.type.BoolType;
+import hillbillies.task.type.Type;
+import hillbillies.task.type.UnitType;
+
+public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Statement, Task>{
 
 	@Override
 	public List createTasks(String name, int priority, Object activity, List selectedCubes) {
@@ -77,9 +89,9 @@ public class TaskFactory implements ITaskFactory{
 	}
 
 	@Override
-	public Object createIsSolid(Object position, SourceLocation sourceLocation) {
+	public Expression<BoolType> createIsSolid(Expression position, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new UnaryExpression<PosType, BoolType>( a -> new BoolType(a.getValue() ), position)
 	}
 
 	@Override
@@ -113,21 +125,23 @@ public class TaskFactory implements ITaskFactory{
 	}
 
 	@Override
-	public Object createNot(Object expression, SourceLocation sourceLocation) {
+	public Expression<BoolType> createNot(Expression expression, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new UnaryExpression<BoolType, BoolType>( a -> new BoolType(!a.getValue()), expression);
 	}
 
 	@Override
-	public Object createAnd(Object left, Object right, SourceLocation sourceLocation) {
+	public Expression<BoolType> createAnd(Expression left, Expression right, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new BinaryExpression<BoolType, BoolType, BoolType>( (a,b) -> new BoolType(a.getValue() && b.getValue()),
+				left, right);
 	}
 
 	@Override
-	public Object createOr(Object left, Object right, SourceLocation sourceLocation) {
+	public Expression<BoolType> createOr(Expression left, Expression right, SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new BinaryExpression<BoolType, BoolType, BoolType>( (a,b) -> new BoolType(a.getValue() || b.getValue()),
+				left, right);
 	}
 
 	@Override
@@ -179,9 +193,9 @@ public class TaskFactory implements ITaskFactory{
 	}
 
 	@Override
-	public Object createThis(SourceLocation sourceLocation) {
+	public Expression<UnitType> createThis(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ValueExpression<UnitType>(new UnitType())
 	}
 
 	@Override
@@ -203,15 +217,15 @@ public class TaskFactory implements ITaskFactory{
 	}
 
 	@Override
-	public Object createTrue(SourceLocation sourceLocation) {
+	public Expression<BoolType> createTrue(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ValueExpression<BoolType>(new BoolType(true));
 	}
 
 	@Override
-	public Object createFalse(SourceLocation sourceLocation) {
+	public Expression<BoolType> createFalse(SourceLocation sourceLocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ValueExpression<BoolType>(new BoolType(false));
 	}
 
 }
