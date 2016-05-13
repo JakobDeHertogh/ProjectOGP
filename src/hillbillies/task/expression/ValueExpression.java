@@ -1,5 +1,8 @@
 package hillbillies.task.expression;
 
+import java.util.Map;
+
+import hillbillies.model.Unit;
 import hillbillies.task.type.Type;
 
 public class ValueExpression<E extends Type> extends Expression<E> {
@@ -9,7 +12,7 @@ public class ValueExpression<E extends Type> extends Expression<E> {
 	}
 
 	@Override
-	public E evaluate() {
+	public E evaluate(Map<String, Type> globalVars, Unit thisUnit) {
 		return this.value;
 	}
 

@@ -1040,7 +1040,7 @@ public class Unit {
 	 * @param other
 	 * @return
 	 */
-	private boolean isAttackable(Unit other){
+	public boolean isAttackable(Unit other){
 		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))
 			if (this.position[2] == other.position[2])
 				return true;

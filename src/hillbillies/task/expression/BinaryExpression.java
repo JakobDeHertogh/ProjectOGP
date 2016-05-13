@@ -1,7 +1,9 @@
 package hillbillies.task.expression;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 
+import hillbillies.model.Unit;
 import hillbillies.task.expression.Expression;
 import hillbillies.task.type.Type;
 
@@ -16,8 +18,9 @@ public class BinaryExpression<A extends Type,B extends Type,E extends Type> exte
 	}
 	
 	@Override
-	public E evaluate() {
-		return this.getOperator().apply(this.getLeftExpression().evaluate(), this.getRightExpression().evaluate());
+	public E evaluate(Map<String, Type> globalVars, Unit thisUnit) {
+		return this.getOperator().apply(this.getLeftExpression().evaluate(globalVars, thisUnit), 
+				this.getRightExpression().evaluate(globalVars, thisUnit));
 	}
 		
 	public BiFunction<A,B,E> getOperator(){

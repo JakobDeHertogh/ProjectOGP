@@ -1,7 +1,9 @@
 package hillbillies.task.expression;
 
+import java.util.Map;
 import java.util.function.Function;
 
+import hillbillies.model.Unit;
 import hillbillies.task.type.Type;
 
 public class UnaryExpression<A extends Type,E extends Type> extends Expression<E> {
@@ -12,8 +14,8 @@ public class UnaryExpression<A extends Type,E extends Type> extends Expression<E
 	}
 	
 	@Override
-	public E evaluate() {
-		return this.getOperator().apply(this.getExpression().evaluate());
+	public E evaluate(Map<String, Type> globalVars, Unit thisUnit) {
+		return this.getOperator().apply(this.getExpression().evaluate(globalVars, thisUnit));
 	}
 
 	public Function<A,E> getOperator(){
