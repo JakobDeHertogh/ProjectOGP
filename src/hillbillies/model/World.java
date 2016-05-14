@@ -72,6 +72,10 @@ public class World {
 		return cubes[x][y][z];
 	}
 	
+	public Cube getCubeAtPos(int[] pos){
+		return cubes[pos[0]][pos[1]][pos[2]];
+	}
+	
 	public int getCubeTypeOf(int x,int y,int z){
 		return this.getCubeAtPos(x, y, z).getType().getValue();
 	}
