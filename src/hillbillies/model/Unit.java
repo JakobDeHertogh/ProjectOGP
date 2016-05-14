@@ -1154,6 +1154,10 @@ public class Unit {
 		return nearestEnemy;
 	}
 	
+	public boolean isFriend(Unit other){
+		return this.getFaction() == other.getFaction();
+	}
+	
 	public String name;
 	private int weight;
 	private int agility;	

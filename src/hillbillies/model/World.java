@@ -52,6 +52,10 @@ public class World {
 		}
 	}
 	
+	public boolean isPassable(int[] pos){
+		return this.isPassableCube(pos[0], pos[1], pos[2]);
+	}
+	
 	public ConnectedToBorder getCTB(){
 		return this.ctb;
 	}

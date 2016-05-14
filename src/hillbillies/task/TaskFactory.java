@@ -6,7 +6,7 @@ import hillbillies.model.Task;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 import hillbillies.task.expression.*;
-import hillbillies.task.statement.Statement;
+import hillbillies.task.statement.*;
 import hillbillies.task.type.*;
 
 
@@ -79,35 +79,35 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 		return new ActionStatement(a -> attack(unit));
 	}
 
+	// EXPRESSIONS // 
+
 	@Override
 	public Expression<? extends Type> createReadVariable(String variableName, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ReadVariableExpression<Type>(variableName);
 	}
 
-	// EXPRESSIONS // 
 	@Override
 	public Expression<BoolType> createIsSolid(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new UnaryExpression<PosType, BoolType>( a -> new BoolType(a.getValue() ), position);
+		return new UnaryUnitExpression<PosType, BoolType>( (a,b) -> 
+					new BoolType(! b.getValue().getWorld().isPassable(a.getValue())), position);
 	}
 
 	@Override
 	public Expression<BoolType> createIsPassable(Expression position, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnaryUnitExpression<PosType, BoolType>( (a,b) -> 
+					new BoolType(b.getValue().getWorld().isPassable(a.getValue())), position);
 	}
 
 	@Override
 	public Expression<BoolType> createIsFriend(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnaryUnitExpression<UnitType, BoolType>( (a,b) -> 
+					new BoolType(b.getValue().isFriend(a.getValue())), unit);
 	}
 
 	@Override
 	public Expression<BoolType> createIsEnemy(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new 
+		return new UnaryUnitExpression<UnitType, BoolType>( (a,b) -> 
+		new BoolType(! b.getValue().isFriend(a.getValue())), unit);	
 	}
 
 	@Override
@@ -140,17 +140,17 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 
 	@Override
 	public Expression<PosType> createHerePosition(SourceLocation sourceLocation) {
-		return new ThisPositionExpression();
+		return new UnitExpression<PosType>(a -> new PosType(a.getValue().getCubeCoordinate()));
 	}
 
 	@Override
 	public Expression<PosType> createLogPosition(SourceLocation sourceLocation) {
-		return new LogExpression();
+		return new UnitExpression<PosType>(a -> new PosType(a.getValue().getNearestLog().getCubeCoordinate()));
 	}
 
 	@Override
 	public Expression<PosType> createBoulderPosition(SourceLocation sourceLocation) {
-		return new BoulderExpression();
+		return new UnitExpression<PosType>(a -> new PosType(a.getValue().getNearestBoulder().getCubeCoordinate()));
 	}
 
 	@Override
@@ -173,32 +173,27 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 
 	@Override
 	public Expression<PosType> createPositionOf(Expression unit, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnaryExpression<UnitType, PosType>( a-> new PosType(a.getValue().getCubeCoordinate()), unit);
 	}
 
 	@Override
 	public Expression<PosType> createLiteralPosition(int x, int y, int z, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new ValueExpression<PosType>(new PosType(new int[]{x,y,z}));
 	}
 
 	@Override
 	public Expression<UnitType> createThis(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new ThisUnitExpression();
+		return new UnitExpression<UnitType>(a -> new UnitType(a.getValue()));
 	}
 
 	@Override
 	public Expression<UnitType> createFriend(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return new ValueExpression<UnitType>(new UnitType())
+		return new UnitExpression<UnitType>(a -> new UnitType(a.getValue().getNearestFriend()));
 	}
 
 	@Override
 	public Expression<UnitType> createEnemy(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnitExpression<UnitType>(a -> new UnitType(a.getValue().getNearestEnemy()));
 	}
 
 	@Override
@@ -209,13 +204,11 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 
 	@Override
 	public Expression<BoolType> createTrue(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new ValueExpression<BoolType>(new BoolType(true));
 	}
 
 	@Override
 	public Expression<BoolType> createFalse(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return new ValueExpression<BoolType>(new BoolType(false));
 	}
 
