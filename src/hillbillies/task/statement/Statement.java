@@ -2,12 +2,14 @@ package hillbillies.task.statement;
 
 import java.util.*;
 
-public class Statement implements Iterable<Statement>{
+import hillbillies.model.Unit;
+import hillbillies.task.type.Type;
+
+public abstract class Statement implements Iterable<Statement>{
 
 	public Statement(){
 		
 	}
-
 
 	@Override
 	public Iterator<Statement> iterator() {
@@ -29,5 +31,8 @@ public class Statement implements Iterable<Statement>{
 	List<Statement> getSubStatements(){
 		return new ArrayList<Statement>();
 	}
+	
+	public abstract void execute(Map<String, Type> globalVars, Unit thisUnit);
+	
 }
 	
