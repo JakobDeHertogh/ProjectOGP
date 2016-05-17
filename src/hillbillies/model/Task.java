@@ -5,9 +5,11 @@ import hillbillies.task.statement.Statement;
 import hillbillies.task.type.Type;
 
 public class Task {
-	public Task(String name, int priority, Statement taskBody){
+	public Task(String name, int priority, Statement taskBody, Map<String, Type> globalVars){
 		this.setName(name);
 		this.setPriority(priority);
+		this.setIterator(taskBody.iterator());
+		this.globalVars = globalVars;
 	}
 	
 	public void setName(String name){
@@ -51,34 +53,21 @@ public class Task {
 			i.removeTask(this);
 		}
 	}
-	
-	// Task iterator
-	
-	public StatementIterator<Statement> getTaskIterator(){
-		if (this.taskIterator == null)
-			this.taskIterator = this.getTaskBody().iterator();
-		return this.taskIterator;
+	// Iterator
+	public void setIterator(Iterator<Statement> iterator){
+		this.iterator = iterator;
 	}
 	
+	public Iterator<Statement> getIterator(){
+		return this.iterator;
+	}
 	
 	// Executing program:
 	
-	
 	public void execute(double dt){
 		double remainingTime = dt;
-		while (remainingTime > 0){
-			if (! thisUnit.isAlive)
-				break;
-			if(this.getTaskIterator().hasNext()){
-				// execute program
-				Statement nextStatement = getTaskIterator().next();
-				if (nextStatement != null)
-					remainingTime -= 0.001;
-			}
-			else {
-				resetVariables();
-				getTaskIterator().restart();
-			}
+		while (this.getIterator().hasNext()){
+			
 		}
 	}
 	
@@ -94,7 +83,7 @@ public class Task {
 	private String name;
 	private int priority;
 	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
-	private Map<String, Type> globalVars = new HashMap<String, Type>();
-	private StatementIterator<Statement> taskIterator = null;
+	private Map<String, Type> globalVars;
+	private Iterator<Statement> iterator;
 	private Statement taskBody;
 }
