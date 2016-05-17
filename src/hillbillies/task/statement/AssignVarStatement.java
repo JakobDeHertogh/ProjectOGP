@@ -1,5 +1,6 @@
 package hillbillies.task.statement;
 
-public class AssignVarStatement {
+public class AssignVarStatement extends SingleStatement{
+	
 
 }

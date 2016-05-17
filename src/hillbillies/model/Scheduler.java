@@ -6,7 +6,11 @@ public class Scheduler {
 	}
 	
 	public void addTask(Task task){
-		this.schedule.put(task.getPriority(), task);
+		this.schedule.put(task, task.getPriority());
+	}
+	
+	public void removeTask(Task task){
+		this.schedule.remove(task);
 	}
 	
 	public void setFaction(Faction faction){
@@ -20,7 +24,7 @@ public class Scheduler {
 	}
 	
 	private Set<Integer> priorities = new HashSet<Integer>();
-	private HashMap<Integer, Task> schedule = new HashMap<Integer, Task>();
+	private HashMap<Task, Integer> schedule = new HashMap<Task, Integer>();
 	private Faction faction;
 	
 }

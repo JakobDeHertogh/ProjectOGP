@@ -7,32 +7,43 @@ import hillbillies.task.type.Type;
 
 public abstract class Statement implements Iterable<Statement>{
 
-	public Statement(){
-		
-	}
-
+	public abstract void execute(Map<String, Type> globalVars, Unit thisUnit);
+	
 	@Override
-	public Iterator<Statement> iterator() {
+	public Iterator<Statement> iterator(){
 		return new Iterator<Statement>(){
+
+			private boolean isIterated(){
+				return this.isIterated;
+			}
 			
-			@Override
-			public boolean hasNext(){
-				return false;
-				
+			private void iterate(){
+				this.isIterated = true;
 			}
 			
 			@Override
-			public Statement next(){
-				return null;
+			public boolean hasNext() {
+				return ! this.isIterated();
 			}
+
+			@Override
+			public Statement next() {
+				if (this.isIterated())
+					throw new NoSuchElementException();
+				else{
+					this.iterate();
+					return Statement.this;
+				}
+			}
+			
+			private boolean isIterated;
 		};
 	}
 	
-	List<Statement> getSubStatements(){
+	//default lege arraylist, override in composed statements, maar niet in single statements. 
+	public List<Statement> getSubStatements(){
 		return new ArrayList<Statement>();
 	}
-	
-	public abstract void execute(Map<String, Type> globalVars, Unit thisUnit);
 	
 }
 	

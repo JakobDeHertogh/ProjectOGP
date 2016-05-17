@@ -21,8 +21,7 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 	// STATEMENTS // 
 	@Override
 	public Statement createAssignment(String variableName, Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AssignVarStatement(variableName, value);
 	}
 
 	@Override
