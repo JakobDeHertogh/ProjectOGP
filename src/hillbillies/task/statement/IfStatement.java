@@ -9,13 +9,13 @@ import hillbillies.task.type.*;
 
 public class IfStatement extends Statement{
 
-	public IfStatement(Expression<? extends Type> condition, Statement ifBody, Statement elseBody){
+	public IfStatement(Expression<BoolType> condition, Statement ifBody, Statement elseBody){
 		this.condition = condition;
 		this.ifBody = ifBody;
 		this.elseBody = elseBody;
 	}
 	
-	public Expression<? extends Type> getCondition(){
+	public Expression<BoolType> getCondition(){
 		return this.condition;
 	}
 	
@@ -25,6 +25,14 @@ public class IfStatement extends Statement{
 	
 	public Statement getElseBody(){
 		return this.elseBody;
+	}
+	
+	@Override
+	public List<Statement> getSubStatements(){
+		List<Statement> substatements = new ArrayList<>();
+		substatements.add(getIfBody());
+		substatements.add(getElseBody());
+		return substatements;
 	}
 	
 	@Override
@@ -56,7 +64,24 @@ public class IfStatement extends Statement{
 			public boolean hasNext(){
 				if (! this.isIterated())
 					return true;
-				if ()
+				if (expressionValue)
+					return this.getIfBodyIterator().hasNext();
+				else 
+					return this.getElseBodyIterator().hasNext();
+			}
+			
+			@Override
+			public Statement next(){
+				if (! this.hasNext())
+					throw new NoSuchElementException();
+				if (! isIterated()){
+					this.iterate();
+					return IfStatement.this;
+				}
+				if (expressionValue)
+					return this.getIfBodyIterator().next();
+				else 
+					return this.getElseBodyIterator().next();
 			}
 			
 			private final Iterator<Statement> ifBodyIterator = getIfBody().iterator();
@@ -66,7 +91,7 @@ public class IfStatement extends Statement{
 	}
 
 	
-	private final Expression<? extends Type> condition;
+	private final Expression<BoolType> condition;
 	private boolean expressionValue;
 	private final Statement ifBody;
 	private final Statement elseBody;
