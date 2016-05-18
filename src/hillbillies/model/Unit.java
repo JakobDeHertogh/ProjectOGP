@@ -1158,6 +1158,15 @@ public class Unit {
 		return this.getFaction() == other.getFaction();
 	}
 	
+	public String getTaskName(){
+		return this.currentTask.getName();
+	}
+	
+	void assignTask(Task task){
+		this.currentTask = task;
+		task.assignTo(this);
+	}
+	
 	public String name;
 	private int weight;
 	private int agility;	
@@ -1198,4 +1207,5 @@ public class Unit {
 	public boolean isAlive;
 	
 	public Activity currentActivity;
+	private Task currentTask;
 }

@@ -2,12 +2,13 @@ package hillbillies.task.statement;
 
 import java.util.*;
 
+import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.model.Unit;
 import hillbillies.task.type.Type;
 
 public abstract class Statement implements Iterable<Statement>{
 
-	public abstract void execute(Map<String, Type> globalVars, Unit thisUnit);
+	public abstract void execute(Map<String, Type> globalVars, Unit thisUnit) throws ExecutionErrorException;
 	
 	@Override
 	public Iterator<Statement> iterator(){

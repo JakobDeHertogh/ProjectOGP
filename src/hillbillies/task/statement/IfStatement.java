@@ -60,6 +60,7 @@ public class IfStatement extends Statement{
 				return this.elseBodyIterator;
 			}
 			
+
 			@Override
 			public boolean hasNext(){
 				if (! this.isIterated())

@@ -1,6 +1,7 @@
 package hillbillies.model;
 import java.util.*;
 
+import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.task.statement.Statement;
 import hillbillies.task.type.Type;
 
@@ -53,6 +54,11 @@ public class Task {
 			i.removeTask(this);
 		}
 	}
+	
+	public void assignTo(Unit unit){
+		this.thisUnit = unit;
+	}
+	
 	// Iterator
 	public void setIterator(Iterator<Statement> iterator){
 		this.iterator = iterator;
@@ -62,28 +68,51 @@ public class Task {
 		return this.iterator;
 	}
 	
-	// Executing program:
-	
+	/* Executing Task: 
+	 * 
+	 * execute for time specified in advanceTime of the executing unit
+	 * iterate task as long as time and iterator allow. 
+	 * execute all statements before iterating further. 
+	 * 
+	 */
 	public void execute(double dt){
 		double remainingTime = dt;
-		while (this.getIterator().hasNext()){
+		while (remainingTime > 0){
 			
+			try{
+				this.getIterator().next().execute(globalVars, thisUnit);
+			} catch (NoSuchElementException ex){
+				this.isCompleted = true;
+				thisUnit.assignTask(null);
+				this.removeTask();
+				return;
+			} catch (ExecutionErrorException ex){
+				this.reset();
+			}
+			
+			remainingTime -= 0.001;
 		}
 	}
 	
-	public void resetVariables(){
+	public void reset(){
+		// create new iterator to start task from the top again
+		this.setIterator(this.getTaskBody().iterator());
+		// clear global variables
 		this.globalVars.clear();
+		// reduce priority (set to 0)
+		this.setPriority(0);
 	}
 	
 	
 	
 	
 	
-	private Unit thisUnit;
+	private Unit thisUnit = null;
 	private String name;
 	private int priority;
 	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
 	private Map<String, Type> globalVars;
+	private boolean isCompleted = false;
 	private Iterator<Statement> iterator;
 	private Statement taskBody;
 }
