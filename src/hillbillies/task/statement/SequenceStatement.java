@@ -17,8 +17,7 @@ public class SequenceStatement extends Statement{
 	}
 	@Override
 	public void execute(Map<String, Type> globalVars, Unit thisUnit) {
-		// TODO Auto-generated method stub
-		
+		// doet niks
 	}
 	
 	@Override

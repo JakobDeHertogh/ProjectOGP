@@ -2,6 +2,7 @@ package hillbillies.task.statement;
 
 import java.util.Map;
 
+import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.model.Unit;
 import hillbillies.task.type.Type;
 
@@ -21,8 +22,11 @@ public class AssignVarStatement extends Statement{
 	}
 
 	@Override
-	public void execute(Map<String, Type> globalVars, Unit thisUnit) {
-
+	public void execute(Map<String, Type> globalVars, Unit thisUnit) throws ExecutionErrorException {
+		
+		if (globalVars.get(this.getVariableName()).getClass() != this.getNewType().getClass())
+			throw new ExecutionErrorException();
+		
 		globalVars.put(this.getVariableName(), this.getNewType());
 	}
 	
