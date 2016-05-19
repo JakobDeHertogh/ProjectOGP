@@ -424,9 +424,11 @@ public class Unit {
 	 * Sets the hitpoints of the unit to the given value.
 	 * @param newValue
 	 * 			The value we wish to set the hitpoints of the unit on.
+	 * @pre	The new value is a valid number of hit points.
+	 * 		|isValidHP(newValue);
 	 */
 	public void setHitpoints(double newValue){
-		if (isValidHP((int)newValue))
+		assert(isValidHP((int) newValue));
 			this.hitpoints = newValue;
 	}
 	/**
@@ -456,6 +458,7 @@ public class Unit {
 	 * @param value
 	 */
 	public void setStamina(double value){
+		assert(isValidStamina((int)value));
 		this.stamina = value;
 	}
 	/**

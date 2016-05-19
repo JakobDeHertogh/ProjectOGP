@@ -20,8 +20,10 @@ public class Boulder {
 	 * 			and lower limit. 
 	 * @post	The boulder is not carried by a Unit. 
 	 * 
-	 * @param world
+	 * @param world 
+	 * 			The game world in which the Boulder is situated
 	 * @param startPosition
+	 * 			The position at which the Boulder spawns
 	 * @throws ModelException If the given weight is not valid.
 	 */
 	public Boulder( World world, int[] startPosition) throws ModelException{
@@ -107,7 +109,12 @@ public class Boulder {
 		return this.weight;
 	}
 	/**
-	 * sets the weight to the given value. 
+	 * sets the weight to the given value.
+	 * 
+	 *  @param weight
+	 *  		An integer value to which we want to set the Boulder's weight.
+	 *  @post The weight of the Boulder is set to the given value.
+	 *  		|this.weight = weight.
 	 */
 	public void setWeight(int weight) throws ModelException{
 		this.weight = weight;
@@ -116,7 +123,7 @@ public class Boulder {
 	
 	/**
 	 * Adapts the Boulder's current position on whether it is falling or being carried.
-	 * @param dt
+	 * @param dt	double integer value with which the time advances for this Boulder
 	 */
 	public void advanceTime(double dt){
 		if (this.isCarriedBy != null)
@@ -134,7 +141,12 @@ public class Boulder {
 	}
 	
 	/**
-	 * Removes this Log from the game world.
+	 * Removes this Boulder from the game world.
+	 * 
+	 * @effect This Boulder will be removed from the game world.
+	 * 			|world.removeBoulder(this);
+	 * @post This Boulder will be terminated.
+	 * 			|this.isTerminated = true;
 	 */
 	public void terminate() {
 		this.isTerminated = true;

@@ -4,7 +4,11 @@ import java.util.*;
 public class Path {
 	
 	
-	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 */
 	public Path(Cube start, Cube end){
 		
 		
@@ -57,7 +61,12 @@ public class Path {
 		this.setStart(start);
 		this.setEnd(end);
 	}
-	
+	/**
+	 * 
+	 * @param a The starting Cube, from which the cost will be calculated to the end Cube.
+	 * @param b The end Cube to which the cost will be calculated from the starting Cube.
+	 * @return
+	 */
 	public double CalcCost(Cube a, Cube b){
 		int[] aPos = a.getPosition();
 		int[] bPos = b.getPosition();
