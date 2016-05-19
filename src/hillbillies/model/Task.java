@@ -5,12 +5,12 @@ import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.task.statement.Statement;
 import hillbillies.task.type.Type;
 
-public class Task {
-	public Task(String name, int priority, Statement taskBody, Map<String, Type> globalVars){
+public class Task implements Comparable<Task>{
+	public Task(String name, int priority, Statement taskBody, Object selectedCube){
 		this.setName(name);
 		this.setPriority(priority);
 		this.setIterator(taskBody.iterator());
-		this.globalVars = globalVars;
+		this.globalVars = new HashMap<String, Type>();
 	}
 	
 	public void setName(String name){
@@ -42,11 +42,9 @@ public class Task {
 		return this.schedulers;		
 	}
 	
-	public void replaceTask(Task replacant){
-		for(Scheduler i: this.schedulers){
-			i.removeTask(this);
-			i.addTask(replacant);
-		}
+	public void replaceTask(Scheduler scheduler, Task replacant){
+		scheduler.removeTask(this);
+		scheduler.addTask(replacant);
 	}
 	
 	public void removeTask(){
@@ -57,6 +55,10 @@ public class Task {
 	
 	public void assignTo(Unit unit){
 		this.thisUnit = unit;
+	}
+	
+	public Unit getAssignedUnit(){
+		return this.thisUnit;
 	}
 	
 	// Iterator
@@ -103,7 +105,19 @@ public class Task {
 		this.setPriority(0);
 	}
 	
-	
+	/*
+	 * PriorityQueue from scheduler orders from small -> big 
+	 * => revert order. 
+	 * 
+	 */
+	@Override
+	public int compareTo(Task other) {
+		if (this.getPriority() > other.getPriority())
+			return -1;
+		if (this.getPriority() == other.getPriority())
+			return 0;
+		return 1;
+	}
 	
 	
 	
@@ -115,4 +129,5 @@ public class Task {
 	private boolean isCompleted = false;
 	private Iterator<Statement> iterator;
 	private Statement taskBody;
+
 }

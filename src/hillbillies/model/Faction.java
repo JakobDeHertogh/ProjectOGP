@@ -9,6 +9,7 @@ public class Faction {
 	
 	public Faction(World world){
 		this.world = world;
+		this.setScheduler(new Scheduler(this));
 	}
 	
 	public int getNbMembers(){

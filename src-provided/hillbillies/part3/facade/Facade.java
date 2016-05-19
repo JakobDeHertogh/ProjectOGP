@@ -13,6 +13,10 @@ import hillbillies.model.Unit;
 import hillbillies.model.World;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.part3.programs.ITaskFactory;
+import hillbillies.task.TaskFactory;
+import hillbillies.task.expression.Expression;
+import hillbillies.task.statement.Statement;
+import hillbillies.task.type.Type;
 import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade{
@@ -364,75 +368,79 @@ public class Facade implements IFacade{
 
 
 	@Override
-	public ITaskFactory<?, ?, Task> createTaskFactory() {
+	public ITaskFactory<Expression<? extends Type> , Statement , Task> createTaskFactory() {
 		// TODO Auto-generated method stub
-		return null;
+		return new TaskFactory();
 	}
 
 	@Override
 	public boolean isWellFormed(Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		return false;
+		return task.isWellFormed();
 	}
 
 	@Override
 	public Scheduler getScheduler(Faction faction) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return faction.getScheduler();
 	}
 
 	@Override
 	public void schedule(Scheduler scheduler, Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		task.addSchedulers(scheduler);
 	}
 
 	@Override
 	public void replace(Scheduler scheduler, Task original, Task replacement) throws ModelException {
 		// TODO Auto-generated method stub
-		
+		original.replaceTask(scheduler, replacement);
 	}
 
 	@Override
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
 		// TODO Auto-generated method stub
-		return false;
+		for (Task i : tasks){
+			if (! i.getSchedulers().contains(scheduler))
+				return false;
+		}
+		return true;
 	}
 
 	@Override
 	public Iterator<Task> getAllTasksIterator(Scheduler scheduler) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return scheduler.iterator();
 	}
 
 	@Override
 	public Set<Scheduler> getSchedulersForTask(Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return task.getSchedulers();
 	}
 
 	@Override
 	public Unit getAssignedUnit(Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return task.getAssignedUnit();
 	}
 
 	@Override
 	public Task getAssignedTask(Unit unit) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit.getTask();
 	}
 
 	@Override
 	public String getName(Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		return null;
+		return task.getName();
 	}
 
 	@Override
 	public int getPriority(Task task) throws ModelException {
 		// TODO Auto-generated method stub
-		return 0;
+		return task.getPriority();
 	}
 
 }
