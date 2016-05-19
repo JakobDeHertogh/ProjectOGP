@@ -246,8 +246,8 @@ public class UnitTest {
 		TestWorld.addUnit(Kobbe);
 		
 		assertTrue("The unit's default behavior should be enabled", Kobbe.isDefaultBehaviorEnabled());
-		assertEquals("The unit's current activity should be null", Kobbe.currentActivity, null);
+		assertEquals("The unit's current activity should be null", Kobbe.getActivity(), null);
 		TestWorld.advanceTime(0.2);
-		assertTrue("The unit's activity should no longer be null", Kobbe.currentActivity != null);
+		assertTrue("The unit's activity should no longer be null", Kobbe.getActivity() != null);
 	}
 }

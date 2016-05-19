@@ -527,13 +527,17 @@ public class Unit {
 				this.position[2] += dt*this.fallingSpeed;
 		}
 		
+		// execute task for same duration as advanceTime
+		if (this.getTask() != null)
+			this.getTask().execute(dt);
+		
+		// check default action
 		if (this.currentActivity == null){
 			if (this.isDefaultBehaviorEnabled()){
 				//Select random activity
 				Random x = new Random();
 				List<Activity> allAct = Arrays.asList(Activity.values());				
 				Activity randomAct = allAct.get(x.nextInt(allAct.size()));
-				System.out.println(randomAct);
 				randomAct.defaultAction(this);
 			}
 		}
@@ -1071,6 +1075,10 @@ public class Unit {
 		return this.defaultBehaviorEnabled;
 	}
 	
+	public Activity getActivity(){
+		return this.currentActivity;
+	}
+	
 	/**
 	 * The Unit dies, and is removed from the game world.
 	 */
@@ -1158,13 +1166,17 @@ public class Unit {
 		return this.getFaction() == other.getFaction();
 	}
 	
-	public String getTaskName(){
-		return this.currentTask.getName();
+	public Task getTask(){
+		return this.currentTask;
 	}
 	
 	void assignTask(Task task){
 		this.currentTask = task;
 		task.assignTo(this);
+	}
+	
+	public boolean isNextTo(Unit other){
+		return other.occupiesCube().getSurroundingCubes().contains(this.occupiesCube());
 	}
 	
 	public String name;
@@ -1206,6 +1218,6 @@ public class Unit {
 	private Log CarriesLog = null;
 	public boolean isAlive;
 	
-	public Activity currentActivity;
+	private Activity currentActivity;
 	private Task currentTask;
 }
