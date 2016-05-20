@@ -77,6 +77,16 @@ public class Task implements Comparable<Task>{
 		return this.thisUnit;
 	}
 	
+	public boolean isWellFormed(){
+		/*
+		 * Types will be generically checked. 
+		 * Honestly no idea how to check for ReadVariableExpressions when no
+		 * AssignVarStatement is used. 
+		 */
+		return (! this.getTaskBody().hasIllegalBreak());
+		
+	}
+	
 	// Iterator
 	public void setIterator(Iterator<Statement> iterator){
 		this.iterator = iterator;
@@ -98,14 +108,15 @@ public class Task implements Comparable<Task>{
 		while (remainingTime > 0){			
 			try{
 				this.getIterator().next().execute(globalVars, thisUnit);
+			} catch (ExecutionErrorException ex){
+				this.reset();	
+				return;
 			} catch (NoSuchElementException ex){
 				System.out.println("pifpoefpaf de taak is af!");
 				this.isCompleted = true;
 				thisUnit.assignTask(null);
 				this.removeTask();
 				return;
-			} catch (ExecutionErrorException ex){
-				this.reset();
 			}
 			
 			remainingTime -= 0.001;

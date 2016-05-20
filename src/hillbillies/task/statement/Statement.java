@@ -46,5 +46,18 @@ public abstract class Statement implements Iterable<Statement>{
 		return new ArrayList<Statement>();
 	}
 	
+	public boolean hasIllegalBreak(){
+		if (this instanceof BreakStatement)
+			return true;
+		
+		if (! (this instanceof WhileStatement)){
+			for (Statement s : this.getSubStatements()){
+				if (s instanceof BreakStatement)
+					return true;
+			}
+		}
+		
+		return false;
+	}
 }
 	

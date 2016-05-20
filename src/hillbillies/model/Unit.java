@@ -584,19 +584,17 @@ public class Unit {
 		// check default action
 		if (this.currentActivity == null){
 			if (this.isDefaultBehaviorEnabled()){
+				System.out.println("ping");
 				if (this.getTask() == null){
-					try{
+					if(this.getFaction().getScheduler().retrieveTask() != null)
 						this.assignTask(this.getFaction().getScheduler().retrieveTask());
-					} catch (NullPointerException ex){
+					
+					else{
+						Random x = new Random();
+						List<Activity> allAct = Arrays.asList(Activity.values());				
+						Activity randomAct = allAct.get(x.nextInt(allAct.size()));
+						randomAct.defaultAction(this);
 					}
-				}
-				
-				else{
-					//Select random activity
-					Random x = new Random();
-					List<Activity> allAct = Arrays.asList(Activity.values());				
-					Activity randomAct = allAct.get(x.nextInt(allAct.size()));
-					randomAct.defaultAction(this);
 				}
 			}
 		}

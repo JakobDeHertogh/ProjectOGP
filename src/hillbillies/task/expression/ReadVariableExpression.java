@@ -11,8 +11,7 @@ public class ReadVariableExpression<E extends Type> extends Expression<E> {
 		this.variableName = variableName;
 	}
 	@Override
-	public E evaluate(Map<String, Type> globalVars, Unit thisUnit) {
-		// TODO Auto-generated method stub
+	public E evaluate(Map<String,Type> globalVars, Unit thisUnit) {
 		return (E) globalVars.get(this.variableName);
 	}
 	
