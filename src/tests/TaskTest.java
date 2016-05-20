@@ -56,45 +56,11 @@ public class TaskTest {
 		// test name
 		assertEquals("work task", facade.getName(task));
 		// test priority
-		assertEquals(125, facade.getPriority(task));System.out.println("Applaus");
+		assertEquals(125, facade.getPriority(task));
 		facade.schedule(scheduler, task);
 		advanceTimeFor(facade, world, 100, 0.02);
 		// work task has been executed
 		assertEquals(TYPE_AIR, facade.getCubeType(world, 1, 1, 2));
-		// work task is removed from scheduler
-		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
-		
-	}
-	
-	@Test
-	public void test2TaskExecuted() throws ModelException {
-		int[][][] types = new int[3][3][3];
-		types[1][1][0] = TYPE_ROCK;
-		types[1][1][1] = TYPE_ROCK;
-		types[1][1][2] = TYPE_TREE;
-		types[2][2][2] = TYPE_WORKSHOP;
-
-		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
-		Unit unit = facade.createUnit("Test", new int[] { 1, 1, 1 }, 50, 50, 50, 50, true);
-		facade.addUnit(unit, world);
-		Faction faction = facade.getFaction(unit);
-		
-		Scheduler scheduler = facade.getScheduler(faction);
-		List<Task> tasks = TaskParser.parseTasksFromString(
-				"name: \"move task\"\npriority: 69\nactivities: moveTo ( 1, 2, 2);", facade.createTaskFactory(),
-				Collections.singletonList(new int[] { 1, 1, 2 }));
-
-		// tasks are created
-		assertNotNull(tasks);
-		// there's exactly one task
-		assertEquals(1, tasks.size());
-		Task task = tasks.get(0);
-		// test name
-		assertEquals("work task", facade.getName(task));
-		// test priority
-		assertEquals(69, facade.getPriority(task));System.out.println("Applaus");
-		facade.schedule(scheduler, task);
-		advanceTimeFor(facade, world, 100, 10);
 		// work task is removed from scheduler
 		assertFalse(facade.areTasksPartOf(scheduler, Collections.singleton(task)));
 		

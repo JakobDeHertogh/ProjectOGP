@@ -13,11 +13,12 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 public class Scheduler implements Iterable<Task> {
 	/**
-	 * 
 	 * @param faction The Faction for this Scheduler
+	 * @effect the Faction of this Scheduler is set to the given faction.
+	 * 			|setFaction(faction)
 	 */
 	public Scheduler(Faction faction){
-		if(faction.getScheduler()==null){this.setFaction(faction);}
+		this.setFaction(faction);
 	}
 	/**
 	 * Add the given Task to this Scheduler.
@@ -49,14 +50,19 @@ public class Scheduler implements Iterable<Task> {
 	/**
 	 * Set the Faction for this Scheduler.
 	 * @param faction	The Faction that is to be the faction for this Schedule.
-	 * @post	This Scheduler's faction is set to the given Faction.
+	 * @post	If this Scheduler didn't already have a Faction and the faction didn't already have a Scheduler,
+	 * 			this Scheduler's faction is set to the given Faction.
 	 * 			|new.faction == faction
-	 * @effect	The given Faction's Scheduler is set to this Scheduler.
+	 * @effect	If this Scheduler didn't already have a Faction and the faction didn't already have a Scheduler,
+	 * 			this Scheduler's faction is set to the given Faction.
 	 * 			|faction.setScheduler(this)
 	 */
 	public void setFaction(Faction faction){
-		this.faction = faction;
-		faction.setScheduler(this);
+		if((faction.getScheduler()==null)&&(faction.getScheduler()==null)){
+			this.faction = faction;
+			faction.setScheduler(this);
+		}
+		
 	}
 	
 	/**
@@ -86,14 +92,22 @@ public class Scheduler implements Iterable<Task> {
 		return this.schedule;
 	}
 	
-	
+	/**
+	 * Return this Schedulers iterator.
+	 */
 	@Override
 	public Iterator<Task> iterator(){
 		return this.schedule.iterator();	
 	};
 		
-	
+	/**
+	 * Variable registering the Tasks, ordered by priority.
+	 */
 	private LinkedList<Task> schedule = new LinkedList<Task>();
+	
+	/**
+	 * Variable registering the Faction this Scheduler belongs to.
+	 */
 	private Faction faction;
 	
 }

@@ -13,7 +13,11 @@ import ogp.framework.util.ModelException;
  *
  */
 public class Faction {
-	
+	/**
+	 * @param world The world this Faction is set in.
+	 * @post this Faction's World is set to the given World.
+	 * @effect the Scheduler of this Faction is set to a newly created Scheduler.
+	 */
 	public Faction(World world){
 		this.world = world;
 		this.setScheduler(new Scheduler(this));
@@ -21,7 +25,8 @@ public class Faction {
 	
 	/**
 	 * Return the number of Units that are a member of this Faction.
-	 * @return
+	 * @return the size of the set of members of this Faction.
+	 * 			|result == members.size()
 	 */
 	public int getNbMembers(){
 		return this.members.size();
@@ -45,7 +50,6 @@ public class Faction {
 	
 	/**
 	 * Return the Scheduler of this Faction.
-	 * @return
 	 */
 	@Basic
 	public Scheduler getScheduler(){
@@ -87,9 +91,19 @@ public class Faction {
 			this.world.removeFaction(this);
 		}
 	}
-
+	
+	/**
+	 * Variable registering the members of this Faction.
+	 */
 	private Set<Unit> members = new HashSet<Unit>();
+	
+	/**
+	 * Variable registering this Faction's Scheduler.
+	 */
 	private Scheduler scheduler;
 	
+	/**
+	 * Constant registering the World this Faction is a part of.
+	 */
 	private final World world;
 }
