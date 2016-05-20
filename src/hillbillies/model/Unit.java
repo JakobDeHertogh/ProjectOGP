@@ -156,7 +156,10 @@ public class Unit {
 	}
 	/**
 	 * Levels up a random trait of the Unit if a sufficient number of Experience Points have been collected.
-	 * @post TODO i dunno how to do this one...
+	 * @effect Depending on a randomly generated double, this Unit's toughness, agility or strength will be leveled up.
+	 * 			|if (P<0.33333): setToughness(this.toughness + 1)
+	 * 			|else if (P<0.66666): setToughness(this.agility + 1)
+	 * 			|else: setStrength(this.strength + 1)
 	 */
 	public void levelUp(){
 		double P = Math.random();
@@ -298,7 +301,7 @@ public class Unit {
 	/**
 	 * Gets the coordinate of the cube the Unit occupies.
 	 */
-	@Raw
+	@Raw @Basic
 	public int[] getCubeCoordinate (){
 		int[] cubecoordinate = new int[3];
 		cubecoordinate[0] = (int)Math.floor(this.getXPosition());
@@ -1112,7 +1115,6 @@ public class Unit {
 	 * 			|new.goal == null
 	 * 			|new.attacktime == 1
 	 * 			|new.isattacking == true
-	 * 			
 	 * @post	The other Unit's goal is set to null, its defendtime to 1, he is defending, and its orientation is adjusted to this Unit.
 	 * 			|new.goal == null
 	 * 			|new.defendtime == 1
@@ -1120,7 +1122,9 @@ public class Unit {
 	 * @effect 	This Unit's orientation is adjusted to the target Unit, and the target Unit's orientation is adjusted to this Unit.
 	 * 			|setOrientation(Math.atan2(other.getYPosition()-this.getYPosition(), other.getXPosition()-this.getXPosition()))
 	 * 			|other.setOrientation(Math.atan2(this.getYPosition()-other.getYPosition(), this.getXPosition()-other.getXPosition()))
-	 * @throws ModelException
+	 * @effect	The other Unit defends.
+	 * 			|other.defend(this)
+	 * @throws ModelException if the defending Unit tries to run away to an invalid position.
 	 * 
 	 */
 	public void attack(Unit other) throws ModelException{
@@ -1148,8 +1152,15 @@ public class Unit {
 	/**
 	 * Unit defends itself against an attacking Unit. The Unit will either
 	 * dodge, block or take the damage. 
-	 * @param other
-	 * @throws ModelException if
+	 * @param other	The Unit that is attacking this Unit.
+	 * @effect If this Unit can dodge the attack, this Unit will run away from his attacking Unit.
+	 * 			|if random <= Pdodge:
+	 * 			|	runAwayFrom(other.getPosition(), other)
+	 * @effect If this Unit cannot block the attack, its hit points will be decreased by the other Unit's strength, divided by 10.
+	 * 			|if random >= Pblock:
+	 * 			|	setHitpoints(getCurrentHitPoints() - other.strength /10)
+	 * @throws ModelException if the Unit tries to run away to an invalid position.
+	 * 			|!isValidPosition(runawayposition)
 	 * 
 	 */
 	public void defend(Unit other)throws ModelException{
@@ -1169,7 +1180,10 @@ public class Unit {
 	 * Unit runs away from another unit.
 	 * @param position The position this Unit is standing on.
 	 * @param other	The Unit this Unit has to run away from.
-	 * @throws ModelException
+	 * @effect	This Unit moves to a neighbouring Cube on the same z level.
+	 * 			|setPosition(newposition)
+	 * @throws ModelException if the position this Unit runs to is not valid.
+	 * 			|!isValidPosition(newpos)
 	 */
 	public void runAwayFrom(double[] position, Unit other) throws ModelException{
 		double[] newpos = new double[3];
@@ -1233,6 +1247,7 @@ public class Unit {
 	public void setDefaultBehaviorEnabled(boolean value){
 		this.defaultBehaviorEnabled = value;
 	}
+	
 	/**
 	 * Checks whether default behavior is enabled for the Unit.
 	 */
@@ -1240,6 +1255,7 @@ public class Unit {
 	public boolean isDefaultBehaviorEnabled(){
 		return this.defaultBehaviorEnabled;
 	}
+	
 	/**
 	 * Returns the current activity of this Unit.
 	 */
@@ -1275,7 +1291,10 @@ public class Unit {
 	
 	/**
 	 * Returns the Log that is closest to this Unit.
-	 * @return
+	 * @return The nearest Log in this World. All other Logs are further away. The distance is measured in the	
+	 * 			amount of Cubes this Unit has to pass to reach the Log.
+	 * 			|foreach log in getWorld().getLogs():
+	 * 			|	distance >= minDistance
 	 */
 	public Log getNearestLog(){
 		Log nearestLog = null;
@@ -1295,7 +1314,10 @@ public class Unit {
 	
 	/**
 	 * Returns the Boulder that is closest to this Unit.
-	 * @return The nearest Boulder
+	 * @return The nearest Boulder in this World. All other Boulders are further away. The distance is measured in the	
+	 * 			amount of Cubes this Unit has to pass to reach the Boulder.
+	 * 			|foreach boulder in getWorld().getBoulders():
+	 * 			|	distance >= minDistance
 	 */
 	public Boulder getNearestBoulder(){
 		Boulder nearestBoulder = null;
