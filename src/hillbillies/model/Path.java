@@ -3,18 +3,22 @@ import java.util.*;
 
 import be.kuleuven.cs.som.annotate.Basic;
 
+/**
+ * A class of Paths, each with a start, end, 
+ * @author Kristof Van Cappellen & Jakob De Hertogh
+ *
+ */
 public class Path {
 	
 	
 	/**
 	 * 
-	 * @param start
-	 * @param end
+	 * @param start The Cube to set this new Path's start on.
+	 * @param end	The Cube to set this new Path's end on.
+	 * @effect	The start of this new Path is set to the given Cube.
+	 * @effect	The end of this new Path is set to the given Cube.
 	 */
 	public Path(Cube start, Cube end){
-		
-		
-		// HET VINDEN VAN HET OMGEKEERDE PAD (Opzoeken in came_from geeft de vorige cube in de gevolgde weg)
 		LinkedList<Data> frontier = new LinkedList<Data>();
 		Data startData = new Data(start, 0);
 		frontier.add(startData);

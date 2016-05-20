@@ -27,7 +27,6 @@ import ogp.framework.util.ModelException;
  * 				&& isValidStartVal(strength)
  * 
  * 
- * @version 0.51
  * @author Kristof Van Cappellen
  * @author Jakob De Herthogh
  *
@@ -1280,16 +1279,15 @@ public class Unit {
 	 */
 	public Log getNearestLog(){
 		Log nearestLog = null;
-		double currentDistance = Double.MAX_VALUE;
+		double minDistance = Double.MAX_VALUE;
 		for (Log i : this.getWorld().getLogs()){
-			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
-			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
-			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
-			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
-			
-			if (dist < currentDistance){
-				nearestLog = i;
-				currentDistance = dist;
+			Path path = new Path(this.occupiesCube(), i.occupiesCube());
+			if (!path.getRoute().isEmpty()){
+				int distance = path.countStepsinRoute();
+				if ((distance < minDistance)){
+					nearestLog = i;
+					minDistance = distance;
+				}
 			}
 		}
 		return nearestLog;
@@ -1301,16 +1299,15 @@ public class Unit {
 	 */
 	public Boulder getNearestBoulder(){
 		Boulder nearestBoulder = null;
-		double currentDistance = Double.MAX_VALUE;
+		double minDistance = Double.MAX_VALUE;
 		for (Boulder i : this.getWorld().getBoulders()){
-			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
-			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
-			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
-			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
-			
-			if (dist < currentDistance){
-				nearestBoulder = i;
-				currentDistance = dist;
+			Path path = new Path(this.occupiesCube(), i.occupiesCube());
+			if (!path.getRoute().isEmpty()){
+				int distance = path.countStepsinRoute();
+				if ((distance < minDistance)){
+					nearestBoulder = i;
+					minDistance = distance;
+				}
 			}
 		}
 		return nearestBoulder;
@@ -1318,23 +1315,21 @@ public class Unit {
 	
 	/**
 	 * Return the Workshop Cube that is closest to this Unit.
-	 * @return
+	 * @return The nearest Workshop Cube in this World. All other Workshop Cubes are further away. The distance is measured in the	
+	 * 			amount of Cubes this Unit has to pass to reach the Workshop Cube.
+	 * 			|foreach workshop in getWorld().getWorkshops():
+	 * 			|	distance >= minDistance
 	 */
 	public Cube getNearestWorkshop(){
 		Cube nearestWorkshop = null;
-		double currentDistance = Double.MAX_VALUE;
-		int numberOfSteps = Integer.MAX_VALUE;
-		for (Cube i: this.world.getWorkshops()){
-			int xdist = (i.getXPosition() - this.getCubeCoordinate()[0]);
-			int ydist = (i.getYPosition() - this.getCubeCoordinate()[1]);
-			int zdist = (i.getZPosition() - this.getCubeCoordinate()[2]);
-			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
-			
-			if ((dist<currentDistance)){
-				Path path = new Path(this.getWorld().getCubeAtPos(this.getCubeCoordinate()), i);
-				if (!(path.getRoute().isEmpty())){
+		double minDistance = Double.MAX_VALUE;
+		for (Cube i : this.getWorld().getWorkshops()){
+			Path path = new Path(this.occupiesCube(), i);
+			if (!path.getRoute().isEmpty()){
+				int distance = path.countStepsinRoute();
+				if ((distance < minDistance)){
 					nearestWorkshop = i;
-					currentDistance = dist;
+					minDistance = distance;
 				}
 			}
 		}
@@ -1344,42 +1339,46 @@ public class Unit {
 	
 	/**
 	 * Returns the nearest friend of this Unit.
-	 * @return The nearest Unit from the same Faction. All other faction members are further away.
-	 * 			|foreach Unit in 
+	 * @return The nearest Unit from the same Faction. All other faction members are further away. The distance is measured in the	
+	 * 			amount of Cubes this Unit has to pass to reach his friend.
+	 * 			|foreach Unit in getFaction().getMembers():
+	 * 			|	distance >= minDistance
 	 */
 	public Unit getNearestFriend(){
 		Unit nearestFriend = null;
-		double currentDistance = Double.MAX_VALUE;
+		double minDistance = Double.MAX_VALUE;
 		for (Unit i : this.getFaction().getMembers()){
 			Path path = new Path(this.occupiesCube(), i.occupiesCube());
 			if (!path.getRoute().isEmpty()){
 				int distance = path.countStepsinRoute();
-				if ((distance < currentDistance) && (i.getFaction() == this.getFaction())){
+				if ((distance < minDistance) && (i.getFaction() == this.getFaction())){
 					nearestFriend = i;
-					currentDistance = distance;
+					minDistance = distance;
 				}
 			}
 		}
-		
 		return nearestFriend;
 	}
 	
 	/**
 	 * Returns the nearest Enemy of this Unit.
-	 * @return
+	 * @return The nearest Unit from a different Faction. All other Units of a different Faction are further away. 
+	 * 			The distance is measured in the	amount of cubes this Unit has to pass to reach his enemy.
+	 * 			|foreach unit in getWorld().getUnit():
+	 * 			|	if unit.getFaction != this.getFaction:
+	 * 			|		distance >= minDistance
 	 */
 	public Unit getNearestEnemy(){
 		Unit nearestEnemy = null;
-		double currentDistance = Double.MAX_VALUE;
-		for (Unit i : this.getWorld().getActiveUnits()){
-			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
-			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
-			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
-			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
-			
-			if ((dist < currentDistance) && (i.getFaction() != this.getFaction())){
-				nearestEnemy = i;
-				currentDistance = dist;
+		double minDistance = Double.MAX_VALUE;
+		for (Unit i : this.getFaction().getMembers()){
+			Path path = new Path(this.occupiesCube(), i.occupiesCube());
+			if (!path.getRoute().isEmpty()){
+				int distance = path.countStepsinRoute();
+				if ((distance < minDistance) && (i.getFaction() != this.getFaction())){
+					nearestEnemy = i;
+					minDistance = distance;
+				}
 			}
 		}
 		return nearestEnemy;
