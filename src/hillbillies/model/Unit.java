@@ -584,10 +584,11 @@ public class Unit {
 		// check default action
 		if (this.currentActivity == null){
 			if (this.isDefaultBehaviorEnabled()){
-				System.out.println("ping");
 				if (this.getTask() == null){
-					if(this.getFaction().getScheduler().retrieveTask() != null)
-						this.assignTask(this.getFaction().getScheduler().retrieveTask());
+					Task task = this.getFaction().getScheduler().retrieveTask();
+					if(task != null){
+						this.assignTask(task);
+					}
 					
 					else{
 						Random x = new Random();
@@ -1430,8 +1431,10 @@ public class Unit {
 	 */
 	void assignTask(Task task){
 		this.currentTask = task;
-		if (task !=  null){
-			task.assignTo(this);
+		try{
+			if (task.getAssignedUnit() == null)
+				task.assignTo(this);
+		} catch (NullPointerException ex){
 		}
 	}
 	
