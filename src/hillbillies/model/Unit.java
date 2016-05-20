@@ -26,6 +26,7 @@ import ogp.framework.util.ModelException;
  * 			| isValidStartVal(weight) && isValidStartVal(toughness) isValidStartVal(agility) 
  * 				&& isValidStartVal(strength)
  * 
+ * 
  * @version 0.51
  * @author Kristof Van Cappellen
  * @author Jakob De Herthogh
@@ -35,21 +36,46 @@ public class Unit {
 	/**
 	 * 
 	 * @param name
+	 * 			The name for this new Unit.
 	 * @param initialPosition
+	 * 			The position of the Cube this new Unit will start on.
 	 * @param weight
+	 * 			The weight for this new Unit.
 	 * @param agility
+	 * 			The agility for this new Unit.
 	 * @param strenght
+	 * 			The strength for this new Unit.
 	 * @param toughness
+	 * 			The toughness for this new Unit.
 	 * @param enableDefaultBehavior
+	 * 			Whether default behavior is enabled for this Unit (true) or not (false).
+	 * @post	The amount of experience points of this new Unit is set to 0.
+	 * 			|new.experiencePoints == 0
+	 * @post	The lifetime of this new Unit is set to 0.
+	 * 			|new.lifetime == 0
+	 * @post	The new Unit is alive.
+	 * 			|new.isAlive == true
+	 * @post	The amount of hit points of the new Unit is set to the maximum amount.
+	 * 			|new.hitpoints == new.getMaxHitPoints()
+	 * @post	The amount of stamina points of the new Unit is set to the maximum amount.
+	 * 			|new.stamina == new.getMaxStaminaPoints()
+	 * @effect	The name of this new Unit is set to the given name.
+	 * 			|setName(name)
+	 * @effect	The strength of this new Unit is set to a correct starting value.
+	 * 			|setStrength(validStarVal(strength))
+	 * @effect	The toughness of this new Unit is set to a correct starting value.
+	 * 			|setToughness(validStarVal(toughness))
+	 * @effect	The weight of this new Unit is set to a correct starting value.
+	 * 			|setWeight(validStarVal(weight))
+	 * @effect	The agility of this new Unit is set to a correct starting value.
+	 * 			|setAgility(validStarVal(agility))
+	 * @effect	The position of this new Unit is set to the center of the given starting Cube.
+	 * 			|setPosition([initialPosition[0]+0.5, initialPosition[1]+0.5, initialPosition[2]]
+	 * @effect	The default behavior is set to the given value.
+	 * 			|setDefaultBehaviorEnabled(enableDefaultBehavior)
+	 * @effect	The orientation of the new Unit is to PI/2.
+	 * 			|new.setOrientation(Math.PI/2)
 	 * 
-	 * @post 	Unit's new name is the given name, if that meets the requirements. 
-	 * 			| new name == Unit.setName(name)
-	 * @post	Unit's weight, agility, strength and toughness are limited to values
-	 * 			between 25 and 100. 
-	 * 			| new weight/agility/strength/toughness == set... (validStartVal(...))
-	 * @post 	Unit's defaultBehavior is enabled if asked so. 
-	 * 			... 
-	 *
 	 * 
 	 * 
 	 * @throws ModelException 
@@ -79,14 +105,13 @@ public class Unit {
 		this.hitpoints = this.getMaxHitPoints();
 		this.lifetime = 0;
 		this.isAlive = true;
-		
 		this.experiencePoints = 0;
 		this.fallingTo = this.getZPosition();
 	}
 	
 	// FACTIONS
 	/**
-	 * @returns Returns the faction of this Unit.
+	 * Returns the faction of this Unit.
 	 */
 	public Faction getFaction(){
 		return this.faction;
@@ -95,6 +120,9 @@ public class Unit {
 	/**
 	 * Sets the faction of this Unit.
 	 * @post	If the Unit did not have a faction, then the faction will be set to the given faction.
+	 * 			|if (this.faction==null)
+	 * 			|then this.faction = faction
+	 * 			|and this.world = faction.getworld()
 	 */
 	public void setFaction(Faction faction){
 		if (this.faction == null){// of isTerminated()
@@ -103,24 +131,33 @@ public class Unit {
 		}
 	}
 	
+	/**
+	 * Return the world this Unit is situated in.
+	 */
 	public World getWorld(){
 		return this.world;
 	}
 	
 	// EXPERIENCE
 	/**
-	 * @returns The number of Experience Points this Unit has.
+	 * Return the number of Experience Points this Unit has.
 	 */
 	public int getExpPoints(){
 		return this.experiencePoints;
 	}
 	
+	/**
+	 * The Unit gains a given amount of experience points.
+	 * @param dExp	The amount of experience to be added to this Unit.
+	 * @post	The Unit's number of experience points is increased with the given amount.
+	 * 			|this.experiencePoints +=dExp
+	 */
 	public void gainExperience(int dExp){
 		this.experiencePoints += dExp;
 	}
 	/**
 	 * Levels up a random trait of the Unit if a sufficient number of Experience Points have been collected.
-	 * @post 
+	 * @post TODO i dunno how to do this one...
 	 */
 	public void levelUp(){
 		double P = Math.random();
@@ -134,7 +171,6 @@ public class Unit {
 	
 	// FALLING 
 	/**
-	 * 
 	 * @return Returns the cube which the Unit occupies.
 	 */
 	public Cube occupiesCube(){			
@@ -142,7 +178,7 @@ public class Unit {
 	}
 	
 	/**
-	 * Returns a value between minStartVal and maxStartVal. In this
+	 * Returns a value from minStartVal to maxStartVal. In this
 	 * case minStartVal equals 25 and maxStartVal equals 100. 
 	 * @param val The value which is meant to be used for a certain attribute of the Unit.
 	 * @post	If the input value is between minStarval and maxStartVal, the given value is returned.
@@ -151,7 +187,6 @@ public class Unit {
 	 * @post	If the input value exceeds the given range between minStartval and maxStarval, minStartval is returned.
 	 * 			| if (val < minStartval) or (val > maxStartval)
 	 * 			| then (return minStartval)
-	 * @return 	Returns a valid starting value.	
 	 */
  	@Immutable @Raw
 	public int validStartVal(int val){
@@ -262,8 +297,7 @@ public class Unit {
 
 
 	/**
-	 * Gets the coordinate of the cube the Unit occupies. 
-	 * @return
+	 * Gets the coordinate of the cube the Unit occupies.
 	 */
 	@Raw
 	public int[] getCubeCoordinate (){
@@ -1202,45 +1236,208 @@ public class Unit {
 		return other.occupiesCube().getSurroundingCubes().contains(this.occupiesCube());
 	}
 	
+	/**
+	 * Variable registering the name of this Unit.
+	 */
 	public String name;
+	
+	/**
+	 * Variable registering the weight of this Unit.
+	 */
 	private int weight;
+	
+	/**
+	 * Variable registering the agility of this Unit.
+	 */
 	private int agility;	
+	
+	/**
+	 * Variable registering the strength of this Unit.
+	 */
 	private int strength;
+	
+	/**
+	 * Variable registering the toughness of this Unit.
+	 */
 	private int toughness;
-	private static int minValue = 0;
-	private static int maxValue = 200;
-	private double hitpoints;
-	private double stamina;
-	private double[] position;
-	private double orientation;
-	private double distance;
-	private double currentspeed;
-	private static int minStartVal = 25;
-	private static int maxStartVal = 100;
-	private double xspeed;
-	private double yspeed;
-	private double zspeed;
-	private double worktime;
-	private double attacktime;
-	private double defendtime;
-	private boolean issprinting;
-	private boolean isresting;
-	private boolean isdefending;
-	private boolean isattacking;
-	private Cube goal;
-	private double[] adjacant;
-	private double lifetime;
-	private Faction faction = null;
-	private World world = null; 
+	
+	/**
+	 * Variable registering the amount of experiencePoints this Unit currently has.
+	 */
 	private int experiencePoints;
-	private boolean defaultBehaviorEnabled;
+	
+	/**
+	 * Variable registering the hitpoints of this Unit.
+	 */
+	private double hitpoints;
+	
+	/**
+	 * Variable registering the stamina points of this Unit.
+	 */
+	private double stamina;
+	
+	/**
+	 * Variable registering the position of this Unit.
+	 */
+	private double[] position;
+	
+	/**
+	 * Variable registering the orientation of this Unit.
+	 */
+	private double orientation;
+	
+	/**
+	 * Variable registering the distance a Unit needs to walk to its goal Cube.
+	 */
+	private double distance;
+	
+	/**
+	 * Variable registering the current speed of this Unit.
+	 */
+	private double currentspeed;
+	
+	/**
+	 * Variable registering the x-component of this Unit's current speed.
+	 */
+	private double xspeed;
+	
+	/**
+	 * Variable registering the y-component of this Unit's current speed.
+	 */
+	private double yspeed;
+	
+	/**
+	 * Variable registering the z-component of this Unit's current speed.
+	 */
+	private double zspeed;
+	
+	/**
+	 * Variable registering the time this Unit needs to complete a Work task.
+	 */
+	private double worktime;
+	
+	/**
+	 * Variable registering the time this Unit needs to complete an attack phase.
+	 */
+	private double attacktime;
+	
+	/**
+	 * Variable registering the time this Unit needs to complete a defense phase.
+	 */
+	private double defendtime;
+	
+	/**
+	 * Variable registering the position this Unint is falling to.
+	 */
 	private double fallingTo;
-	private int fallingSpeed = -3;
-	private Cube workAtCube;
-	private Boulder CarriesBoulder = null;
-	private Log CarriesLog = null;
+	
+	/**
+	 * The center of a Cube which is adjacant to the Cube the Unit currently occupies.
+	 */
+	private double[] adjacant;
+	
+	/**
+	 * Variable registering the lifetime of this Unit. The lifetime is the amount of time this Unit
+	 * has been alive.
+	 */
+	private double lifetime;
+	
+	/**
+	 * Constant registering the minimum value of an trait (strength, agility, toughness, weight) 
+	 * of this Unit.
+	 */
+	private static int minValue = 0;
+	
+	/**
+	 * Constant registering the maximum value of an trait (strength, agility, toughness, weight) 
+	 * of this Unit.
+	 */
+	private static int maxValue = 200;
+	
+	/**
+	 * Constant registering the minimum starting value of an trait (strength, agility, toughness, weight) 
+	 * of this Unit.
+	 */
+	private static int minStartVal = 25;
+	
+	/**
+	 * Constant registering the maximum starting value of an trait (strength, agility, toughness, weight) 
+	 * of this Unit.
+	 */
+	private static int maxStartVal = 100;
+	
+	/**
+	 * Constant registering the falling speed of this Unit (z-axis).
+	 */
+	private static int fallingSpeed = -3;
+	
+	/**
+	 * Variable registering whether a Unit is sprinting.
+	 */
+	private boolean issprinting;
+	
+	/**
+	 * Variable registering whether a Unit is resting.
+	 */
+	private boolean isresting;
+	
+	/**
+	 * Variable registering whether a Unit is defending.
+	 */
+	private boolean isdefending;
+	
+	/**
+	 * Variable registering whether a Unit is attacking.
+	 */
+	private boolean isattacking;
+	
+	/**
+	 * Variable registering whether default behavior is enabled for this Unit.
+	 */
+	private boolean defaultBehaviorEnabled;
+	
+	/**
+	 * Variable registering whether a Unit is alive.
+	 */
 	public boolean isAlive;
 	
+	/**
+	 * Variable registering the goal (Cube) where this Unit is moving to.
+	 */
+	private Cube goal;
+	
+	/**
+	 * Variable registering the faction this Unit belongs to.
+	 */
+	private Faction faction = null;
+	
+	/**
+	 * Variable registering the world this Unit is situated in.
+	 */
+	private World world = null; 
+	
+	/**
+	 * Variable registering the Cube this Unit is working at.
+	 */
+	private Cube workAtCube;
+	
+	/**
+	 * Variable registering the Boulder this Unit is carrying.
+	 */
+	private Boulder CarriesBoulder = null;
+	
+	/**
+	 * Variable registering the Log this Unit is carrying.
+	 */
+	private Log CarriesLog = null;
+	
+	/**
+	 * Variable registering the current activity of this Unit.
+	 */
 	private Activity currentActivity;
+	
+	/**
+	 * Variable registering the Task which this Unit is currently executing.
+	 */
 	private Task currentTask;
 }
