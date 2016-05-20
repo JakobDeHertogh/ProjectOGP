@@ -2,10 +2,17 @@ package hillbillies.model;
 import java.util.*;
 
 public class Scheduler implements Iterable<Task> {
+	/**
+	 * 
+	 * @param faction
+	 */
 	public Scheduler(Faction faction){
 		this.setFaction(faction);
 	}
-	
+	/**
+	 * Add the given Task to this Scheduler.
+	 * @param task
+	 */
 	public void addTask(Task task){
 		this.schedule.add(task);
 	}

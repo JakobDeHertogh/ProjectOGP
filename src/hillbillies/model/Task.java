@@ -1,6 +1,7 @@
 package hillbillies.model;
 import java.util.*;
 
+import be.kuleuven.cs.som.annotate.Basic;
 import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.task.statement.Statement;
 import hillbillies.task.type.Type;
@@ -13,10 +14,20 @@ public class Task implements Comparable<Task>{
 		this.globalVars = new HashMap<String, Type>();
 	}
 	
+	/**
+	 * Set the name of this Task to the given name.
+	 * @param name The name that is to be given to this Task.
+	 * @post The name of this Task is set to the given name.
+	 * 		|new.name == name
+	 */
 	public void setName(String name){
 		this.name = name;
 	}
 	
+	/**
+	 * Return the name of this Task.
+	 */
+	@Basic
 	public String getName(){
 		return this.name;
 	}
@@ -25,6 +36,10 @@ public class Task implements Comparable<Task>{
 		this.priority = priority;
 	}
 	
+	/**
+	 * Return the priority of this Task.
+	 */
+	@Basic
 	public int getPriority(){
 		return this.priority;
 	}
