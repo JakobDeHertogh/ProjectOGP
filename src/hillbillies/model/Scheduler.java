@@ -2,6 +2,7 @@ package hillbillies.model;
 import java.util.*;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 /**
  * A class of Schedulers. Every scheduler has a Faction and a schedule, to which Tasks can be added or removed.
  * Units of this Scheduler's Faction can access the Scheduler to retrieve Tasks for execution. Tasks can be removed from a
@@ -25,7 +26,14 @@ public class Scheduler implements Iterable<Task> {
 	 * 			|schedule.add(task)
 	 */
 	public void addTask(Task task){
-		this.schedule.add(task);
+		if (this.schedule.isEmpty()){
+			this.schedule.add(task);
+		}
+		for (int i=1; i<this.schedule.size(); i++){
+			if (schedule.get(i).getPriority()<=task.getPriority()){
+				this.schedule.add(i, task);
+			}
+		}
 	}
 	
 	/**
@@ -64,39 +72,28 @@ public class Scheduler implements Iterable<Task> {
 	 * @return
 	 */
 	public Task retrieveTask(){
-		return this.getSchedule().poll();
+		if (this.schedule.isEmpty()){
+			return null;
+		}
+		return this.getSchedule().get(0);
 	}
 	
 	/**
 	 * Return this Scheduler's schedule.
 	 */
 	@Basic
-	public PriorityQueue<Task> getSchedule(){
+	public LinkedList<Task> getSchedule(){
 		return this.schedule;
 	}
 	
 	
 	@Override
 	public Iterator<Task> iterator(){
-		return new Iterator<Task>(){
-
-			@Override
-			public boolean hasNext() {
-				return ! schedule.isEmpty();
-			}
-
-			@Override
-			public Task next() {
-				if (! this.hasNext())
-					throw new NoSuchElementException();
-				return schedule.poll();
-			}
-			
-		};
+		return this.schedule.iterator();	
+	};
 		
-	}
 	
-	private PriorityQueue<Task> schedule = new PriorityQueue<Task>();
+	private LinkedList<Task> schedule = new LinkedList<Task>();
 	private Faction faction;
 	
 }

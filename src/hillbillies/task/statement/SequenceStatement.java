@@ -49,8 +49,8 @@ public class SequenceStatement extends Statement{
 			@Override
 			public boolean hasNext(){
 				//Enkel geen next als laatste substatement volledig geïtereerd is. 
-				return ! this.isIterated() || this.currStatementIterator.hasNext() || 
-						this.statementIterator.hasNext();
+				return ((! this.isIterated()) || (this.currStatementIterator.hasNext()) || 
+						(this.statementIterator.hasNext()));
 			}
 			
 			public Statement next(){
