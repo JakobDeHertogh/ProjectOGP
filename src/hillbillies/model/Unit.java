@@ -1107,7 +1107,21 @@ public class Unit {
 		return false;
 	}
 	/**
-	 * Attacks a nearby Unit. 
+	 * Attacks a nearby Unit.
+	 * @param other	The Unit this Unit will attack.
+	 * @post	This Unit's goal is set to null, its attacktime to 1, he is attacking, and its orientation is adjusted to the target.
+	 * 			|new.goal == null
+	 * 			|new.attacktime == 1
+	 * 			|new.isattacking == true
+	 * 			
+	 * @post	The other Unit's goal is set to null, its defendtime to 1, he is defending, and its orientation is adjusted to this Unit.
+	 * 			|new.goal == null
+	 * 			|new.defendtime == 1
+	 * 			|new.isdefending == true
+	 * @effect 	This Unit's orientation is adjusted to the target Unit, and the target Unit's orientation is adjusted to this Unit.
+	 * 			|setOrientation(Math.atan2(other.getYPosition()-this.getYPosition(), other.getXPosition()-this.getXPosition()))
+	 * 			|other.setOrientation(Math.atan2(this.getYPosition()-other.getYPosition(), this.getXPosition()-other.getXPosition()))
+	 * @throws ModelException
 	 * 
 	 */
 	public void attack(Unit other) throws ModelException{
@@ -1137,7 +1151,6 @@ public class Unit {
 	 * dodge, block or take the damage. 
 	 * @param other
 	 * @throws ModelException if
-	 * 			|
 	 * 
 	 */
 	public void defend(Unit other)throws ModelException{
@@ -1238,6 +1251,16 @@ public class Unit {
 	
 	/**
 	 * The Unit dies, and is removed from the game world.
+	 * @post	This Unit is no longer alive
+	 * 			|new.isAlive == false
+	 * @effect	If this Unit was carrying a Boulder, it will put it down on the Cube it's standing on.
+	 * 			|if (this.isCarryingBoulder())
+	 * 			|putDownBoulder(this.occupiesCube())
+	 * @effect	If this Unit was carrying a Log, it will put it down on the Cube it's standing on.
+	 * 			|if (this.isCarryingLog())
+	 * 			|putDownLog(this.occupiesCube())
+	 * @effect	This Unit will be removed from its Faction.
+	 * 			|getFaction.removeUnit(this)
 	 */
 	public void die(){
 		if (this.isCarryingBoulder()){
@@ -1274,7 +1297,7 @@ public class Unit {
 	
 	/**
 	 * Returns the Boulder that is closest to this Unit.
-	 * @return
+	 * @return The nearest Boulder
 	 */
 	public Boulder getNearestBoulder(){
 		Boulder nearestBoulder = null;
@@ -1300,6 +1323,7 @@ public class Unit {
 	public Cube getNearestWorkshop(){
 		Cube nearestWorkshop = null;
 		double currentDistance = Double.MAX_VALUE;
+		int numberOfSteps = Integer.MAX_VALUE;
 		for (Cube i: this.world.getWorkshops()){
 			int xdist = (i.getXPosition() - this.getCubeCoordinate()[0]);
 			int ydist = (i.getYPosition() - this.getCubeCoordinate()[1]);
@@ -1320,22 +1344,23 @@ public class Unit {
 	
 	/**
 	 * Returns the nearest friend of this Unit.
-	 * @return
+	 * @return The nearest Unit from the same Faction. All other faction members are further away.
+	 * 			|foreach Unit in 
 	 */
 	public Unit getNearestFriend(){
 		Unit nearestFriend = null;
 		double currentDistance = Double.MAX_VALUE;
-		for (Unit i : this.getWorld().getActiveUnits()){
-			int xdist = (i.getCubeCoordinate()[0] - this.getCubeCoordinate()[0]);
-			int ydist = (i.getCubeCoordinate()[1] - this.getCubeCoordinate()[1]);
-			int zdist = (i.getCubeCoordinate()[2] - this.getCubeCoordinate()[2]);
-			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
-			
-			if ((dist < currentDistance) && (i.getFaction() == this.getFaction())){
-				nearestFriend = i;
-				currentDistance = dist;
+		for (Unit i : this.getFaction().getMembers()){
+			Path path = new Path(this.occupiesCube(), i.occupiesCube());
+			if (!path.getRoute().isEmpty()){
+				int distance = path.countStepsinRoute();
+				if ((distance < currentDistance) && (i.getFaction() == this.getFaction())){
+					nearestFriend = i;
+					currentDistance = distance;
+				}
 			}
 		}
+		
 		return nearestFriend;
 	}
 	
