@@ -121,8 +121,8 @@ public class Unit {
 	 * Sets the faction of this Unit.
 	 * @post	If the Unit did not have a faction, then the faction will be set to the given faction.
 	 * 			|if (this.faction==null)
-	 * 			|then new.faction = faction
-	 * 			|and new.world = faction.getworld()
+	 * 			|then new.faction == faction
+	 * 			|and new.world == faction.getworld()
 	 */
 	public void setFaction(Faction faction){
 		if (this.faction == null){// of isTerminated()
@@ -150,7 +150,7 @@ public class Unit {
 	 * The Unit gains a given amount of experience points.
 	 * @param dExp	The amount of experience to be added to this Unit.
 	 * @post	The Unit's number of experience points is increased with the given amount.
-	 * 			|new.experiencePoints = this.getExpPoints()+dExp
+	 * 			|new.experiencePoints == this.getExpPoints()+dExp
 	 */
 	public void gainExperience(int dExp){
 		this.experiencePoints += dExp;
@@ -176,17 +176,17 @@ public class Unit {
 	public Cube occupiesCube(){			
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
-	//TODO: Moet hieronder de postcoditions niet vervangen worden door @return's?
+	
 	/**
 	 * Returns a value from minStartVal to maxStartVal. In this
 	 * case minStartVal equals 25 and maxStartVal equals 100. 
-	 * @param val The value which is meant to be used for a certain attribute of the Unit.
-	 * @post	If the input value is between minStarval and maxStartVal, the given value is returned.
+	 * @param val	The value which is meant to be used for a certain attribute of the Unit.
+	 * @return	If the input value is between minStarval and maxStartVal, the given value is returned.
 	 * 			| if (minStartval<val<maxStarval)
-	 * 			| then (return val) 
-	 * @post	If the input value exceeds the given range between minStartval and maxStarval, minStartval is returned.
+	 * 			| then result == val
+	 * @return	If the input value exceeds the given range between minStartval and maxStarval, minStartval is returned.
 	 * 			| if (val < minStartval) or (val > maxStartval)
-	 * 			| then (return minStartval)
+	 * 			| then result == minStartVal
 	 */
  	@Immutable @Raw
 	public int validStartVal(int val){
@@ -195,10 +195,11 @@ public class Unit {
 		else return minStartVal;
 	}
 	
-	@Basic
+
 	/**
 	 * Returns the name of this Unit. 
 	 */
+	@Basic
 	public String getName(){
 		return this.name;
 	}
@@ -208,7 +209,7 @@ public class Unit {
 	 * @param newName
 	 * 			The name we wish to give the Unit
 	 * @post	The name of the Unit is changed to the given newName
-	 * 			| new.name = newName
+	 * 			| new.name == newName
 	 * @throws ModelException
 	 * 			The given name doesn't start with a capital letter, doesn't have a length of 2 or more, or contains
 	 * 			other characters besides letters, spaces or quotes.
@@ -467,13 +468,17 @@ public class Unit {
 	/**
 	 * Returns the current amount of hit points this Unit has. 
 	 */
+	@Basic
 	public int getCurrentHitPoints(){
 		return (int) this.hitpoints;
 	}
 	/**
 	 * Checks if the given amount of hit points is valid. 
 	 * @param hp The value for the Unit's hit points that needs to be checked.
-	 * @return	true if and only if the given value is smaller than the maximum amount of hitpoints for this Unit and is greater than 0.
+	 * @return	true if and only if the given value is smaller than or equal to 
+	 * 			the maximum amount of hit points for this Unit and is greater than or equal to 0.
+	 * 			else return false.
+	 * 			|result == (hp<= this.getMaxHitPoints()) && (hp>=0)
 	 */
 	public boolean isValidHP( int hp){
 		return (hp<= this.getMaxHitPoints()) && (hp>=0);
@@ -482,6 +487,7 @@ public class Unit {
 	 * Returns the maximum amount of stamina points this Unit can have.
 	 * @return
 	 */
+	@Basic
 	public int getMaxStaminaPoints(){
 		return (int)( 0.02* this.getWeight() * this.getToughness());
 	}
@@ -496,15 +502,17 @@ public class Unit {
 	/**
 	 * Checks if the given stamina value is not negative and below the max stamina limit.
 	 * @param value
-	 * @return
+	 * @return true if and only if the given value is greater than or equal to 0,
+	 * 			and is less than or equal to the maximum amount of stamina for this Unit.
+	 * 			|result == ((this.stamina>=0) && (this.stamina <= this.getMaxStaminaPoints()))
 	 */
 	public boolean isValidStamina(int value){
 		return ((this.stamina>=0) && (this.stamina <= this.getMaxStaminaPoints()));
 	}
 	/**
 	 * Returns the current amount of stamina points this Unit has. 
-	 * @return
 	 */
+	@Basic
 	public int getCurrentStaminaPoint(){
 		return (int) this.stamina;
 	}
@@ -522,6 +530,7 @@ public class Unit {
 	/**
 	 * Returns the current value of the orientation as a floating point number.
 	 */
+	@Basic
 	public double getOrientation(){
 		return this.orientation;
 	}
@@ -681,18 +690,18 @@ public class Unit {
 	 * @param end	The ending position of the movement.
 	 * @post	If the start equals the end, the speed will be zero.
 	 * 			|if start == end
-	 * 			|then new.currentspeed = 0
+	 * 			|then new.currentspeed == 0
 	 * @post	If the Unit moves upwards it moves at half base speed.
 	 * 			|if end[2] - start[2] == 1
 	 * 			|then new.currentspeed = 0.5*getvb()
 	 * 
 	 * @post	If the Unit moves downwards it moves faster with a factor of 1.2 . 
-	 * 			|if end[2] - start[2] = -1
-	 * 			|then new.currentspeed = 1.2*getvb()
+	 * 			|if end[2] - start[2] == -1
+	 * 			|then new.currentspeed == 1.2*getvb()
 	 * 
 	 * @post 	if the Unit moves on a flat level, it moves at base speed. 
 	 * 			|if end[2]-start[2] == 0
-	 * 			|then new.currentspeed = getvb()
+	 * 			|then new.currentspeed == getvb()
 	 */
 	
 	public void setCurrentspeed(double[] start, double[] end){
@@ -711,17 +720,27 @@ public class Unit {
 	
 	/**
 	 * Moves the Unit to an adjacant cube center. 
-	 * @param dx
-	 * @param dy
-	 * @param dz
+	 * @param dx	The distance this Unit must move along the x-axis.
+	 * @param dy	The distance this Unit must move along the y-axis.
+	 * @param dz	The distance this Unit must move along the z-axis.
 	 * @post 	The Unit's target position is equal to the current position + the 
 	 * 			given values for dx, dy and dz. 
 	 * 			| new.postition == [this.xposition + dx, this.yposition + dy, this.zposition + dz]
-	 * @post 	The Unit's speed is set towards the target position. 
-	 * 	
-	 * @post 	The distance the Unit has to walk is set. 
-	 * 
-	 * @throws ModelException 
+	 * @post	If the Unit is sprinting, the speed will be doubled.
+	 * 			|new.currenstpeed == 2*this.currentpeed
+	 * @post	The Unit's current activity is set to moving.
+	 * 			|new.currentActivity = Activity.MOVE
+	 * @post 	The distance the Unit has to walk is set.
+	 * 			|new.distance == Math.sqrt(Math.pow((this.adjacant[0]-this.getXPosition()), 2) 
+				+ Math.pow((this.adjacant[1]-this.getYPosition()), 2) 
+				+ Math.pow((this.adjacant[2]-this.getZPosition()), 2))
+	 * @effect 	The Unit's speed is set towards the target position.
+	 * 			|setCurrentSpeed(this.position, this.adjacant)
+	 * @effect	The Unit's speed vector is set.
+	 * 			|setSpeedVector(xdistance, ydistance, zdistance, this.dstance)
+	 * @throws ModelException if the target lies in a Cube which is not valid.
+	 * 			| !((this.world.getCubeAtPos(this.occupiesCube().getXPosition() + dx, 
+	 *				this.occupiesCube().getYPosition() + dy, this.occupiesCube().getZPosition()+dz)).isValidCube)
 	 */
 	public void moveToAdjacant(int dx, int dy, int dz) throws ModelException{
 
@@ -759,13 +778,20 @@ public class Unit {
 	/**
 	 * Sets the speed vector depending on the current speed and the target
 	 * direction. 
-	 * @param xdistance
-	 * @param ydistance
-	 * @param zdistance
-	 * @param totaldistance
+	 * @param xdistance	The distance this Unit must move along the x-axis. 
+	 * @param ydistance	The distance this Unit must move along the y-axis.
+	 * @param zdistance	The distance this Unit must move along the z-axis.
+	 * @param totaldistance	The total distance this Unit must move.
 	 * 
-	 * @post 	The Unit's orientation is set so it faces the target position.
-	 * @post 	The Unit's speed is directed towards the target position. 
+	 * @post	The speed of the unit along the x-axis is set to its currentspeed times the xdistance divided by the total distance.
+	 * 			|new.xspeed == this.currentspeed * xdistance / totaldistance;
+	 * @post	The speed of the unit along the y-axis is set to its currentspeed times the ydistance divided by the total distance.
+	 * 			|new.yspeed == this.currentspeed * ydistance / totaldistance;
+	 * @post	The speed of the unit along the z-axis is set to its currentspeed times the zdistance divided by the total distance.
+	 * 			|new.zspeed == this.currentspeed * zdistance / totaldistance;
+	 * 
+	 * @effect 	The Unit's orientation is set so it faces the target position.
+	 * 			|setOrientation(Math.atan2(this.yspeed, this.xspeed)
 	 */
 	public void setSpeedVector(double xdistance, double ydistance, double zdistance, double totaldistance){
 		this.xspeed = this.currentspeed * xdistance / totaldistance;
@@ -776,21 +802,22 @@ public class Unit {
 	/**
 	 * Calculates the base speed value for the Unit's current weight, 
 	 * strength and agility. 
-	 * @return
 	 */
+	@Basic
 	private double getvb(){
 		return 1.5* (this.agility+ this.strength) / (2.0*this.weight);
 	}
 	/**
 	 * Returns the current speed of the unit. 
-	 * @return
 	 */
+	@Basic
 	public double getCurrentSpeed(){
 		return this.currentspeed;
 	}
 	/**
 	 * Checks whether the Unit is currently moving. 
-	 * @return
+	 * @return true if and only if the Unit's current activity is moving.
+	 * 			|result == (this.currenActivity == Activity.MOVE)
 	 */
 	public boolean isMoving(){
 		return this.currentActivity == Activity.MOVE;
@@ -798,20 +825,24 @@ public class Unit {
 	}
 	/**
 	 * Returns whether the Unit is sprinting.
+	 * @return true if and only if the Unit is sprinting.
+	 * 			|result == (this.issprinting ==true)
 	 */
 	public boolean isSprinting(){
 		return this.issprinting;
 	}
 	/**
 	 * The Unit starts sprinting.
-	 * @post issprinting = true;
+	 * @post 	The Unit is sprinting.
+	 * 			|new.issprinting == true;
 	 */
 	public void startSprinting(){
 		this.issprinting = true;
 	}
 	/**
 	 * The Unit stops sprinting.
-	 * @post issprinting = false;
+	 * @post 	The Unit is not sprinting.
+	 * 			|new.issprinting == false;
 	 */
 	public void stopSprinting(){
 		this.issprinting = false;
@@ -820,11 +851,14 @@ public class Unit {
 	/**
 	 * Sets a target where the Unit will move to. Initiates the movement
 	 * with a first moveToAdjacant. 
-	 * @param cube
-	 * 
+	 * @param targetcube	The position the Unit will move to.
+	 * @post	The time this Unit had to work is set to 0.
+	 * 			|new.worktime ==0
 	 * @post	The Unit's goal is set to the targetcube's location. 
-	 * @post 	The Unit starts moving towards the adjacant cube in the
-	 * 			target's direction. 
+	 * 			|new.goal = this.world.getCubeAtPost(targetcube[0], targetcube[1], targetcube[2])
+	 * @effect 	The Unit starts moving towards the adjacant cube in the
+	 * 			target's direction.
+	 * 			|moveToAdjacant(dx, dy, dz)
 	 */
 	public void moveTo(int[] targetcube) throws ModelException{
 		this.worktime = 0;
@@ -850,10 +884,16 @@ public class Unit {
 	
 	/**
 	 * The Unit starts working for a fixed time depending on its strength. 
-	 * The current moveTo is interrupted. 
+	 * The current moveTo is interrupted.
+	 * @post	The time the Unit still has to work is set to 500 divided by the Unit's strength.
+	 * 			|new.worktime = 500.0/this.getStrength();
+	 * @post	The goal where the Unit is moving to is null.
+	 * 			|new.goal == null
+	 * @post	The current activity of this Unit is working.
+	 * 			|new.currentActivity == Activity.WORK
 	 */
 	public void work(){
-		this.worktime = 500.0/this.strength;
+		this.worktime = 500.0/this.getStrength();
 		this.goal = null;
 		this.currentActivity = Activity.WORK;
 	}
@@ -864,6 +904,13 @@ public class Unit {
 	 * 		  The Cube the Unit must work on.
 	 * @return true if and only if the target Cube is the Cube which is occupied by the Unit or that Cube's surrounding Cubes.
 	 * 		   false if the above conditions are not met.
+	 * 			|if (this.occupiesCube() == cube)
+	 * 			|reslt == true
+	 * 			|for (Cube i : cube.getSurroundingCubes())
+	 *			|	if (this.occupiesCube() == i)
+	 *			|		result == true
+	 *			|else result == false
+	 * 
 	 */
 	public boolean isValidWorkingCube(Cube cube){
 		if (this.occupiesCube() == cube)
@@ -875,12 +922,17 @@ public class Unit {
 	}
 	/**
 	 * Makes the Unit work on the Cube at the given x, y and z coordinates.
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param x	The x-coordinate of the Cube where the Unit will work on.
+	 * @param y	The y-coordinate of the Cube where the Unit will work on.
+	 * @param z	The z-coordinate of the Cube where the Unit will work on.
 	 * @throws ModelException if the target Cube is not a valid Cube to work at.
-	 * 			| !isValidWorkingCube(targetcube)
-	 * @effect setOrientation(newOrientation)
+	 * 			|!isValidWorkingCube(targetcube)
+	 * @post	The workAtCube is set to the cube at the target position.
+	 * 			|new.workAtCube == targetcube
+	 * @effect	This Unit's orientation will be adjusted.
+	 * 			|setOrientation(newOrientation)
+	 * @effect	This Unit will work.
+	 * 			|work()
 	 */
 	public void workAt(int x, int y, int z) throws ModelException{
 		Cube targetcube = this.getFaction().getWorld().getCubeAtPos(x, y, z);
@@ -896,7 +948,8 @@ public class Unit {
 	
 	/**
 	 * Returns whether the Unit is working.
-	 * @return
+	 * @return true if and only this Unit's curernt activity is working.
+	 * 			|result == (this.currentActivity == Activity.WORK)
 	 */
 	public boolean isWorking(){		
 		return this.currentActivity == Activity.WORK;
@@ -905,7 +958,8 @@ public class Unit {
 	
 	/**
 	 * Returns whether this Unit is carrying a Boulder.
-	 * @return
+	 * @return true if and only if this Unit is carrying a Boulder.
+	 * 			|result == !(this.CarriesBoulder == null)
 	 */
 	public boolean isCarryingBoulder(){
 		return !(this.CarriesBoulder == null);
@@ -913,7 +967,8 @@ public class Unit {
 	
 	/**
 	 * Returns whether this Unit is carrying a Log.
-	 * @return
+	 * @return	true if and only if this Unit is carrying a Log.
+	 * 			|result == !(this.CarriesLog == null)
 	 */
 	public boolean isCarryingLog(){
 		return !(this.CarriesLog == null);
@@ -921,7 +976,17 @@ public class Unit {
 	
 	/**
 	 * Makes the Unit pick up a Log.
-	 * @param log
+	 * @param log	The Log this Unit must pick up.
+	 * @post	This Unit is carrying the target Log.
+	 * 			|new.CarriesLog = log
+	 * @post	The target Log is carried by this Unit.
+	 * 			|log.isCarriedBy = this
+	 * @post	The weight of this Unit is increased by the weight of the Log.
+	 * 			|new.weight == this.getWeight + log.getWeight()
+	 * @effect	The Log is removed from its Cube.
+	 * 			|removeLog(log)
+	 * @effect	The Log is removed from the World.
+	 * 			|this.getWorld.removeLog
 	 */
 	public void pickUpLog(Log log){
 		this.CarriesLog = log;
@@ -931,13 +996,21 @@ public class Unit {
 				(int)Math.floor(log.getPosition()[1]),(int) Math.floor(log.getPosition()[2]));
 		cube.removeLog(log);
 		this.getWorld().removeLog(log);
-		System.out.println(cube.getLogs());
-		System.out.println(this.CarriesLog);
 	}
 	
 	/**
 	 * Makes the Unit pick up a Boulder.
-	 * @param boulder
+	 * @param boulder The Boulder the Unit must pick up.
+	 * @post	This Unit is carrying the target Boulder.
+	 * 			|new.CarriesBoulder = boulder
+	 * @post	The target Log is carried by this Unit.
+	 * 			|boulder.isCarriedBy = this
+	 * @post	The weight of this Unit is increased by the weight of the Boulder.
+	 * 			|new.weight == this.getWeight + boulder.getWeight()
+	 * @effect	The Boulder is removed from its Cube.
+	 * 			|removeLog(boulder)
+	 * @effect	The Boulder is removed from the World.
+	 * 			|this.getWorld.removeBoulder
 	 */
 	public void pickUpBoulder(Boulder boulder){
 		this.CarriesBoulder = boulder;
@@ -951,7 +1024,14 @@ public class Unit {
 	
 	/**
 	 * Makes the Unit put down a Log at the given Cube.
-	 * @param cube
+	 * @param cube	The Cube this must put the Log on.
+	 * @post	The Log is no longer being carried by this Unit.
+	 * 			|this.CarriesLog.isCarriedBy = null
+	 * @post	The position of the Log is set to the center of the target Cube.
+	 * 			|this.CarriesLog.setPosition(new double[] {cube.getXPosition()+0.5, cube.getYPosition()+0.5, cube.getZPosition()+0.5});
+	 * @post	The Log will be added to the 
+	 * @post	The Unit is no longer carrying a Log.
+	 * 			|new.CarriesLog == null
 	 * @effect 	The weight of the Unit is adjusted for the loss of the Log.
 	 * 			|setWeight(this.weight - this.isCarryingLog.getWeight())
 	 */
@@ -959,6 +1039,7 @@ public class Unit {
 		this.CarriesLog.isCarriedBy = null;
 		this.CarriesLog.setPosition(new double[] {cube.getXPosition()+0.5, 
 				cube.getYPosition()+0.5, cube.getZPosition()+0.5});
+		cube.addLog(this.CarriesLog);
 		this.getWorld().addLog(this.CarriesLog);
 		this.setWeight(this.weight - this.CarriesLog.getWeight());
 		this.CarriesLog = null;
@@ -975,6 +1056,7 @@ public class Unit {
 		this.CarriesBoulder.setPosition(new double[] {cube.getXPosition()+0.5, 
 				cube.getYPosition()+0.5, cube.getZPosition()+0.5});
 		this.getWorld().addBoulder(this.CarriesBoulder);
+		cube.addBoulder(this.CarriesBoulder);
 		this.setWeight(this.weight - this.CarriesBoulder.getWeight());
 		this.CarriesBoulder = null;
 	}
@@ -1003,10 +1085,8 @@ public class Unit {
 	 * @param other
 	 * @return true if and only if this unit and its target are on the same z-level,
 	 * 			are neighbouring each other, and belong to different factions.
-	 * 			|if ((Math.abs(this.position[0] - other.position[0])<=1) && 
+	 * 			|result == ((Math.abs(this.position[0] - other.position[0])<=1) && 
 	 * 				(Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))
-	 * 			|return true
-	 * 			|else return false.
 	 */
 	public boolean isAttackable(Unit other){
 		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))
@@ -1015,7 +1095,8 @@ public class Unit {
 		return false;
 	}
 	/**
-	 * Attacks the nearby unit. 
+	 * Attacks a nearby Unit. 
+	 * 
 	 */
 	public void attack(Unit other) throws ModelException{
 		this.goal = null;
@@ -1031,8 +1112,9 @@ public class Unit {
 		other.defend(this);
 	}
 	/**
-	 * ...
-	 * @return
+	 * Checks whether this Unit is currently attacking.
+	 * @return true if and only if this Unit's current activity is fighting.
+	 * 			|result == (this.currentActivity == Activity.FIGHT)
 	 */
 	public boolean isAttacking(){
 		return this.currentActivity == Activity.FIGHT;
@@ -1042,7 +1124,8 @@ public class Unit {
 	 * Unit defends itself against an attacking Unit. The Unit will either
 	 * dodge, block or take the damage. 
 	 * @param other
-	 * @throws ModelException 
+	 * @throws ModelException if
+	 * 			|
 	 * 
 	 */
 	public void defend(Unit other)throws ModelException{
@@ -1060,8 +1143,8 @@ public class Unit {
 	}
 	/**
 	 * Unit runs away from another unit.
-	 * @param position
-	 * @param other
+	 * @param position The position this Unit is standing on.
+	 * @param other	The Unit this Unit has to run away from.
 	 * @throws ModelException
 	 */
 	public void runAwayFrom(double[] position, Unit other) throws ModelException{
@@ -1080,6 +1163,10 @@ public class Unit {
 	
 	/**
 	 * Unit will rest until maxHP and maxStamina are achieved. 
+	 * @post 	The goal which the Unit could be moving to is set to null.
+	 * 			|new.goal == null
+	 * @post	The current activity of this Unit is set to resting.
+	 * 			|new.currenActivity == Activity.REST
 	 */
 	public void rest(){
 		this.goal = null;
@@ -1087,14 +1174,16 @@ public class Unit {
 	}
 	/**
 	 * Returns whether the Unit is resting or not.
-	 * @return
+	 * @return true if and only if the Unit's current activity is resting.
+	 * 			|result == this.currentActivity == Activity.REST
 	 */
 	public boolean isResting(){
 		return this.currentActivity == Activity.REST;
 	}
 	/**
-	 * Calculates the time needed to regain to full HP. 
-	 * @return
+	 * Returns the time the Unit needs to fully recover its hit points.
+	 * @return	The time this Unit needs to recover all its hit points
+	 * 			|result == (this.getMaxHitPoints() - this.getCurrentHitPoints())/(this.toughness / 200.0 * 5)
 	 */
 	public double getRegenHptime(){
 		int dHP = this.getMaxHitPoints() - this.getCurrentHitPoints();
@@ -1103,7 +1192,8 @@ public class Unit {
 	}
 	/**
 	 * Returns the time the Unit needs to fully recover its stamina points.
-	 * @return
+	 * @return The time this Unit needs to recover all its stamina.
+	 * 			|result == (this.getMaxStaminaPoints() - this.getCurrentStaminaPoint())/(this.toughness / 100.0 * 5)
 	 */
 	public double getRegenStaminatime(){
 		int dSP = this.getMaxStaminaPoints() - this.getCurrentStaminaPoint();
@@ -1112,19 +1202,24 @@ public class Unit {
 	}
 	/**
 	 * Enables or disables the default behavior. 
-	 * @param value
+	 * @param value The value we wish to set.
+	 * @post	defaultBehaviorEnabled is set to the value.
+	 * 			|new.defaultBehaviorEnabled == value
 	 */
 	public void setDefaultBehaviorEnabled(boolean value){
 		this.defaultBehaviorEnabled = value;
 	}
 	/**
 	 * Checks whether default behavior is enabled for the Unit.
-	 * @return
 	 */
+	@Basic
 	public boolean isDefaultBehaviorEnabled(){
 		return this.defaultBehaviorEnabled;
 	}
-	
+	/**
+	 * Returns the current activity of this Unit.
+	 */
+	@Basic
 	public Activity getActivity(){
 		return this.currentActivity;
 	}
@@ -1144,6 +1239,10 @@ public class Unit {
 		this.isAlive = false;
 	}
 	
+	/**
+	 * Returns the Log that is closest to this Unit.
+	 * @return
+	 */
 	public Log getNearestLog(){
 		Log nearestLog = null;
 		double currentDistance = Double.MAX_VALUE;
@@ -1161,6 +1260,10 @@ public class Unit {
 		return nearestLog;
 	}
 	
+	/**
+	 * Returns the Boulder that is closest to this Unit.
+	 * @return
+	 */
 	public Boulder getNearestBoulder(){
 		Boulder nearestBoulder = null;
 		double currentDistance = Double.MAX_VALUE;
@@ -1178,6 +1281,10 @@ public class Unit {
 		return nearestBoulder;
 	}
 	
+	/**
+	 * Return the Workshop Cube that is closest to this Unit.
+	 * @return
+	 */
 	public Cube getNearestWorkshop(){
 		Cube nearestWorkshop = null;
 		double currentDistance = Double.MAX_VALUE;
@@ -1198,6 +1305,11 @@ public class Unit {
 		return nearestWorkshop;
 	}
 	
+	
+	/**
+	 * Returns the nearest friend of this Unit.
+	 * @return
+	 */
 	public Unit getNearestFriend(){
 		Unit nearestFriend = null;
 		double currentDistance = Double.MAX_VALUE;
@@ -1215,6 +1327,10 @@ public class Unit {
 		return nearestFriend;
 	}
 	
+	/**
+	 * Returns the nearest Enemy of this Unit.
+	 * @return
+	 */
 	public Unit getNearestEnemy(){
 		Unit nearestEnemy = null;
 		double currentDistance = Double.MAX_VALUE;
@@ -1232,19 +1348,41 @@ public class Unit {
 		return nearestEnemy;
 	}
 	
+	/**
+	 * Checks whether a given Unit is a friend of this Unit.
+	 * @param other	The Unit whom is to be checked if he is a friend of this Unit.
+	 * @return true if and only if this Unit and the other Unit are part of the same Faction.
+	 * 			|result == (this.getFaction() == other.getFaction())
+	 */
 	public boolean isFriend(Unit other){
 		return this.getFaction() == other.getFaction();
 	}
 	
+	/**
+	 * Returns the current Task of the Unit.
+	 */
+	@Basic
 	public Task getTask(){
 		return this.currentTask;
 	}
 	
+	/**
+	 * Assigns a task to this Unit.
+	 * @param task	The Task which is to be assigned to this Unit.
+	 * @post	The Unit's current Task is set to the given Task.
+	 * 			|new.currentTask == task
+	 */
 	void assignTask(Task task){
 		this.currentTask = task;
 		task.assignTo(this);
 	}
 	
+	/**
+	 * Checks whether this Unit is next to the given Unit.
+	 * @param other	The Unit that is to be checked if it's next to this Unit
+	 * @return	true if and only if the other Unit occupies one of the surrounding Cubes of this Unit.
+	 * 			|result == other.occupiesCube().getSurroundingCubes().contains(this.occupiesCube())
+	 */
 	public boolean isNextTo(Unit other){
 		return other.occupiesCube().getSurroundingCubes().contains(this.occupiesCube());
 	}
