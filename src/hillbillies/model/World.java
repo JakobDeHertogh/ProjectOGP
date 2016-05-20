@@ -1,10 +1,7 @@
 package hillbillies.model;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
@@ -28,6 +25,9 @@ public class World {
 				for (int k = 0 ; k< terraintypes[0][0].length ; k++){
 					CubeType type = CubeType.getCubeTypeOfValue(terraintypes[i][j][k]);
 					cubes[i][j][k] = new Cube(this, i,j,k, type);
+					if (cubes[i][j][k].getType() == CubeType.WORKSHOP){
+						workshops.add(cubes[i][j][k]);
+					}
 					
 					//	UPDATE CONNECTEDTOBORDER
 					if (type.isPassable()){
@@ -176,6 +176,10 @@ public class World {
 		return this.boulders;
 	}
 	
+	public ArrayList<Cube> getWorkshops(){
+		return this.workshops;
+	}
+	
 	public Set<Faction> getActiveFactions(){
 		return this.activeFactions;
 	}
@@ -217,6 +221,7 @@ public class World {
 	Set<int[]> caveInCubes = new HashSet<int[]>();
 	public Set<Cube> viableSpawnCubes = new HashSet<Cube>();
 	private Cube[][][] cubes;
+	private ArrayList<Cube> workshops = new ArrayList<Cube>();
 	private final TerrainChangeListener tcl;
 	
 	private ConnectedToBorder ctb;

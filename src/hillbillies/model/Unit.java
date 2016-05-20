@@ -1131,6 +1131,26 @@ public class Unit {
 		return nearestBoulder;
 	}
 	
+	public Cube getNearestWorkshop(){
+		Cube nearestWorkshop = null;
+		double currentDistance = Double.MAX_VALUE;
+		for (Cube i: this.world.getWorkshops()){
+			int xdist = (i.getXPosition() - this.getCubeCoordinate()[0]);
+			int ydist = (i.getYPosition() - this.getCubeCoordinate()[1]);
+			int zdist = (i.getZPosition() - this.getCubeCoordinate()[2]);
+			double dist = Math.sqrt(Math.pow(xdist, 2) + Math.pow(ydist, 2) + Math.pow(zdist, 2));
+			
+			if ((dist<currentDistance)){
+				Path path = new Path(this.getWorld().getCubeAtPos(this.getCubeCoordinate()), i);
+				if (!(path.getRoute().isEmpty())){
+					nearestWorkshop = i;
+					currentDistance = dist;
+				}
+			}
+		}
+		return nearestWorkshop;
+	}
+	
 	public Unit getNearestFriend(){
 		Unit nearestFriend = null;
 		double currentDistance = Double.MAX_VALUE;
