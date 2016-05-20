@@ -538,7 +538,10 @@ public class Unit {
 	/**
 	 * Adapts the Unit's current position, hit points and stamina depending
 	 * on the activity the Unit is currently executing. 
-	 * @param dt	The amount of game time to be advanced.
+	 * @param dt	The amount of game time to be advanced for this Unit.
+	 * 
+	 * @post	The lifetime of this Unit is increased with dt.
+	 * 			|new.lifetime == this.lifetime +dt
 	 */
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
