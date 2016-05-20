@@ -116,7 +116,7 @@ public class Log {
 	}
 	/**
 	 * Adapts the Log's current position on whether it is falling or being carried.
-	 * @param dt
+	 * @param dt The time step the Scheduler is to be advanced with.
 	 */
 	public void advanceTime(double dt){
 		if (this.isCarriedBy != null)
@@ -136,6 +136,7 @@ public class Log {
 	
 	/**
 	 * Removes the Log from the gameworld.
+	 * 
 	 */
 	public void terminate() {
 		this.isTerminated = true;
