@@ -6,10 +6,12 @@ import ogp.framework.util.ModelException;
  * A class of game Logs. Each Log has a position and a weight. Logs can move and fall.
  * @invar	The starting value for the weight of every Log must be valid.
  * 			| isValidWeight(weight)
+ * @invar	Each Log belongs to a world and has a valid position in that world.
+ * @invar	Each Log has a weight between a given upper and lower limit. 
  * 
  * @version 0.51
  * @author Kristof Van Cappellen
- * @author Jakob De Herthogh
+ * @author Jakob De Hertogh
  *
  */
 public class Log {
@@ -109,6 +111,7 @@ public class Log {
 	 * 
 	 * Returns the z-value of the Log's position.
 	 */
+	@Basic
 	public double getzPosition() {
 		return this.position[2];
 	}
@@ -121,11 +124,14 @@ public class Log {
 		return this.weight;
 	}
 	/**
-	 * Sets the weight of this Log to the given weight.
-	 * @param weight
-	 * @throws ModelException if the given weight is not a valid weight for a Log.
+	 * sets the weight to the given value.
+	 * 
+	 *  @param weight
+	 *  		An integer value to which we want to set the Log's weight.
+	 *  @post The weight of the Log is set to the given value.
+	 *  		|this.weight = weight.
 	 */
-	public void setWeight(int weight) throws ModelException{
+	public void setWeight(int weight) {
 		this.weight = weight;
 		
 	}

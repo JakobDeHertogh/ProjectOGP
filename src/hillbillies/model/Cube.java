@@ -6,11 +6,28 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import be.kuleuven.cs.som.annotate.Basic;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
-
+/**
+ * A Class of Cubes, of which the game world is built. Every Cube has x, y and z coordinates, a CubeType and a World.
+ * @author Jakob De Hertogh
+ * @author Kristof Van Cappellen
+ *
+ */
 public class Cube {
-	
+	/**
+	 * 
+	 * @param World This Cube's World
+	 * @param xPosition	The x-coordinate of this Cube
+	 * @param yPosition	The y-coordinate of this Cube
+	 * @param zPosition	The z-coordinate of this Cube
+	 * @param type The CubeType for this Cube
+	 * @post	This Cube's World is set to the given World.
+	 * @post	This Cube's x, y and z coordinates are set to the given coordinates, as well as combined in its position array.
+	 * @post	This Cube's Type is set to the given CubeType
+	 * @post	This Cube's center position is set.
+	 */
 	public Cube(World World, int xPosition, int yPosition, int zPosition, CubeType type){
 		this.world = World;
 		this.xPosition = xPosition;
@@ -23,25 +40,46 @@ public class Cube {
 		this.cubeCenter = cubeCenter;
 						
 	}
-	
+	/**
+	 * Return this Cube's world.
+	 */
+	@Basic
 	public World getWorld(){
 		return this.world;
 	}
+	
+	/**
+	 * Add the given Log to this Cube.
+	 * @param	log The Log that is to be added to this Cube.
+	 * @post	This Cube contains the given Log.
+	 */
 	public void addLog(Log log){
 		this.Logs.add(log);
 	}
 	
+	/**
+	 * Return all the logs that occupy this Cube.
+	 */
+	@Basic
 	public Set<Log> getLogs(){
 		return this.Logs;
 	}
 	
+	/**
+	 * Remove the given Log from this Cube.
+	 * @param	log The Log that is to be removed from this Cube.
+	 * @post	The given Log is no longer in this Cube
+	 */
 	public void removeLog(Log log){
 		this.Logs.remove(log);
 	}
 	
 
 	
-	
+	/**
+	 * Return a random Log that occupies this Cube.
+	 * @return a random Log from this Cube's Logs.
+	 */
 	public Log randomLog(){
 		int size = this.getLogs().size();
 		int item = new Random().nextInt(size);

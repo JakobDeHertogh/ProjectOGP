@@ -4,12 +4,14 @@ import ogp.framework.util.ModelException;
 
 /**
  * A class of game Boulders. Each Boulder has a position and a weight. Boulders can move and fall.
- * @invar	Each boulder belongs to a world and has a valid position in that world.
- * @invar	Each boulder has a weight between a given upper and lower limit. 
+ * @invar	The starting value for the weight of every Boulder must be valid.
+ * 			| isValidWeight(weight)
+ * @invar	Each Boulder belongs to a world and has a valid position in that world.
+ * @invar	Each Boulder has a weight between a given upper and lower limit. 
  * 
  * @version 0.51
  * @author Kristof Van Cappellen
- * @author Jakob De Herthogh
+ * @author Jakob De Hertogh
  *
  */
 public class Boulder {
@@ -37,6 +39,15 @@ public class Boulder {
 		this.fallingTo = this.getzPosition();
 		this.isTerminated = false;
 	}
+	/**
+	 * Set the coordinate of the Cube this Boulder is Situated in.
+	 * @post the CubeCoordinate is set to the rounded down coordinates of the Boulder.
+	 */
+	public void setCubeCoordinate(){
+		int[] cubecoordinate = new int[]{(int)Math.floor(this.position[0]),(int)Math.floor(this.position[1]),
+				(int)Math.floor(this.position[2])};
+		this.CubeCoordinate = cubecoordinate;
+	}
 	
 	/**
 	 * Returns the coordinate of the Cube which is occupied by this Boulder.
@@ -58,6 +69,8 @@ public class Boulder {
 	
 	/**
 	 * Returns the cube below the occupied cube. 
+	 * @return	returns the Cube at the z-position under this Boulder.
+	 * 			|result == world.getCubeAtPos(getCubeCoordinate()[0], getCubeCoordinate()[1], getCubeCoordinate()[2])
 	 */
 	public Cube getCubeUnder(){
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]-1);
@@ -71,7 +84,7 @@ public class Boulder {
 	}
 	
 	/**
-	 * Checks whether the given position is a valid position for a boulder.
+	 * Checks whether the given position is a valid position for a Boulder.
 	 * @param position
 	 * @return true if and only if the Cube at the given position is of a passable type, 
 	 * 			and the Cube under that Cube is of unpassable type.
@@ -83,13 +96,19 @@ public class Boulder {
 		return false;
 	}
 	
+	/**
+	 * Returns the position of this Boulder.
+	 */
 	public double[] getPosition(){
 		return this.position;
 	}
 
 
 	/**
-	 * Sets the position of the boulder to the given position.
+	 * Sets the position of the Boulder to the given position.
+	 * @param	newPosition	The position the Boulder is to be set on.
+	 * @post	This Boulder's position is set to the given position
+	 * 			|new.position == newPosition
 	 */
 	public void setPosition(double[] newPosition){
 		double[] pos = new double[]{newPosition[0], newPosition[1], newPosition[2]};
@@ -123,7 +142,13 @@ public class Boulder {
 	
 	/**
 	 * Adapts the Boulder's current position on whether it is falling or being carried.
-	 * @param dt	double integer value with which the time advances for this Boulder
+	 * @param dt The time step the Scheduler is to be advanced with.
+	 * @effect If this Boulder is being carried by a Unit, this Boulder's position will be adjusted to that Unit's position.
+	 * @post If this Boulder has reached its falling destination and its occupying Cube is not a valid Cube, this Boulder will fall to the Boulder below.
+	 * @post If the z-distance between the Boulder's position and its falling destination is smaller than dt, the Boulder's position is set to 
+	 * 		 its falling destination.
+	 * @post If the z-distance between the Boulder's position and its falling destination is greater than dt, the Boulder's z-coordinate is set to 
+	 * 			the current z-coordinate increased with the product of this Boulder's falling speed and the time step dt.
 	 */
 	public void advanceTime(double dt){
 		if (this.isCarriedBy != null)
@@ -159,17 +184,49 @@ public class Boulder {
 		return this.isTerminated;
 	}
 	
-	private final World world;
+	/**
+	 * Variable registering the World this Boulder is in.
+	 */
+	private World world;
+	/**
+	 * Variable registering this Boulder's current position.
+	 */
 	private double[] position;
-
+	/**
+	 * Variable registering the coordinates of the Cube this Boulder is situated in.
+	 */
+	private int[] CubeCoordinate;
+	/**
+	 * Variable registering this Boulder's weight.
+	 */
 	private int weight;
+	/**
+	 * Position this Boulder is falling to.
+	 */
 	private double fallingTo;
-	private int fallSpeed = -3;
-	private boolean isTerminated;
-
+	/**
+	 * Constant registering the z-component of this Boulder's falling speed.
+	 */
+	private static int fallSpeed = -3;
+	/**
+	 * Constant registering the minimum weight of a Boulder.
+	 */
 	private final int minWeight = 10;
+	/**
+	 * Constant registering the maximum weight of a Boulder.
+	 */
 	private final int maxWeight = 50;
+	/**
+	 * Constant registering the range for a Boulder's weight.
+	 */
 	private final int weightRange = this.maxWeight - this.minWeight;
 	
-	Unit isCarriedBy = null;
+	/**
+	 * Variable registering the Unit that is carrying this Boulder.
+	 */
+	public Unit isCarriedBy = null;
+	/**
+	 * Variable registering whether or not this Boulder is terminated.
+	 */
+	private boolean isTerminated = false;
 }

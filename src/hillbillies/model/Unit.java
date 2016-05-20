@@ -28,7 +28,7 @@ import ogp.framework.util.ModelException;
  * 
  * 
  * @author Kristof Van Cappellen
- * @author Jakob De Herthogh
+ * @author Jakob De Hertogh
  *
  */
 public class Unit {
