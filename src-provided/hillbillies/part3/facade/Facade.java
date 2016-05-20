@@ -401,6 +401,7 @@ public class Facade implements IFacade{
 	public boolean areTasksPartOf(Scheduler scheduler, Collection<Task> tasks) throws ModelException {
 		// TODO Auto-generated method stub
 		for (Task i : tasks){
+			System.out.println();
 			if (! i.getSchedulers().contains(scheduler))
 				return false;
 		}

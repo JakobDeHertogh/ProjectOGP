@@ -1,6 +1,8 @@
 package hillbillies.task.statement;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import hillbillies.exceptions.ExecutionErrorException;
 import hillbillies.model.Unit;
@@ -12,7 +14,7 @@ public class WorkStatement extends ActionStatement {
 
 	public WorkStatement(Expression<PosType> target) {
 		super(target);
-		
+
 		this.target = target;
 	}
 	
@@ -24,7 +26,7 @@ public class WorkStatement extends ActionStatement {
 			}
 			else{
 				try{
-					int[] targetPos = target.evaluate(globalVars, thisUnit).getValue();
+					int[] targetPos = this.target.evaluate(globalVars, thisUnit).getValue();
 					thisUnit.workAt(targetPos[0], targetPos[1], targetPos[2]);
 					this.isBusy = true;
 				} catch (ModelException ex){
@@ -32,6 +34,40 @@ public class WorkStatement extends ActionStatement {
 				}
 			}
 		}
+	}
+	
+	@Override 
+	public Iterator<Statement> iterator(){
+		return new Iterator<Statement>(){
+
+			private boolean isIterated(){
+				return this.isIterated;
+			}
+			
+			private void iterate(){
+				this.isIterated = true;
+			}
+			
+			@Override
+			public boolean hasNext() {
+				return ! this.isIterated();
+			}
+
+			@Override
+			public Statement next() {
+				if (! this.hasNext())
+					throw new NoSuchElementException();				
+				// as long as action is not complete, this statement is 
+				if (isExecuted){
+					this.iterate();
+					return WorkStatement.this;
+				}
+				else
+					return WorkStatement.this;
+			}
+			
+			private boolean isIterated;
+		};
 	}
 	
 

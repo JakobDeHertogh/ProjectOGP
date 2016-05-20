@@ -572,17 +572,27 @@ public class Unit {
 		}
 		
 		// execute task for same duration as advanceTime
-		if (this.getTask() != null)
+		if (this.getTask() != null){
 			this.getTask().execute(dt);
+		}
 		
 		// check default action
 		if (this.currentActivity == null){
 			if (this.isDefaultBehaviorEnabled()){
-				//Select random activity
-				Random x = new Random();
-				List<Activity> allAct = Arrays.asList(Activity.values());				
-				Activity randomAct = allAct.get(x.nextInt(allAct.size()));
-				randomAct.defaultAction(this);
+				if (this.getTask() == null){
+					try{
+						this.assignTask(this.getFaction().getScheduler().retrieveTask());
+					} catch (NullPointerException ex){
+					}
+				}
+				
+				else{
+					//Select random activity
+					Random x = new Random();
+					List<Activity> allAct = Arrays.asList(Activity.values());				
+					Activity randomAct = allAct.get(x.nextInt(allAct.size()));
+					randomAct.defaultAction(this);
+				}
 			}
 		}
 		else{
@@ -943,7 +953,6 @@ public class Unit {
 				targetcube.getCubeCenter()[0]-this.getXPosition());
 		this.setOrientation(newOrientation);
 		this.work();
-		System.out.println("ping");
 	}
 	
 	/**
@@ -1374,7 +1383,9 @@ public class Unit {
 	 */
 	void assignTask(Task task){
 		this.currentTask = task;
-		task.assignTo(this);
+		if (task !=  null){
+			task.assignTo(this);
+		}
 	}
 	
 	/**

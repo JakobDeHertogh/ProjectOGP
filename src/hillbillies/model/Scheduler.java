@@ -23,8 +23,12 @@ public class Scheduler implements Iterable<Task> {
 		return this.faction;
 	}
 	
+	public Task retrieveTask(){
+		return this.getSchedule().poll();
+	}
+	
 	public PriorityQueue<Task> getSchedule(){
-		return this.getSchedule();
+		return this.schedule;
 	}
 	
 	@Override

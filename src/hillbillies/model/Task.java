@@ -51,6 +51,7 @@ public class Task implements Comparable<Task>{
 		for (Scheduler i:this.schedulers){
 			i.removeTask(this);
 		}
+		this.schedulers.clear();
 	}
 	
 	public void assignTo(Unit unit){
@@ -79,11 +80,11 @@ public class Task implements Comparable<Task>{
 	 */
 	public void execute(double dt){
 		double remainingTime = dt;
-		while (remainingTime > 0){
-			
+		while (remainingTime > 0){			
 			try{
 				this.getIterator().next().execute(globalVars, thisUnit);
 			} catch (NoSuchElementException ex){
+				System.out.println("pifpoefpaf de taak is af!");
 				this.isCompleted = true;
 				thisUnit.assignTask(null);
 				this.removeTask();
