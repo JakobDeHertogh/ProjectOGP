@@ -45,11 +45,11 @@ public class Part3TestPartial {
 		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50, true);
 		facade.addUnit(unit, world);
 		Faction faction = facade.getFaction(unit);
-
+		
 		Scheduler scheduler = facade.getScheduler(faction);
 
 		List<Task> tasks = TaskParser.parseTasksFromString(
-				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
+				"name: \"work task\"\npriority: 1\nactivities: work ( 1, 1, 1);", facade.createTaskFactory(),
 				Collections.singletonList(new int[] { 1, 1, 1 }));
 
 		// tasks are created

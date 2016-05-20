@@ -164,7 +164,6 @@ public class TaskFactory implements ITaskFactory<Expression<? extends Type>, Sta
 
 	@Override
 	public Expression<PosType> createSelectedPosition(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
