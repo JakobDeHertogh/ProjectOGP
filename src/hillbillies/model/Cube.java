@@ -92,6 +92,10 @@ public class Cube {
 		return null;
 	}
 	
+	/**
+	 * Return a random Boulder that occupies this Cube.
+	 * @return a random Boulder from this Cube's Boudlers.
+	 */
 	public Boulder randomBoulder(){
 		int size = this.Boulders.size();
 		int item = new Random().nextInt(size);
@@ -104,18 +108,34 @@ public class Cube {
 		return null;
 	}
 	
+	/**
+	 * Add the given Boulder to this Cube.
+	 * @param	boulder The Boulder that is to be added to this Cube.
+	 * @post	This Cube contains the given Boulder.
+	 */
 	public void addBoulder(Boulder boulder){
 		this.Boulders.add(boulder);
 	}
-	
+	/**
+	 * Return all the Boulders that occupy this Cube.
+	 */
+	@Basic
 	public Set<Boulder> getBoulders(){
 		return this.Boulders;
 	}
-	
+	/**
+	 * Remove the given Boulder from this Cube.
+	 * @param	boulder The Boulderg that is to be removed from this Cube.
+	 * @post	The given Boulder is no longer in this Cube
+	 */
 	public void removeBoulder(Boulder boulder){
 		this.Boulders.remove(boulder);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Set<Unit> isOccupiedByUnits(){
 		Set <Unit> result = new HashSet<Unit>();
 		for (Unit i : this.world.getActiveUnits()){
@@ -128,37 +148,73 @@ public class Cube {
 		return result;
 	}
 	
+	/**
+	 * Check whether this Cube is a valid Cube for a Unit to occupy.
+	 * @return true if and only if this Cube is of a passable type and has a neighbouring Cube is of a solid type.
+	 */
 	public boolean isValidCube(){
 		if ((this.isPassableType())&&(this.hasSolidNeighbor()))
 			return true;
 		return false;
 	}
 	
+	/**
+	 * Return this Cube's x coordinate.
+	 */
+	@Basic
 	public int getXPosition(){
 		return this.xPosition;
 	}
+	/**
+	 * Return this Cube's y coordinate.
+	 */
+	@Basic
 	public int getYPosition(){
 		return this.yPosition;
 	}
+	/**
+	 * Return this Cube's z coordinate.
+	 */
+	@Basic
 	public int getZPosition(){
 		return this.zPosition;
 	}
+	/**
+	 * Return this Cube's position.
+	 */
+	@Basic
 	public int[] getPosition(){
 		return this.Position;
 	}
+	/**
+	 * Return the coordinates of this Cube's center.
+	 */
+	@Basic
 	public double[] getCubeCenter(){
 		return this.cubeCenter;
 	}
 	
+	/**
+	 * Return this Cube's CubeType.
+	 */
+	@Basic
 	public CubeType getType(){
 		return this.cubetype;
 	}
 	
+	/**
+	 * Set this Cube's CubeType to the given CubeType.
+	 * @post	This Cube's CubeType is set to the given type.
+	 * @effect	This Cube's World's TerrainChangeListener checks this Cube for a change in CubeType.
+	 */
 	public void setCubeType(CubeType type){
 		this.cubetype = type;
 		this.world.getTCL().notifyTerrainChanged(this.getXPosition(), this.getYPosition(), this.getZPosition());
 	}
-	
+	/**
+	 * Return whether this Cube is of passable terrain.
+	 * @return true if and only if this Cube's CubeType is passable.
+	 */
 	public boolean isPassableType(){
 		return this.getType().isPassable();
 	}
