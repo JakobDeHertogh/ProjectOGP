@@ -121,8 +121,8 @@ public class Unit {
 	 * Sets the faction of this Unit.
 	 * @post	If the Unit did not have a faction, then the faction will be set to the given faction.
 	 * 			|if (this.faction==null)
-	 * 			|then this.faction = faction
-	 * 			|and this.world = faction.getworld()
+	 * 			|then new.faction = faction
+	 * 			|and new.world = faction.getworld()
 	 */
 	public void setFaction(Faction faction){
 		if (this.faction == null){// of isTerminated()
@@ -150,7 +150,7 @@ public class Unit {
 	 * The Unit gains a given amount of experience points.
 	 * @param dExp	The amount of experience to be added to this Unit.
 	 * @post	The Unit's number of experience points is increased with the given amount.
-	 * 			|this.experiencePoints +=dExp
+	 * 			|new.experiencePoints = this.getExpPoints()+dExp
 	 */
 	public void gainExperience(int dExp){
 		this.experiencePoints += dExp;
@@ -176,7 +176,7 @@ public class Unit {
 	public Cube occupiesCube(){			
 		return this.world.getCubeAtPos(this.getCubeCoordinate()[0], this.getCubeCoordinate()[1], this.getCubeCoordinate()[2]);
 	}
-	
+	//TODO: Moet hieronder de postcoditions niet vervangen worden door @return's?
 	/**
 	 * Returns a value from minStartVal to maxStartVal. In this
 	 * case minStartVal equals 25 and maxStartVal equals 100. 
@@ -247,7 +247,6 @@ public class Unit {
 	}
 	
 	/**
-	/**
 	 * Checks if the position is a valid position in the game world. Each 
 	 * coordinate has a minimum value and a maximum value. 
 	 * @param	position
@@ -274,7 +273,7 @@ public class Unit {
 	/**
 	 * Returns the X-component of the current position.
 	 */
-	@Raw
+	@Basic @Raw
 	public double getXPosition(){
 		return this.position[0];
 	}
@@ -282,7 +281,7 @@ public class Unit {
 	/**
 	 * Returns the Y-component of the current position.
 	 */
-	@Raw
+	@Basic @Raw
 	public double getYPosition(){
 		return this.position[1];
 	}
@@ -290,7 +289,7 @@ public class Unit {
 	/**
 	 * Returns the Z-component of the current position.
 	 */
-	@Raw
+	@Basic @Raw
 	public double getZPosition(){
 		return this.position[2];
 	}
@@ -326,11 +325,11 @@ public class Unit {
 	 * 			weight is in between minimum and maximum value, the weight is set 
 	 * 			to the given weight.
 	 * 			| if (minValue<= newValue  <= maxValue)
-	 * 			| then (this.weight == newValue)
+	 * 			| then (new.weight == newValue)
 	 * 			| else if (newValue < minValue)
-	 * 			| then (this.weight == minValue)
+	 * 			| then (new.weight == minValue)
 	 *			| else if (newValue > maxValue)
-	 *			| then (this.weight == maxValue)
+	 *			| then (new.weight == maxValue)
 	 * @param	newValue
 	 * 			The chosen value to set as weight
 	 */
@@ -361,11 +360,11 @@ public class Unit {
 	 * 			strength is in between minimum and maximum value, the strength is set 
 	 * 			to the given strength.
 	 * 			| if (minValue<= newValue  <= maxValue)
-	 * 			| then (this.strength == newValue)
+	 * 			| then (new.strength == newValue)
 	 * 			| else if (newValue < minValue)
-	 * 			| then (this.strength == minValue)
+	 * 			| then (new.strength == minValue)
 	 *			| else if (newValue > maxValue)
-	 *			| then (this.strength == maxValue)
+	 *			| then (new.strength == maxValue)
 	 * @param	newValue
 	 * 			The chosen value to set as strength
 	 */
@@ -396,11 +395,11 @@ public class Unit {
 	 * 			value is in between minimum and maximum value, the agility is set 
 	 * 			to the given value.
 	 * 			| if (minValue<= newValue  <= maxValue)
-	 * 			| then (this.weight == newValue)
+	 * 			| then (new.weight == newValue)
 	 * 			| else if (newValue < minValue)
-	 * 			| then (this.weight == minValue)
+	 * 			| then (new.weight == minValue)
 	 *			| else if (newValue > maxValue)
-	 *			| then (this.weight == maxValue)
+	 *			| then (new.weight == maxValue)
 	 * @param	newValue
 	 * 			The chosen value to set as agility
 	 */
@@ -430,11 +429,11 @@ public class Unit {
 	 * 			value is in between minimum and maximum value, the toughness is set 
 	 * 			to the given value.
 	 * 			| if (minValue<= newValue  <= maxValue)
-	 * 			| then (this.toughness == newValue)
+	 * 			| then (new.toughness == newValue)
 	 * 			| else if (newValue < minValue)
-	 * 			| then (this.toughness == minValue)
+	 * 			| then (new.toughness == minValue)
 	 *			| else if (newValue > maxValue)
-	 *			| then (this.toughness == maxValue)
+	 *			| then (new.toughness == maxValue)
 	 * @param	newValue
 	 * 			The chosen value to set as toughness
 	 */
@@ -455,9 +454,9 @@ public class Unit {
 		return (int) (0.02 * this.getWeight() * this.getToughness());
 	}
 	/**
-	 * Sets the hitpoints of the unit to the given value.
+	 * Sets the hit points of the unit to the given value.
 	 * @param newValue
-	 * 			The value we wish to set the hitpoints of the unit on.
+	 * 			The value we wish to set the hit points of the unit on.
 	 * @pre	The new value is a valid number of hit points.
 	 * 		|isValidHP(newValue);
 	 */
@@ -466,16 +465,15 @@ public class Unit {
 			this.hitpoints = newValue;
 	}
 	/**
-	 * Returns the current ammount of hitpoints this Unit has. 
-	 * @return
+	 * Returns the current amount of hit points this Unit has. 
 	 */
 	public int getCurrentHitPoints(){
 		return (int) this.hitpoints;
 	}
 	/**
-	 * Checks if the given hp is not negative and below the maxHP limit. 
-	 * @param hp
-	 * @return
+	 * Checks if the given amount of hit points is valid. 
+	 * @param hp The value for the Unit's hit points that needs to be checked.
+	 * @return	true if and only if the given value is smaller than the maximum amount of hitpoints for this Unit and is greater than 0.
 	 */
 	public boolean isValidHP( int hp){
 		return (hp<= this.getMaxHitPoints()) && (hp>=0);
@@ -488,7 +486,7 @@ public class Unit {
 		return (int)( 0.02* this.getWeight() * this.getToughness());
 	}
 	/**
-	 * ...
+	 * Sets the stamina of this Unit to the given value.
 	 * @param value
 	 */
 	public void setStamina(double value){
@@ -522,7 +520,7 @@ public class Unit {
 		this.orientation = ((2*Math.PI)+(orientation%(2*Math.PI)))%(2*Math.PI);
 	}
 	/**
-	 * returns the current value of the orientation as a floating point number.
+	 * Returns the current value of the orientation as a floating point number.
 	 */
 	public double getOrientation(){
 		return this.orientation;
@@ -531,7 +529,7 @@ public class Unit {
 	/**
 	 * Adapts the Unit's current position, hit points and stamina depending
 	 * on the activity the Unit is currently executing. 
-	 * @param dt
+	 * @param dt	The amount of game time to be advanced.
 	 */
 	public void advanceTime(double dt) throws ModelException{
 		//Initialiseren lokale variabelen voor rustmomenten en regeneratie van hitpoints en stamina.
@@ -679,16 +677,22 @@ public class Unit {
 	/**
 	 * Sets the current speed depending on the target the Unit is heading. 
 	 * 
-	 * @param dx
-	 * @param dy
-	 * @param dz
+	 * @param start	The starting position of the movement.
+	 * @param end	The ending position of the movement.
+	 * @post	If the start equals the end, the speed will be zero.
+	 * 			|if start == end
+	 * 			|then new.currentspeed = 0
+	 * @post	If the Unit moves upwards it moves at half base speed.
+	 * 			|if end[2] - start[2] == 1
+	 * 			|then new.currentspeed = 0.5*getvb()
 	 * 
-	 * @post	if the Unit moves upwards it moves at half base speed. 
-	 * 
-	 * @post	if the Unit moves downwards it moves at increased speed. 
+	 * @post	If the Unit moves downwards it moves faster with a factor of 1.2 . 
+	 * 			|if end[2] - start[2] = -1
+	 * 			|then new.currentspeed = 1.2*getvb()
 	 * 
 	 * @post 	if the Unit moves on a flat level, it moves at base speed. 
-	 * @throws ModelException 
+	 * 			|if end[2]-start[2] == 0
+	 * 			|then new.currentspeed = getvb()
 	 */
 	
 	public void setCurrentspeed(double[] start, double[] end){
@@ -707,11 +711,12 @@ public class Unit {
 	
 	/**
 	 * Moves the Unit to an adjacant cube center. 
-	 * @param current
-	 * @param target
+	 * @param dx
+	 * @param dy
+	 * @param dz
 	 * @post 	The Unit's target position is equal to the current position + the 
 	 * 			given values for dx, dy and dz. 
-	 * 			|| new.postition == [xposition + dx, yposition + dy, zposition + dz]
+	 * 			| new.postition == [this.xposition + dx, this.yposition + dy, this.zposition + dz]
 	 * @post 	The Unit's speed is set towards the target position. 
 	 * 	
 	 * @post 	The distance the Unit has to walk is set. 
@@ -948,7 +953,7 @@ public class Unit {
 	 * Makes the Unit put down a Log at the given Cube.
 	 * @param cube
 	 * @effect 	The weight of the Unit is adjusted for the loss of the Log.
-	 * 		|	setWeight(this.weight - this.isCarryingLog.getWeight())
+	 * 			|setWeight(this.weight - this.isCarryingLog.getWeight())
 	 */
 	public void putDownLog(Cube cube){
 		this.CarriesLog.isCarriedBy = null;
@@ -963,7 +968,7 @@ public class Unit {
 	 * Makes the Unit put down a Boulder at a given Cube.
 	 * @param cube
 	 * @effect	The weight of the Unit is adjusted for the loss of the Boulder.
-	 * 		|	setWeight(this.weight - this.isCarryingBoulder.getWeight())
+	 * 			|setWeight(this.weight - this.isCarryingBoulder.getWeight())
 	 */
 	public void putDownBoulder(Cube cube){
 		this.CarriesBoulder.isCarriedBy = null;
@@ -976,10 +981,13 @@ public class Unit {
 	
 	/**
 	 * The Unit attacks another Unit if it is in range.
-	 * @param other
+	 * @param other	The Unit this Unit must fight.
 	 * @throws ModelException
 	 * 			The target Unit is not attackable.
-	 * 			|!isAttackable(Unit other
+	 * 			|!isAttackable(Unit other)
+	 * @post	The current activity of this Unit is set to FIGHT.
+	 * 			|new.currentActivity = Activity.FIGHT
+	 * 
 	 */
 	public void fight(Unit other) throws ModelException{
 		if (!isAttackable(other)){
@@ -993,7 +1001,12 @@ public class Unit {
 	 * Checks whether target Unit is in range to attack. Units must be on the 
 	 * same plane and within one cube of eachother. 
 	 * @param other
-	 * @return
+	 * @return true if and only if this unit and its target are on the same z-level,
+	 * 			are neighbouring each other, and belong to different factions.
+	 * 			|if ((Math.abs(this.position[0] - other.position[0])<=1) && 
+	 * 				(Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))
+	 * 			|return true
+	 * 			|else return false.
 	 */
 	public boolean isAttackable(Unit other){
 		if ((Math.abs(this.position[0] - other.position[0])<=1) && (Math.abs(this.position[1]- other.position[1]) <=1) && (this.faction!=other.faction))

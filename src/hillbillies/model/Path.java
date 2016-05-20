@@ -35,7 +35,8 @@ public class Path {
 			
 			for (Cube next: current.getSurroundingCubes()){
 				try {
-					double new_cost = Cost_so_far.get(current)+ Math.abs(next.getXPosition()-current.getXPosition()) +Math.abs(next.getZPosition()-current.getZPosition()) + Math.abs(next.getYPosition()-current.getYPosition());
+					double new_cost = Cost_so_far.get(current)+ Math.abs(next.getXPosition()-current.getXPosition()) 
+					+Math.abs(next.getZPosition()-current.getZPosition()) + Math.abs(next.getYPosition()-current.getYPosition());
 					if (((!Cost_so_far.containsKey(next))|| (new_cost < Cost_so_far.get(next))) && (next.isValidCube())){
 						Cost_so_far.put(next, new_cost);
 						double priority = new_cost + CalcCost(end, next);
